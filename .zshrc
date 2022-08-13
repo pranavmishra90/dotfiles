@@ -13,40 +13,14 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # PATH
 #-----------------------
-export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/.local/bin:$HOME/.local/lib/python3.8/
 
-# Aliases
-#-----------------------
+
 alias sourcezsh='source ~/.zshrc'
 alias editzsh='nano ~/.zshrc'
 
 
-alias ls="exa --icons --group-directories-first"
-alias ll="exa --icons --group-directories-first -l"
-alias g="goto"
-alias grep='grep --color'
-
-# Docker
-alias dockerup='docker-compose up -d --remove-orphans && docker-compose ps && dtop'
-alias dtop='docker ps -q | xargs  docker stats --no-stream'
-alias logd='docker logs -tf --tail="200"'
-
-# Rar
-alias unrar-find='unrar e -r -o- *.rar ./'
-
-
-# Git
-#------------------
-## Start SSH agent
-eval $(ssh-agent -s)
-
-alias pre-commit='python3 ~/git/pre-commit/pre-commit-2.20.0.pyz'
-
-
-# GPG
-#------------------
-GPG_TTY=$(tty)
-export GPG_TTY
+source ~/.common_profile
 
 ############################################
 # MIT License                              #
