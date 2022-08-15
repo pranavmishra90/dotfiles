@@ -1,3 +1,4 @@
+
 # Bash Formatting
 function color_my_prompt {
     local __user_and_host="\[\033[01;32m\]\u:"
@@ -18,6 +19,7 @@ export PATH=/home/pranav/.local/bin:$PATH
 
 # Alias Bash
 #----------------
+alias zsh='exec zsh'
 
 alias editbash='nano ~/.bash_aliases'
 alias sourcebash='source ~/.bashrc'

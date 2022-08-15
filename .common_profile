@@ -12,7 +12,7 @@ echo -ne "\033]0;$server_name\a"
 #-----------------------
 alias path='sed "s/:/\n/g" <<< "$PATH"'
 
-
+alias editshell='nano ~/.common_profile'
 
 alias ls="exa --icons --group-directories-first"
 alias ll="exa --icons --group-directories-first -l"
@@ -28,6 +28,10 @@ alias dockerup='docker-compose up -d --remove-orphans && docker-compose ps && dt
 alias dtop='docker ps -q | xargs  docker stats --no-stream'
 alias logd='docker logs -tf --tail="200"'
 
+function entercontainer() {
+	docker exec -it $1 zsh
+}
+
 # Rar
 alias unrar-find='unrar e -r -o- *.rar ./'
 
@@ -39,10 +43,34 @@ eval $(ssh-agent -s)
 
 alias pre-commit='python3 ~/git/pre-commit/pre-commit-2.20.0.pyz'
 
+alias readme='reporoot && pwd && nano --view README.md'
+
+alias gitgraph='git log --oneline --graph --decorate --all'
+alias gitlog='git log --decorate --all --show-pulls --show-signature'
+
+
+#----------------------------------------------------------
+# Copyright 2009 Daniel Jackoway
+# MIT License
+
+# Get to the root of a git directory
+
+function reporoot { 
+while [ ! -d .git -a ! -f 'README.md' -a `pwd` != "/" ]
+do
+    cd ".."; 
+done
+}
+#----------------------------------------------------------
+
+
 # GPG
 #------------------
-GPG_TTY=$(tty)
-export GPG_TTY
+#GPG_TTY=$(tty)
+#export GPG_TTY
+# above are already in .zshrc
+
+gpg-connect-agent /bye
 
 ############################################
 # MIT License                              #
