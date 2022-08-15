@@ -46,8 +46,12 @@ alias pre-commit='python3 ~/git/pre-commit/pre-commit-2.20.0.pyz'
 alias readme='reporoot && pwd && nano --view README.md'
 
 alias gitgraph='git log --oneline --graph --decorate --all'
-alias gitlog='git log --decorate --all --show-pulls --show-signature'
+alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3'
 
+function gitpush() {
+	git push $1 $2
+	git log --decorate --all --show-pulls --show-signature --max-count 1
+}
 
 #----------------------------------------------------------
 # Copyright 2009 Daniel Jackoway
@@ -70,6 +74,9 @@ done
 #export GPG_TTY
 # above are already in .zshrc
 
+# Restart the GPG-agent
+
+alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
 gpg-connect-agent /bye
 
 ############################################
