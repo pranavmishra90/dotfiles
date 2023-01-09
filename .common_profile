@@ -1,5 +1,5 @@
 #Set the computer name here
-eval server_name="WSL-Pranav-Surface"
+eval server_name="DrPranavMishra"
 
 
 # Join Message
@@ -15,7 +15,7 @@ alias path='sed "s/:/\n/g" <<< "$PATH"'
 alias editshell='nano ~/.common_profile'
 
 alias ls="exa --icons --group-directories-first"
-alias ll="exa --icons --group-directories-first -l"
+alias ll="exa --icons --group-directories-first -lah"
 alias g="goto"
 alias grep='grep --color'
 
@@ -78,6 +78,8 @@ done
 
 alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
 gpg-connect-agent /bye
+
+alias gpg-start='echo "Starting GPG" | gpg --clearsign'
 
 ############################################
 # MIT License                              #

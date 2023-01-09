@@ -25,3 +25,6 @@ alias editbash='nano ~/.bash_aliases'
 alias sourcebash='source ~/.bashrc'
 
 source ~/.common_profile
+
+GPG_TTY=$(tty)
+export GPG_TTY
