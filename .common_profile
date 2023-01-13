@@ -1,5 +1,14 @@
 #Set the computer name here
-eval server_name="DrPranavMishra"
+FILE=~/.server_name.txt
+
+if [ -f "$FILE" ]; then
+    echo "$FILE exists."
+else
+    echo "Insert a server name in ~/.server_name.txt" > ~/.server_name.txt
+fi
+
+
+server_name=$(cat ~/.server_name.txt )
 
 
 # Join Message
