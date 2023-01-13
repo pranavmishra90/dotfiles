@@ -2,7 +2,7 @@
 FILE=~/.server_name.txt
 
 if [ -f "$FILE" ]; then
-    echo "$FILE exists."
+    echo ""
 else
     echo "Insert a server name in ~/.server_name.txt" > ~/.server_name.txt
 fi
