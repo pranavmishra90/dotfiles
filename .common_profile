@@ -1,16 +1,3 @@
-#Set the computer name here
-FILE=~/.server_name.txt
-
-if [ -f "$FILE" ]; then
-    echo ""
-else
-    echo "Insert a server name in ~/.server_name.txt" > ~/.server_name.txt
-fi
-
-
-server_name=$(cat ~/.server_name.txt )
-
-
 # Join Message
 echo -e "\e[1;31m$server_name\e[0m"
 
@@ -25,16 +12,23 @@ alias editshell='nano ~/.common_profile'
 
 alias ls="exa --icons --group-directories-first"
 alias ll="exa --icons --group-directories-first -lah"
+
+alias youtube-dl='yt-dlp'
+
+
 alias g="goto"
 alias grep='grep --color'
 
 # Directories
 alias cd-programming='cd /mnt/c/Programming/'
 
+#Bone-Fat-Insulin
+alias cd-bfi='cd /mnt/c/Programming/Rush/bone-fat-insulin-project'
+alias bfi-bash='docker exec -it -u root BFI-datalad-superdataset bash'
 
 # Docker
 alias dockerup='docker-compose up -d --remove-orphans && docker-compose ps && dtop'
-alias dtop='docker ps -q | xargs  docker stats --no-stream'
+alias dtop='docker ps -q | xargs  docker stats --no-stream | (read -r; printf "%s\n" "$REPLY"; sort -k 2 )'
 alias logd='docker logs -tf --tail="200"'
 
 function entercontainer() {
@@ -56,11 +50,29 @@ alias readme='reporoot && pwd && nano --view README.md'
 
 alias gitgraph='git log --oneline --graph --decorate --all'
 alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3'
+alias gitdiff='git diff --compact-summary'
+alias gitmerge='git merge --squash --stat'
+
 
 function gitpush() {
 	git push $1 $2
 	git log --decorate --all --show-pulls --show-signature --max-count 1
 }
+
+
+if [ -f .pre-commit-config.yaml ]; then
+    echo 'pre-commit configuration detected, but `pre-commit install` was never run' 1>&2
+fi
+
+
+# Datalad
+#------------------
+
+alias datalad-here='docker run --name datalad --rm -p 8888:8888 \
+	-v "${PWD}":/home/jovyan/lab -v ~/bfi-datalad/git-annex:/home/jovyan/git-annex \
+	-v ~/.gnupg/S.gpg-agent-extra:/gpg-agent --env GPG_AGENT_INFO=/gpg-agent:0:1 \
+	datascience:nightly'
+
 
 #----------------------------------------------------------
 # Copyright 2009 Daniel Jackoway
@@ -79,16 +91,22 @@ done
 
 # GPG
 #------------------
-#GPG_TTY=$(tty)
-#export GPG_TTY
+GPG_TTY=$(tty)
+export GPG_TTY
 # above are already in .zshrc
 
 # Restart the GPG-agent
 
-alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
-gpg-connect-agent /bye
+alias gpg-restart='echo "GPG Agent Restarted" && gpg-connect-agent reloadagent /bye'
+alias gpg-start='echo "Signing GPG Key" | gpg --clearsign'
 
-alias gpg-start='echo "Starting GPG" | gpg --clearsign'
+#echo "Signing GPG Key" | gpg --clearsign
+
+# $PATH
+#------------------
+
+export PATH=~/dotfiles/bin:$PATH
+
 
 ############################################
 # MIT License                              #

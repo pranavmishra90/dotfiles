@@ -1,117 +1,109 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+#Set the computer name here
+eval server_name="Blackbox"
+export GPG_TTY=$(tty)
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
+#Bash Profile edits
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
+export PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:/usr/local/bin:$PATH"
 
-# append to the history file, don't overwrite it
-shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+. /opt/etc/profile
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
+function color_my_prompt {
+    local __user_and_host="\[\033[01;32m\]\u:"
+    local __cur_location="\[\033[01;34m\]\W"
+    local __git_branch_color="\[\033[31m\]"
+    #local __git_branch="\`ruby -e \"print (%x{git branch 2> /dev/null}.grep(/^\*/).first || '').gsub(/^\* (.+)$/, '(\1) ')\"\`"
+    local __git_branch='`git branch 2> /dev/null | grep -e ^* | sed -E  s/^\\\\\*\ \(.+\)$/\(\\\\\1\)\ /`'
+    local __last_color="\[\033[00m\]:"
+    export PS1="$__user_and_host $__cur_location $__git_branch_color$__git_branch$__prompt_tail$__last_color "
+}
+color_my_prompt
 
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
 
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
+#SSH
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
+#Alias
+alias editbash='nano ~/.bashrc'
+alias sourcebash='source ~/.bashrc'
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+alias m4b-tool='docker run -it --rm -u $(id -u):$(id -g) -v "$(pwd)":/mnt sandreas/m4b-tool:latest'
 
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
 
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
+alias mishracloud='cd /volume1/docker/MishraCloud'
+alias cd-docker='cd /volume1/docker'
+alias cd-complete='cd /volume1/Plex-Media/Import/in-progress/complete/'
+alias cd-drishti='cd /volume1/docker/Drishti'
+alias drishti-update='cd-drishti && docker-compose up -d'
+alias drishti-minimal='cd-drishti && sh drishti-minimal.sh'
+alias drishti-full='cd-drishti && sh drishti-full.sh'
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
+alias plex-media='cd /volume1/Plex-Media'
 
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+alias cd-research='cd /volume1/Pranav/Research && ls -lh'
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
 alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+#Scripts
+alias youtube-to-plex='sh /volume1/Scripts/plex-scripts/youtube-to-plex'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+#Plex
+alias stop-plex='synoservice -stop pkgctl-Plex\ Media\ Server'
+alias start-plex='synoservice -start pkgctl-Plex\ Media\ Server'
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
+#Programs
+alias iperf3-start='docker run  -it --rm --name=iperf3 -p 5201:5201 networkstatic/iperf3 -s'
+alias speedtest-run='python3 /volume1/Scripts/speedtest-cli/speedtest-cli'
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
+alias unrar-find='unrar e -r -o- *.rar ./'
+
+#NGINX
+
+alias restart-nginx='sudo synoservice --restart nginx'
+
+alias nginx-ports="sudo netstat -tulpn | grep LISTEN | grep 'nginx'"
+
+
+# Script to change 443 and 80 port binding
+
+#as root!
+#sed -i -e 's/14080/80/' -e 's/14443/443/' /usr/syno/share/nginx/server.mustache /usr/syno/share/nginx/DSM.mustache /usr/syno/share/nginx/WWWService.mustache
+#synoservicecfg --restart nginx
+
+
+##Pranav
+alias cd-pranav='cd /volume1/Pranav'
+alias cd-programming='cd /volume1/Pranav/programming'
+
+# PREPAREDx Ansible Playbook
+
+alias cd-pdx='cd /volume1/Pranav/preparedx/preparedx-ansible'
+alias pdx-ansible='cd-pdx && docker run -it --rm -w /work -v /volume1/Pranav/preparedx/preparedx-ansible:/work -v $HOME/.ssh/oracle/oracle:/root/.ssh/id_rsa:ro --entrypoint=/bin/sh docker.io/devture/ansible:2.9.14-r0'
+
+###################
+# Github
+###################
+## Add github ssh
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/github/github
+
+
+
+## Python
+alias python='python3'
+
+# Pre-commit
+#---------------------
+
+alias pre-commit='python3 /volume1/Installation/Synology/pre-commit/pre-commit-2.20.0.pyz'
+
+
+# GPG
+#------------------------
+export GPG_TTY=$(tty)
+
+
+
+###
+source ~/.common_profile
