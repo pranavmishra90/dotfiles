@@ -1,4 +1,3 @@
-
 # Bash Formatting
 function color_my_prompt {
     local __user_and_host="\[\033[01;32m\]\u:"
@@ -14,7 +13,7 @@ color_my_prompt
 
 
 # PATH
-export PATH=/home/pranav/.local/bin:$PATH
+export PATH=~/.local/bin:$PATH
 
 
 # Alias Bash
@@ -26,5 +25,14 @@ alias sourcebash='source ~/.bashrc'
 
 source ~/.common_profile
 
-GPG_TTY=$(tty)
-export GPG_TTY
+# SSH Agent
+#-----------------
+if [ -z "$SSH_AUTH_SOCK" ]; then
+   # Check for a currently running instance of the agent
+   RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
+   if [ "$RUNNING_AGENT" = "0" ]; then
+        # Launch a new instance of the agent
+        ssh-agent -s &> $HOME/.ssh/ssh-agent
+   fi
+   eval `cat $HOME/.ssh/ssh-agent`
+fi
