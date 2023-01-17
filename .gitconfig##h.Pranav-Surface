@@ -11,7 +11,8 @@
 [safe]
 	directory = /mnt/c/Programming/server-setup
 	directory = /mnt/c/Programming/server-startup
-	directory = /home/jovyan/lab
+	directory = /home/coder/work
+	
 [help]
 	autocorrect = 20
 [alias]
