@@ -7,7 +7,7 @@
 	editor = nano
 [commit]
 	template = /home/pranav/git/git-commit-template.txt
-	gpgsign = true
+	gpgsign = false
 [safe]
 	directory = /mnt/c/Programming/server-setup
 	directory = /mnt/c/Programming/server-startup
