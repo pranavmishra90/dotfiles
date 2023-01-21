@@ -9,9 +9,7 @@
 	template = /home/pranav/git/git-commit-template.txt
 	gpgsign = true
 [safe]
-	directory = /mnt/c/Programming/server-setup
-	directory = /mnt/c/Programming/server-startup
-	directory = /home/jovyan/lab
+	directory = /home/coder/work
 [help]
 	autocorrect = 20
 [alias]
@@ -24,10 +22,9 @@
 	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
 
 [credential "https://gitea.mishracloud.com"]
-	#helper = /usr/local/share/gcm-core/git-credential-manager-core
 	credentialStore = gpg
 	provider = generic
+[credential]
+        helper = cache --timeout=3600
 [gpg]
 	program = /usr/bin/gpg
-[credential]
-	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager-core.exe

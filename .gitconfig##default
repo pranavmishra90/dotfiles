@@ -29,3 +29,7 @@
 	provider = generic
 [gpg]
 	program = /usr/bin/gpg
+[credential]
+	helper = cache --timeout=3600
+[datalad "ui"]
+	suppress-similar-results = off
