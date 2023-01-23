@@ -1,1 +1,1 @@
-.bash_aliases##h.z820-ubuntu
+.bash_aliases##default
