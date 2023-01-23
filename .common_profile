@@ -94,7 +94,13 @@ alias gpg-start='echo "Starting GPG" | gpg --clearsign'
 # SSH
 #-------------------
 eval `ssh-agent`
-ssh-add -t 3600 ~/.ssh/id_ed25519
+
+
+if [ -f ~/.id_ed25519 ]; then
+    ssh-add -t 3600 ~/.ssh/id_ed25519
+else
+    ssh-add -t 3600
+fi
 
 ############################################
 # MIT License                              #
