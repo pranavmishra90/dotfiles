@@ -11,6 +11,8 @@
 [safe]
 	directory = /mnt/c/Programming/server-setup
 	directory = /mnt/c/Programming/server-startup
+	directory = /home/coder/work/git-annex
+
 [help]
 	autocorrect = 20
 [alias]
