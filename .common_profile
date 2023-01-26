@@ -79,8 +79,8 @@ done
 
 # GPG
 #------------------
-#GPG_TTY=$(tty)
-#export GPG_TTY
+GPG_TTY=$(tty)
+export GPG_TTY
 # above are already in .zshrc
 
 # Restart the GPG-agent
