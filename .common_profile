@@ -45,10 +45,23 @@ function entercontainer() {
 alias unrar-find='unrar e -r -o- *.rar ./'
 
 
+# SSH-Agent
+# ---------------
+if [ -z "$SSH_AUTH_SOCK" ]; then
+   # Check for a currently running instance of the agent
+   RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
+   if [ "$RUNNING_AGENT" = "0" ]; then
+        # Launch a new instance of the agent
+        ssh-agent -t 1h -s &> $HOME/.ssh/ssh-agent
+   fi
+   eval `cat $HOME/.ssh/ssh-agent`
+fi
+
+find ~/.ssh/ -type f -exec grep -l "PRIVATE" {} \; | xargs ssh-add &> /dev/null
+
 # Git
 #------------------
 ## Start SSH agent
-eval $(ssh-agent -s)
 
 alias pre-commit='python3 ~/git/pre-commit/pre-commit-2.20.0.pyz'
 
