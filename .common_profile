@@ -47,6 +47,7 @@ alias unrar-find='unrar e -r -o- *.rar ./'
 
 # SSH-Agent
 # ---------------
+
 if [ -z "$SSH_AUTH_SOCK" ]; then
    # Check for a currently running instance of the agent
    RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
@@ -57,7 +58,7 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
    eval `cat $HOME/.ssh/ssh-agent`
 fi
 
-find ~/.ssh/ -type f -exec grep -l "PRIVATE" {} \; | xargs ssh-add &> /dev/null
+find ~/.ssh/ -type f -exec grep -l "PRIVATE" {} \; | xargs ssh-add -t 1h &> /dev/null
 
 # Git
 #------------------
@@ -102,18 +103,6 @@ alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
 gpg-connect-agent /bye
 
 alias gpg-start='echo "Starting GPG" | gpg --clearsign'
-
-
-# SSH
-#-------------------
-eval `ssh-agent`
-
-
-if [ -f ~/.id_ed25519 ]; then
-    ssh-add -t 3600 ~/.ssh/id_ed25519
-else
-    ssh-add -t 3600
-fi
 
 ############################################
 # MIT License                              #
