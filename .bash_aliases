@@ -1,1 +1,0 @@
-.bash_aliases##h.z820-ubuntu
