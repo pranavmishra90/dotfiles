@@ -5,36 +5,31 @@
 
 [core]
 	editor = nano
+
 [init]
 	defaultBranch = main
 
 [commit]
 	template = /home/pranav/git/git-commit-template.txt
 	gpgsign = true
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> d443802b6f70b867a07bc1229a120babc1d869ad
-[alias]
-	last = log -1 HEAD
-	undo-commit = reset HEAD~
 [gpg]
 	program = /usr/bin/gpg
-
-[credential "https://gitea.mishracloud.com"]
-	helper = /usr/local/share/gcm-core/git-credential-manager-core
-	credentialStore = gpg
-	provider = generic
 
 [gcrypt]
 	rsync-put-flags = chrv
 	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
 
-[safe]
-	directory = /mnt/c/Programming/server-setup
-	directory = /mnt/c/Programming/server-startup
-	directory = /home/jovyan/lab
+[credential "https://gitea.mishracloud.com"]
+	credentialStore = gpg
+	provider = generic
 
 [help]
 	autocorrect = 20
+
+[alias]
+	last = log -1 HEAD
+	undo-commit = reset HEAD~
+
+[safe]
+	directory = /home/coder/work
