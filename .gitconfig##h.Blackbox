@@ -5,19 +5,26 @@
 
 [core]
 	editor = nano
+	
+[init]
+	defaultBranch = main
+
 [commit]
 	template = ~/git/git-commit-template.txt
-	gpgsign = true
+	gpgsign = false
+
 [safe]
 	directory = /home/jovyan/lab
 	directory = /home/jovyan/work
+
 [help]
 	autocorrect = 20
+
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
-[init]
-	defaultBranch = main
+
+
 [gcrypt]
 	rsync-put-flags = chrv
 	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
