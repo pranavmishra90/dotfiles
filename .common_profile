@@ -44,6 +44,8 @@ function entercontainer() {
 # Rar
 alias unrar-find='unrar e -r -o- *.rar ./'
 
+# Python
+alias python='python3'
 
 # Git
 #------------------
