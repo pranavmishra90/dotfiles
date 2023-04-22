@@ -11,7 +11,7 @@
 
 [commit]
 	template = ~/git/git-commit-template.txt
-	gpgsign = true
+	gpgsign = false
 
 [safe]
 	directory = /home/jovyan/lab
