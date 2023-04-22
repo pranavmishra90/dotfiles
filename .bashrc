@@ -115,3 +115,7 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# Use windows hello for SSH
+
+export SSH_SK_PROVIDER=/usr/lib/winhello.dll

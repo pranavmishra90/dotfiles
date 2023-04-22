@@ -5,6 +5,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+source ~/.common_profile
+
+alias sourcezsh='source ~/.zshrc'
+
 # The following lines were added by compinstall
 
 zstyle ':completion:*' completer _expand _complete _ignored _match _correct _approximate _prefix
