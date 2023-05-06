@@ -56,6 +56,14 @@ alias unrar-find='unrar e -r -o- *.rar ./'
 # Python
 alias python='python3'
 
+# SSH
+#------------------
+# Start SSH Agent
+eval $(ssh-agent -s)
+
+#Add all private keys to the agent
+grep -slR "PRIVATE" ~/.ssh/ | xargs ssh-add
+
 # Git
 #------------------
 ## Start SSH agent
