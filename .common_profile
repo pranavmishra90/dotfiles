@@ -10,24 +10,31 @@ fi
 
 server_name=$(cat ~/.server_name.txt )
 
-# Modify path
-export PATH=~/.local/bin:$PATH
-
 # Join Message
 echo -e "\e[1;31m$server_name\e[0m"
 
 # Set Windows Terminal Tab Name
 echo -ne "\033]0;$server_name\a"
 
+
+# Computer specific
+source ~/.config/shell/computer_specific
+
+# Modify path
+export PATH=~/.local/bin:$PATH
+
 # Aliases
 #-----------------------
 alias path='sed "s/:/\n/g" <<< "$PATH"'
 
-alias editshell='nano ~/.common_profile'
+alias editprofile='nano ~/.common_profile'
+alias editcommon='editprofile'
 
+# Exa
 alias ls="exa --icons --group-directories-first"
 alias ll="exa --icons --group-directories-first -lah"
-alias g="goto"
+
+
 alias grep='grep --color'
 
 # Directories
@@ -83,12 +90,6 @@ done
 
 # GPG
 #------------------
-#GPG_TTY=$(tty)
-#export GPG_TTY
-# above are already in .zshrc
-
-# Restart the GPG-agent
-
 alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
 gpg-connect-agent /bye
 
