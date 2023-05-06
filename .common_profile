@@ -10,6 +10,8 @@ fi
 
 server_name=$(cat ~/.server_name.txt )
 
+# Modify path
+export PATH=~/.local/bin:$PATH
 
 # Join Message
 echo -e "\e[1;31m$server_name\e[0m"
