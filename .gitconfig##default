@@ -9,7 +9,7 @@
 
 [commit]
 	template = /home/pranav/git/git-commit-template.txt
-	gpgsign = false
+	gpgsign = true
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~

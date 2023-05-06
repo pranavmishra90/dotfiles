@@ -1,0 +1,36 @@
+# Synology Blackbox
+
+# Code here will be specific to a given computer / server
+# and will be loaded into the ~/.common_profile by yadm
+# using symlinks
+
+
+# Directories
+alias mishracloud='cd /volume1/docker/MishraCloud'
+alias cd-docker='cd /volume1/docker'
+alias cd-drishti='cd /volume1/docker/Drishti'
+alias plex-media='cd /volume1/Plex-Media'
+alias cd-research='cd /volume1/Pranav/programming/research && ls -lh'
+alias cd-pranav='cd /volume1/Pranav'
+alias cd-programming='cd /volume1/Pranav/programming'
+
+# Scripts
+alias youtube-to-plex='sh /volume1/Scripts/plex-scripts/youtube-to-plex'
+
+# Programs
+alias iperf3-start='docker run  -it --rm --name=iperf3 -p 5201:5201 networkstatic/iperf3 -s'
+alias speedtest-run='python3 /volume1/Scripts/speedtest-cli/speedtest-cli'
+
+alias unrar-find='unrar e -r -o- *.rar ./'
+
+alias m4b-tool='docker run -it --rm -u $(id -u):$(id -g) -v "$(pwd)":/mnt sandreas/m4b-tool:latest'
+
+
+# NGINX
+alias restart-nginx='sudo synoservice --restart nginx'
+alias nginx-ports="sudo netstat -tulpn | grep LISTEN | grep 'nginx'"
+
+# PREPAREDx Ansible Playbook
+
+alias cd-pdx='cd /volume1/Pranav/preparedx/preparedx-ansible'
+alias pdx-ansible='cd-pdx && docker run -it --rm -w /work -v /volume1/Pranav/preparedx/preparedx-ansible:/work -v $HOME/.
