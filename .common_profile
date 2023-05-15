@@ -62,13 +62,12 @@ alias python='python3'
 eval $(ssh-agent -s)
 
 #Add all private keys to the agent
-grep -slR "PRIVATE" ~/.ssh/ | xargs ssh-add
+grep -slR "PRIVATE" ~/.ssh/ | xargs ssh-add -t 1h
+
+alias add-ssh='ssh-add -t 1h ~/.ssh/id_ed25519'
 
 # Git
 #------------------
-## Start SSH agent
-eval $(ssh-agent -s)
-
 alias pre-commit='python3 ~/git/pre-commit/pre-commit-2.20.0.pyz'
 
 alias readme='reporoot && pwd && nano --view README.md'
