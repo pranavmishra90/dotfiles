@@ -2,39 +2,40 @@
 	name = Pranav Kumar Mishra
 	email = 62562712+pranavmishra90@users.noreply.github.com
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP0E0I/3nKExauEnELCjqszl4UwKJiGfhb421nUWxn1u Pranav_Kumar_Mishra-@pranavmishra90
+
 [core]
 	editor = nano
+	
 [init]
 	defaultBranch = main
 
 [commit]
-	template = /home/pranav/git/git-commit-template.txt
-	gpgsign = true
-[alias]
-	last = log -1 HEAD
-	undo-commit = reset HEAD~
-[gpg]
-	program = /usr/bin/gpg
+	template = ~/git/git-commit-template.txt
+	gpgsign = false
 
-[credential "https://gitea.mishracloud.com"]
-	helper = /usr/local/share/gcm-core/git-credential-manager-core
-	credentialStore = gpg
-	provider = generic
+[push]
+	autoSetupRemote = true
+
 
 [gcrypt]
 	rsync-put-flags = chrv
 	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
 
-[safe]
-	directory = /mnt/c/Programming/server-setup
-	directory = /mnt/c/Programming/server-startup
-	directory = /home/jovyan/lab
+[credential "https://gitea.mishracloud.com"]
+	provider = generic
+
+[gpg]
+	program = /bin/gpg
+
+[gpg "ssh"]
+	allowedSignersFile = /home/pranav/.ssh/allowed_signers
+
+[log]
+	showSignature = true
 
 [help]
 	autocorrect = 20
-[gpg]
-	format = ssh
-[gpg "ssh"]
-	allowedSignersFile = /home/pranav/.ssh/allowed_signers
-[log]
-	showSignature = true
+
+[alias]
+	last = log -1 HEAD
+	undo-commit = reset HEAD~
