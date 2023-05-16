@@ -115,18 +115,18 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-. "$HOME/.cargo/env"
+
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/pranav/mambaforge/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('~/mambaforge/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/pranav/mambaforge/etc/profile.d/conda.sh" ]; then
-        . "/home/pranav/mambaforge/etc/profile.d/conda.sh"
+    if [ -f "~/mambaforge/etc/profile.d/conda.sh" ]; then
+        . "~/mambaforge/etc/profile.d/conda.sh"
     else
-        export PATH="/home/pranav/mambaforge/bin:$PATH"
+        export PATH="~/mambaforge/bin:$PATH"
     fi
 fi
 unset __conda_setup
