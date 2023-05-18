@@ -10,6 +10,7 @@ function color_my_prompt {
 
 color_my_prompt
 
+source ~/.common_profile
 
 #Bash Profile edits
 
