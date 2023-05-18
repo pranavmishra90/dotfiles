@@ -59,6 +59,11 @@ alias unrar-find='unrar e -r -o- *.rar ./'
 # Python
 alias python='python3'
 
+# Ansible
+
+alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/id_ed25519:/root/.ssh/id_ed25519:ro --entrypoint=/bin/sh docker.io/devture/ansible:2.13.6-r0-3"
+
+
 # SSH
 #------------------
 # Start SSH Agent
