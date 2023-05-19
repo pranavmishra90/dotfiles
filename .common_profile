@@ -42,7 +42,7 @@ alias cd-programming='cd /mnt/c/Programming/'
 
 
 # Docker
-alias dockerup='docker-compose up -d --remove-orphans && docker-compose ps && dtop'
+alias dockerup='docker compose up -d --remove-orphans && docker-compose ps && dtop'
 alias dtop='docker ps -q | xargs  docker stats --no-stream'
 alias logd='docker logs -tf --tail="200"'
 
@@ -70,7 +70,7 @@ alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/i
 eval $(ssh-agent -s)
 
 #Add all private keys to the agent
-grep -slR "PRIVATE" ~/.ssh/ | xargs ssh-add -t 1h
+#grep -slR "PRIVATE" ~/.ssh/ | xargs ssh-add -t 1h
 
 alias add-ssh='ssh-add -t 1h ~/.ssh/id_ed25519'
 
