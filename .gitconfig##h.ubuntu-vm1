@@ -25,7 +25,7 @@
 	provider = generic
 
 [gpg]
-	program = /bin/gpg
+	program = /home/pranav/mambaforge/bin/gpg
 
 [gpg "ssh"]
 	allowedSignersFile = /home/pranav/.ssh/allowed_signers

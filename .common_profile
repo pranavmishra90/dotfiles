@@ -42,7 +42,7 @@ alias cd-programming='cd /mnt/c/Programming/'
 
 
 # Docker
-alias dockerup='docker compose up -d --remove-orphans && docker-compose ps && dtop'
+alias dockerup='docker compose up -d --remove-orphans && docker compose ps && dtop'
 alias dtop='docker ps -q | xargs  docker stats --no-stream'
 alias logd='docker logs -tf --tail="200"'
 
