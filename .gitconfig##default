@@ -11,7 +11,7 @@
 
 [commit]
 	template = ~/git/git-commit-template.txt
-	gpgsign = false
+	gpgsign = true
 
 [push]
 	autoSetupRemote = true
@@ -26,6 +26,7 @@
 
 [gpg]
 	program = /bin/gpg
+	format = ssh
 
 [gpg "ssh"]
 	allowedSignersFile = /home/pranav/.ssh/allowed_signers
@@ -39,3 +40,7 @@
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
+[merge]
+	verifySignatures = true
+[tag]
+	gpgsign = true

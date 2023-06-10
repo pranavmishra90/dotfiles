@@ -70,9 +70,9 @@ alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/i
 eval $(ssh-agent -s)
 
 #Add all private keys to the agent
-#grep -slR "PRIVATE" ~/.ssh/ | xargs ssh-add -t 1h
+grep -slR "PRIVATE" ~/.ssh/ | xargs ssh-add -t 12h
 
-alias add-ssh='ssh-add -t 1h ~/.ssh/id_ed25519'
+alias add-ssh='ssh-add -t 12h ~/.ssh/id_ed25519'
 
 # Git
 #------------------

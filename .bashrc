@@ -116,7 +116,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/home/pranav/mambaforge/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
@@ -135,3 +134,4 @@ if [ -f "/home/pranav/mambaforge/etc/profile.d/mamba.sh" ]; then
     . "/home/pranav/mambaforge/etc/profile.d/mamba.sh"
 fi
 # <<< conda initialize <<<
+
