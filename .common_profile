@@ -32,7 +32,7 @@ alias editcommon='editprofile'
 
 # Exa
 alias ls="exa --icons --group-directories-first"
-alias ll="exa --icons --group-directories-first -lahg"
+alias ll="exa -lah --icons --group-directories-first --long --header --git --group"
 
 
 alias grep='grep --color'
@@ -70,7 +70,7 @@ alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/i
 eval $(ssh-agent -s)
 
 #Add all private keys to the agent
-# grep -slR "PRIVATE" ~/.ssh/ | xargs ssh-add -t 12h
+ssh-add -t 12h  ~/.ssh/id_ed25519
 
 alias add-ssh='ssh-add -t 12h ~/.ssh/id_ed25519'
 
@@ -106,7 +106,6 @@ done
 # GPG
 #------------------
 alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
-gpg-connect-agent /bye
 
 alias gpg-start='echo "Starting GPG" | gpg --clearsign'
 
