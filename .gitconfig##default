@@ -16,6 +16,8 @@
 [push]
 	autoSetupRemote = true
 
+[checkout]
+	defaultRemote=origin
 
 [gcrypt]
 	rsync-put-flags = chrv
