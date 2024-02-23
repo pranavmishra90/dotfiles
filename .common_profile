@@ -23,6 +23,9 @@ source ~/.config/shell/computer_specific
 # Modify path
 export PATH=~/.local/bin:$PATH
 
+# Load secrets
+source ~/.shell_secrets
+
 # Aliases
 #-----------------------
 alias path='sed "s/:/\n/g" <<< "$PATH"'
