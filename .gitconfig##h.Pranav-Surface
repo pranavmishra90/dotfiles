@@ -5,17 +5,16 @@
 
 [core]
 	editor = nano
-	
+
 [init]
 	defaultBranch = main
 
 [commit]
 	template = ~/git/git-commit-template.txt
-	gpgsign = false
+	gpgsign = true
 
 [push]
 	autoSetupRemote = true
-
 
 [gcrypt]
 	rsync-put-flags = chrv
@@ -26,6 +25,7 @@
 
 [gpg]
 	program = /bin/gpg
+	format = ssh
 
 [gpg "ssh"]
 	allowedSignersFile = /home/pranav/.ssh/allowed_signers
@@ -43,3 +43,6 @@
 [credential]
 	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager-core.exe
 
+[datalad "ui"]
+	progressbar = tqdm
+	suppress-similar-results = False
