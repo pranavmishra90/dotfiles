@@ -1,1 +1,1 @@
-.bashrc##default
+.bashrc##h.drpm
