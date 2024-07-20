@@ -10,7 +10,7 @@
 	defaultBranch = main
 
 [commit]
-	template = ~/git/git-commit-template.txt
+	template = /var/services/homes/mishraadmin/git/git-commit-template.txt
 	gpgsign = true
 
 [merge]
