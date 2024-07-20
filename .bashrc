@@ -1,1 +1,1 @@
-.bashrc##h.Blackbox
+.bashrc##default
