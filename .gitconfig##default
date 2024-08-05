@@ -49,6 +49,7 @@
 	gpgsign = true
 [credential]
 	helper = cache
+	credentialStore = gpg
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -58,3 +59,5 @@
 
 [datalad "ui"]
 	suppress-similar-results = off
+[branch]
+	autoSetupMerge = always
