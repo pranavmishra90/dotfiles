@@ -43,3 +43,4 @@ fi
 # Copyright © 2022 Pranav Kumar Mishra     #
 ############################################
 source ~/powerlevel10k/powerlevel10k.zsh-theme
+source ~/powerlevel10k/powerlevel10k.zsh-theme
