@@ -51,3 +51,5 @@ if [ -f "/home/pranav/miniforge3/etc/profile.d/mamba.sh" ]; then
     . "/home/pranav/miniforge3/etc/profile.d/mamba.sh"
 fi
 # <<< conda initialize <<<
+
+eval "$(zoxide init bash)"

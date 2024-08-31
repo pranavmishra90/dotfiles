@@ -23,9 +23,6 @@
 	rsync-put-flags = chrv
 	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
 
-[credential "https://gitea.mishracloud.com"]
-	provider = generic
-
 [gpg]
 	program = /bin/gpg
 	format = ssh
@@ -47,14 +44,20 @@
 	verifySignatures = false
 [tag]
 	gpgsign = true
+
+
 [credential]
-	helper = cache
+    helper = cache --timeout=3600
+    credentialStore = gpg
+
+[credential "https://gitea.mishracloud.com"]
+    provider = pass
+
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-
 [datalad "ui"]
 	suppress-similar-results = off

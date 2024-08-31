@@ -10,6 +10,10 @@ fi
 
 server_name=$(cat ~/.server_name.txt )
 
+
+
+alias yt-dlp="docker run --rm tnk4on/yt-dlp"
+
 # Join Message
 echo -e "\e[1;31m$server_name\e[0m"
 
@@ -40,12 +44,18 @@ alias ll="eza -lah --icons --group-directories-first --long --header --git --gro
 
 alias grep='grep --color'
 
+function cls {
+    clear && printf '\033c'
+}
+
+
+
 # Directories
 alias cd-programming='cd /mnt/c/Programming/'
 
 
 # Docker
-alias dockerup='docker-compose up -d --remove-orphans && docker-compose ps && dtop'
+alias dockerup='docker compose up -d --remove-orphans && docker compose ps && dtop'
 alias dtop='docker ps -q | xargs  docker stats --no-stream'
 alias logd='docker logs -tf --tail="200"'
 
@@ -65,6 +75,12 @@ alias python='python3'
 # Ansible
 
 alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/id_ed25519:/root/.ssh/id_ed25519:ro --entrypoint=/bin/sh docker.io/devture/ansible:2.13.6-r0-3"
+
+# Development
+
+alias semvar='semantic-release'
+
+
 
 
 # SSH

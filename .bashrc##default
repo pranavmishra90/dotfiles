@@ -114,19 +114,40 @@ fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/pranav/mambaforge/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('/opt/conda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/pranav/mambaforge/etc/profile.d/conda.sh" ]; then
-        . "/home/pranav/mambaforge/etc/profile.d/conda.sh"
+    if [ -f "/opt/conda/etc/profile.d/conda.sh" ]; then
+        . "/opt/conda/etc/profile.d/conda.sh"
     else
-        export PATH="/home/pranav/mambaforge/bin:$PATH"
+        export PATH="/opt/conda/bin:$PATH"
     fi
 fi
 unset __conda_setup
 
-if [ -f "/home/pranav/mambaforge/etc/profile.d/mamba.sh" ]; then
-    . "/home/pranav/mambaforge/etc/profile.d/mamba.sh"
+if [ -f "/opt/conda/etc/profile.d/mamba.sh" ]; then
+    . "/opt/conda/etc/profile.d/mamba.sh"
 fi
 # <<< conda initialize <<<
+
+export PATH="/usr/local/texlive/2024/bin/x86_64-linux:$PATH"
+
+export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+
+eval "$(zoxide init bash)"
+
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'mamba init' !!
+export MAMBA_EXE='/usr/bin/micromamba';
+export MAMBA_ROOT_PREFIX='/home/coder/micromamba';
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    alias micromamba="$MAMBA_EXE"  # Fallback on help from mamba activate
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
+. "$HOME/.cargo/env"
+source ~/.bash_completion/alacritty
