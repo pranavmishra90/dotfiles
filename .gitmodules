@@ -1,0 +1,4 @@
+[submodule "yadm"]
+	path = yadm
+	url = ./yadm
+	datalad-id = dd485de4-daed-4351-92e9-ef26452a5a15
