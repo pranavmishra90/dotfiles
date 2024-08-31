@@ -33,4 +33,3 @@ alias nginx-ports="sudo netstat -tulpn | grep LISTEN | grep 'nginx'"
 # PREPAREDx Ansible Playbook
 
 alias cd-pdx='cd /volume1/Pranav/preparedx/preparedx-ansible'
-alias pdx-ansible='cd-pdx && docker run -it --rm -w /work -v /volume1/Pranav/preparedx/preparedx-ansible:/work -v $HOME/.

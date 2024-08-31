@@ -5,13 +5,19 @@
 
 [core]
 	editor = nano
-	
+
 [init]
 	defaultBranch = main
 
 [commit]
-	template = ~/git/git-commit-template.txt
-	gpgsign = false
+	template = /var/services/homes/mishraadmin/git/git-commit-template.txt
+	gpgsign = true
+
+[merge]
+	verifySignatures = false
+	gpgsign = true
+[tag]
+	gpgsign = true
 
 [gcrypt]
 	rsync-put-flags = chrv
@@ -22,9 +28,10 @@
 
 [gpg]
 	program = /bin/gpg
+	format = ssh
 
 [gpg "ssh"]
-	allowedSignersFile = /home/pranav/.ssh/allowed_signers
+	allowedSignersFile = /var/services/homes/mishraadmin/.ssh/allowed_signers
 
 [log]
 	showSignature = true

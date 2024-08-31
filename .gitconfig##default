@@ -5,17 +5,19 @@
 
 [core]
 	editor = nano
-	
+
 [init]
 	defaultBranch = main
 
 [commit]
 	template = ~/git/git-commit-template.txt
-	gpgsign = false
+	gpgsign = true
 
 [push]
 	autoSetupRemote = true
 
+[checkout]
+	defaultRemote=origin
 
 [gcrypt]
 	rsync-put-flags = chrv
@@ -26,6 +28,7 @@
 
 [gpg]
 	program = /bin/gpg
+	format = ssh
 
 [gpg "ssh"]
 	allowedSignersFile = /home/pranav/.ssh/allowed_signers
@@ -39,3 +42,19 @@
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
+	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
+[merge]
+	verifySignatures = false
+[tag]
+	gpgsign = true
+[credential]
+	helper = cache
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[datalad "ui"]
+	suppress-similar-results = off
