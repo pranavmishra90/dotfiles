@@ -10,7 +10,7 @@
 	defaultBranch = main
 
 [commit]
-	template = ~/git/git-commit-template.txt
+	template = /var/services/homes/mishraadmin/git/git-commit-template.txt
 	gpgsign = true
 
 [merge]
@@ -42,5 +42,3 @@
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
-[safe]
-	directory = /volume1/Pranav/programming/matrix-docker-ansible-deploy

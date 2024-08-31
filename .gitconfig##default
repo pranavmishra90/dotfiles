@@ -1,8 +1,8 @@
 [user]
 	name = Pranav Kumar Mishra
 	email = 62562712+pranavmishra90@users.noreply.github.com
-	signingkey = ~/.ssh/id_ed25519.pub
-	#signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDWKiAKIWUAAamY9AjUUCCE6yisHJpUowmpqhh9dJmQ Automated_Signature-Pranav_Mishra
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP0E0I/3nKExauEnELCjqszl4UwKJiGfhb421nUWxn1u Pranav_Kumar_Mishra-@pranavmishra90
+
 [core]
 	editor = nano
 
