@@ -1,4 +1,4 @@
-# .bashrc
+# This is the bashrc file at .bashrc##h.pminformatics
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then

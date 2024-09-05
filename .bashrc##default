@@ -114,6 +114,7 @@ fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
+<<<<<<< HEAD
 __conda_setup="$('/opt/conda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
@@ -122,10 +123,21 @@ else
         . "/opt/conda/etc/profile.d/conda.sh"
     else
         export PATH="/opt/conda/bin:$PATH"
+=======
+__conda_setup="$('/home/pranav/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/pranav/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/pranav/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/pranav/miniforge3/bin:$PATH"
+>>>>>>> 0a7c7cb (New branch for rhel-rush on PVE)
     fi
 fi
 unset __conda_setup
 
+<<<<<<< HEAD
 if [ -f "/opt/conda/etc/profile.d/mamba.sh" ]; then
     . "/opt/conda/etc/profile.d/mamba.sh"
 fi
@@ -151,3 +163,8 @@ unset __mamba_setup
 # <<< mamba initialize <<<
 . "$HOME/.cargo/env"
 source ~/.bash_completion/alacritty
+if [ -f "/home/pranav/miniforge3/etc/profile.d/mamba.sh" ]; then
+    . "/home/pranav/miniforge3/etc/profile.d/mamba.sh"
+fi
+# <<< conda initialize <<<
+

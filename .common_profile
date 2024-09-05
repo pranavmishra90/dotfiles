@@ -86,11 +86,7 @@ alias semvar='semantic-release'
 
 # SSH
 #------------------
-# Start SSH Agent
-#eval $(ssh-agent -s)
-
-# SSH_AUTH_SOCK="$HOME/.ssh-agent.socket"
-
+# Start SSH Agent, if it isn't already started
 [ -z "$SSH_AGENT_PID" ] &&
 export SSH_AGENT_PID=$(ps ux | grep -w ssh-agent | grep -vwE 'defunct|grep' | grep -wm1 "$SSH_AUTH_SOCK" | awk '{print $2}')
 
@@ -98,8 +94,6 @@ export SSH_AGENT_PID=$(ps ux | grep -w ssh-agent | grep -vwE 'defunct|grep' | gr
 export SSH_AUTH_SOCK=$( (ps "$SSH_AGENT_PID" | grep -w -- '-a' | sed "s/.* -a //;s/ .*//" | grep -- /) || (find /tmp/ssh-* -name \*$(($SSH_AGENT_PID-1)) -o -name \*$(($SSH_AGENT_PID-2)) -type s 2> /dev/null) )
 
 ( [ -z "$SSH_AGENT_PID" ] || [ -z "$SSH_AUTH_SOCK" ] ) &&
-eval $(ssh-agent $([ -n "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK" && echo -n "-a $SSH_AUTH_SOCK") -s) 1> /dev/null
-
 
 #Add all private keys to the agent
 #ssh-add -t 12h  ~/.ssh/id_ed25519
@@ -113,7 +107,7 @@ alias pre-commit='python3 ~/git/pre-commit/pre-commit-2.20.0.pyz'
 alias readme='reporoot && pwd && nano --view README.md'
 
 alias gitgraph='git log --oneline --graph --decorate --all'
-alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3'
+alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3 --abbrev-commit'
 
 function gitpush() {
 	git push $1 $2

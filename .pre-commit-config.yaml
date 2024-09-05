@@ -1,0 +1,30 @@
+repos:
+
+  # PRE-COMMIT
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      # Lint files
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+        exclude: |
+            (?x)^(
+                .devcontainer/devcontainer.json|
+                exclude.this.file
+            )$
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      # Prevent adding private keys in files
+      - id: detect-private-key
+      # Detect problematic files
+      - id: check-symlinks
+      - id: check-added-large-files
+
+
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.23
+    hooks:
+      - id: markdown-link-check
