@@ -15,6 +15,17 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 export GPG_TTY=$(tty)
 eval "$(zoxide init zsh)"
 
+
+
+# Key bindings
+#-----------------------
+# Move to the beginning of the line
+bindkey '^[[1~' beginning-of-line
+
+# Move to the end of the line
+bindkey '^[[4~' end-of-line
+
+
 # PATH
 #-----------------------
 export PATH=$PATH:$HOME/.local/bin:$HOME/.local/lib/python3.8/
@@ -45,3 +56,19 @@ fi
 #                                          #
 # Copyright © 2022 Pranav Kumar Mishra     #
 ############################################
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/pranav/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/pranav/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/pranav/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/pranav/miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+

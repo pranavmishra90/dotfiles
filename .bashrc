@@ -1,1 +1,1 @@
-.bashrc##h.rhel-rush
+.bashrc##h.pminformatics

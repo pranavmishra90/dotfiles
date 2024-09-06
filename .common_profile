@@ -10,7 +10,7 @@ fi
 
 server_name=$(cat ~/.server_name.txt )
 
-
+export EDITOR='nano'
 
 alias yt-dlp="docker run --rm tnk4on/yt-dlp"
 
@@ -81,24 +81,22 @@ alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/i
 
 alias semvar='semantic-release'
 
+alias semvar-print='semantic-release -v --noop version'
 
 
 
 # SSH
 #------------------
-# Start SSH Agent, if it isn't already started
-[ -z "$SSH_AGENT_PID" ] &&
-export SSH_AGENT_PID=$(ps ux | grep -w ssh-agent | grep -vwE 'defunct|grep' | grep -wm1 "$SSH_AUTH_SOCK" | awk '{print $2}')
+# Start SSH Agent
+#eval $(ssh-agent -s)
 
-[ -n "$SSH_AGENT_PID" ] && [ -z "$SSH_AUTH_SOCK" ] &&
-export SSH_AUTH_SOCK=$( (ps "$SSH_AGENT_PID" | grep -w -- '-a' | sed "s/.* -a //;s/ .*//" | grep -- /) || (find /tmp/ssh-* -name \*$(($SSH_AGENT_PID-1)) -o -name \*$(($SSH_AGENT_PID-2)) -type s 2> /dev/null) )
-
-( [ -z "$SSH_AGENT_PID" ] || [ -z "$SSH_AUTH_SOCK" ] ) &&
+source ~/yadm/scripts/check_and_run_keychain.sh
 
 #Add all private keys to the agent
 #ssh-add -t 12h  ~/.ssh/id_ed25519
 
 alias add-ssh='ssh-add -t 12h ~/.ssh/id_ed25519'
+
 
 # Git
 #------------------
