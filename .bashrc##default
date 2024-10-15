@@ -57,7 +57,18 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    # Bash Formatting
+    function color_my_prompt {
+        local __user_and_host="\[\033[00;37m\]\u\[\033[01;32m\]@\h"
+        local __cur_location="\[\033[01;34m\]\W"
+        local __git_branch_color="\[\033[31m\]"
+        #local __git_branch="\`ruby -e \"print (%x{git branch 2> /dev/null}.grep(/^\*/).first || '').gsub(/^\* (.+)$/, '(\1) ')\"\`"
+        local __git_branch='`git branch 2> /dev/null | grep -e ^* | sed -E  s/^\\\\\*\ \(.+\)$/\(\\\\\1\)\ /`'
+        local __last_color="\[\033[00m\]:"
+        export PS1="$__user_and_host $__cur_location $__git_branch_color$__git_branch$__prompt_tail$__last_color "
+    }
+
+    color_my_prompt
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -114,7 +125,6 @@ fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-<<<<<<< HEAD
 __conda_setup="$('/opt/conda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
@@ -123,31 +133,10 @@ else
         . "/opt/conda/etc/profile.d/conda.sh"
     else
         export PATH="/opt/conda/bin:$PATH"
-=======
-__conda_setup="$('/home/pranav/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/pranav/miniforge3/etc/profile.d/conda.sh" ]; then
-        . "/home/pranav/miniforge3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/pranav/miniforge3/bin:$PATH"
->>>>>>> 0a7c7cb (New branch for rhel-rush on PVE)
     fi
 fi
 unset __conda_setup
-
-<<<<<<< HEAD
-if [ -f "/opt/conda/etc/profile.d/mamba.sh" ]; then
-    . "/opt/conda/etc/profile.d/mamba.sh"
-fi
 # <<< conda initialize <<<
-
-export PATH="/usr/local/texlive/2024/bin/x86_64-linux:$PATH"
-
-export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
-
-eval "$(zoxide init bash)"
 
 # >>> mamba initialize >>>
 # !! Contents within this block are managed by 'mamba init' !!
@@ -166,5 +155,10 @@ source ~/.bash_completion/alacritty
 if [ -f "/home/pranav/miniforge3/etc/profile.d/mamba.sh" ]; then
     . "/home/pranav/miniforge3/etc/profile.d/mamba.sh"
 fi
-# <<< conda initialize <<<
 
+
+export PATH="/usr/local/texlive/2024/bin/x86_64-linux:$PATH"
+
+export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+
+eval "$(zoxide init bash)"
