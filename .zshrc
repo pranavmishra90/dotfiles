@@ -9,8 +9,22 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 ####################################################################################
 export GPG_TTY=$(tty)
+eval "$(zoxide init zsh)"
+
+
+
+# Key bindings
+#-----------------------
+# Move to the beginning of the line
+bindkey '^[[1~' beginning-of-line
+
+# Move to the end of the line
+bindkey '^[[4~' end-of-line
+
 
 # PATH
 #-----------------------
@@ -42,4 +56,19 @@ fi
 #                                          #
 # Copyright © 2022 Pranav Kumar Mishra     #
 ############################################
-source ~/powerlevel10k/powerlevel10k.zsh-theme
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/pranav/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/pranav/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/pranav/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/pranav/miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
