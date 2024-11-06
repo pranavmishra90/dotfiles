@@ -1,8 +1,10 @@
+# This is the Git Config at .gitconfig##default
+
 [user]
 	name = Pranav Kumar Mishra
 	email = 62562712+pranavmishra90@users.noreply.github.com
-	signingkey = /home/pranav/.ssh/id_ed25519.pub
-	#signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDWKiAKIWUAAamY9AjUUCCE6yisHJpUowmpqhh9dJmQ Automated_Signature-Pranav_Mishra
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP0E0I/3nKExauEnELCjqszl4UwKJiGfhb421nUWxn1u Pranav_Kumar_Mishra-@pranavmishra90
+
 [core]
 	editor = nano
 
@@ -22,9 +24,6 @@
 [gcrypt]
 	rsync-put-flags = chrv
 	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
-
-[credential "https://gitea.mishracloud.com"]
-	provider = generic
 
 [gpg]
 	program = /bin/gpg
@@ -47,14 +46,20 @@
 	verifySignatures = false
 [tag]
 	gpgsign = true
+
+
 [credential]
-	helper = cache
+    helper = cache --timeout=3600
+    credentialStore = gpg
+
+[credential "https://gitea.mishracloud.com"]
+    provider = pass
+
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-
 [datalad "ui"]
 	suppress-similar-results = off

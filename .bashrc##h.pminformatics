@@ -1,4 +1,6 @@
-# .bashrc
+# This is the bashrc file at .bashrc##h.pminformatics
+# Only run the following for interactive shells
+[ -z "$PS1" ] && return
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
@@ -11,6 +13,14 @@ then
     PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 export PATH
+
+
+
+# Adding CUDA to PATH
+export CUDA_HOME=/usr/local/cuda
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
 
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
@@ -29,8 +39,6 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 
-
-
 unset rc
 
 # >>> conda initialize >>>
@@ -46,8 +54,6 @@ else
     fi
 fi
 unset __conda_setup
-
-if [ -f "/home/pranav/miniforge3/etc/profile.d/mamba.sh" ]; then
-    . "/home/pranav/miniforge3/etc/profile.d/mamba.sh"
-fi
 # <<< conda initialize <<<
+
+eval "$(zoxide init bash)"

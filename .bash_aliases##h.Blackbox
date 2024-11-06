@@ -1,3 +1,5 @@
+# This is the bash_aliases file at .bash_aliases##h.blackbox
+
 # Bash Formatting
 function color_my_prompt {
     local __user_and_host="\[\033[01;32m\]\u:"

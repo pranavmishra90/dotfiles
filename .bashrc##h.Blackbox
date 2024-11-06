@@ -1,3 +1,5 @@
+# This is the bashrc file at .bashrc##h.Blackbox
+
 #Set the computer name here
 eval server_name="Blackbox"
 export GPG_TTY=$(tty)
