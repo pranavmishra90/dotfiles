@@ -7,5 +7,3 @@ sudo apt-get update && sudo apt-get install yadm
 
 yadm clone git@github.com:pranavmishra90/dotfiles.git
 ````
-
-Added: submodules which can be loaded using `yadm bootstrap`
