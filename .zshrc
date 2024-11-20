@@ -12,51 +12,8 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 ####################################################################################
-export GPG_TTY=$(tty)
-eval "$(zoxide init zsh)"
 
-
-
-# Key bindings
-#-----------------------
-# Move to the beginning of the line
-bindkey '^[[1~' beginning-of-line
-
-# Move to the end of the line
-bindkey '^[[4~' end-of-line
-
-
-# PATH
-#-----------------------
-export PATH=$PATH:$HOME/.local/bin:$HOME/.local/lib/python3.8/
-
-
-alias sourcezsh='source ~/.zshrc'
-alias editzsh='nano ~/.zshrc'
-
-
-source ~/.common_profile
-
-
-# SSH-Agent
-# ---------------
-if [ -z "$SSH_AUTH_SOCK" ]; then
-   # Check for a currently running instance of the agent
-   RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
-   if [ "$RUNNING_AGENT" = "0" ]; then
-        # Launch a new instance of the agent
-        ssh-agent -s &> $HOME/.ssh/ssh-agent
-   fi
-   eval `cat $HOME/.ssh/ssh-agent`
-fi
-
-
-############################################
-# MIT License                              #
-#                                          #
-# Copyright © 2022 Pranav Kumar Mishra     #
-############################################
-
+# Miniconda
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/home/pranav/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -71,4 +28,37 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+
+
+
+
+export GPG_TTY=$(tty)
+eval "$(zoxide init zsh)"
+
+
+
+# Key bindings
+#-----------------------
+# Bind keys for Home, End, and Delete
+bindkey "^[[H" beginning-of-line    # Home key
+bindkey "^[[F" end-of-line          # End key
+bindkey "^[[3~" delete-char         # Delete key
+
+# PATH
+#-----------------------
+export PATH=$PATH:$HOME/.local/bin:$HOME/.local/lib/python3.8/
+
+
+alias sourcezsh='source ~/.zshrc'
+alias editzsh='nano ~/.zshrc'
+
+
+source ~/.common_profile
+
+
+#################################################
+# MIT License                                   #
+#                                               #
+# Copyright © 2022-2024 Pranav Kumar Mishra     #
+#################################################
 
