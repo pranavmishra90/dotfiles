@@ -12,7 +12,7 @@ server_name=$(cat ~/.server_name.txt )
 
 export EDITOR='nano'
 
-alias yt-dlp="docker run --rm tnk4on/yt-dlp"
+#alias yt-dlp="docker run --rm tnk4on/yt-dlp"
 
 # Join Message
 echo -e "\e[1;31m$server_name\e[0m"
@@ -30,6 +30,11 @@ export PATH=~/.local/bin:$PATH
 # Load secrets
 source ~/.shell_secrets
 
+
+
+# Zoxide
+eval "$(zoxide init bash)"
+
 # Aliases
 #-----------------------
 alias path='sed "s/:/\n/g" <<< "$PATH"'
@@ -41,6 +46,7 @@ alias editcommon='editprofile'
 alias ls="eza --icons --group-directories-first"
 alias ll="eza -lah --icons --group-directories-first --long --header --git --group"
 
+# Browsing
 
 alias grep='grep --color'
 
@@ -48,7 +54,8 @@ function cls {
     clear && printf '\033c'
 }
 
-
+# Poetry
+alias env-poetry='poetry env use $(pyenv which python) && poetry env info'
 
 # Directories
 alias cd-programming='cd /mnt/c/Programming/'
@@ -64,6 +71,17 @@ function entercontainer() {
 	docker exec -it $1 zsh
 }
 
+function dnode(){
+        local input_command="$1"
+
+        if [[ $input_command == 'labels' ]]; then
+                docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
+        fi
+
+        bash ~/yadm/scripts/docker-node-labels.sh
+}
+
+
 
 alias ctop='docker run --rm -ti  --volume /var/run/docker.sock:/var/run/docker.sock:ro  quay.io/vektorlab/ctop:latest'
 
@@ -71,7 +89,7 @@ alias ctop='docker run --rm -ti  --volume /var/run/docker.sock:/var/run/docker.s
 alias unrar-find='unrar e -r -o- *.rar ./'
 
 # Python
-alias python='python3'
+#alias python='python3'
 
 # Ansible
 
@@ -83,7 +101,7 @@ alias semvar='semantic-release'
 
 alias semvar-print='semantic-release -v --noop version'
 
-
+alias act='gh act'
 
 # SSH
 #------------------
@@ -95,22 +113,61 @@ source ~/yadm/scripts/check_and_run_keychain.sh
 #Add all private keys to the agent
 #ssh-add -t 12h  ~/.ssh/id_ed25519
 
-alias add-ssh='ssh-add -t 12h ~/.ssh/id_ed25519'
+alias add-ssh='ssh-add -t 48h ~/.ssh/id_ed25519'
 
 
 # Git
 #------------------
-alias pre-commit='python3 ~/git/pre-commit/pre-commit-2.20.0.pyz'
+alias pre-commit='python3 ~/git/pre-commit/pre-commit.pyz'
 
 alias readme='reporoot && pwd && nano --view README.md'
 
-alias gitgraph='git log --oneline --graph --decorate --all'
+alias gitgraph="git -c log.showSignature=false log --oneline --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit"
 alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3 --abbrev-commit'
 
 function gitpush() {
 	git push $1 $2
 	git log --decorate --all --show-pulls --show-signature --max-count 1
 }
+
+function gitcleantags() {
+    local TAGS
+    TAGS=$(git tag -l "*-main*" "*-rc*")
+
+    if [ -z "$TAGS" ]; then
+        echo "No tags matching '*-main*' or '*-rc*' found."
+        return
+    fi
+
+    echo "The following tags match '*-main*' or '*-rc*':"
+    echo "$TAGS"
+    echo -n "Delete these tags locally? [y/N]: "
+    read -r CONFIRM_LOCAL
+
+    if [[ "$CONFIRM_LOCAL" =~ ^[Yy]$ ]]; then
+        echo "$TAGS" | xargs -n 1 git tag -d
+    else
+        echo "Skipped local deletion."
+    fi
+
+    echo -n "Also delete these tags from 'origin'? [y/N]: "
+    read -r CONFIRM_ORIGIN
+
+    if [[ "$CONFIRM_ORIGIN" =~ ^[Yy]$ ]]; then
+        echo "$TAGS" | xargs -n 1 -I {} git push origin :refs/tags/{}
+        if git remote | grep -q "^warehouse$"; then
+            echo "Deleting tags from 'warehouse' as well..."
+            echo "$TAGS" | xargs -n 1 -I {} git push warehouse :refs/tags/{}
+        fi
+    else
+        echo "Skipped remote deletion."
+    fi
+}
+# Datalad
+#-------------------
+#source <(datalad shell-completion)
+
+alias dl-push="datalad push --to warehouse && datalad push --to origin"
 
 #----------------------------------------------------------
 # Copyright 2009 Daniel Jackoway
@@ -125,6 +182,19 @@ do
 done
 }
 #----------------------------------------------------------
+
+# Tmux / Tmuxinator
+#------------------
+#function ktr() {
+#    read -p "Do you want to kill the tmux session? [y/n] " choice
+#    [[ "$choice" == "y" ]] && tmux kill-session
+#}
+
+function ktr() {
+    printf "Do you want to kill the tmux session? [y/n] "
+    read choice
+    [[ "$choice" == "y" ]] && tmux kill-session
+}
 
 
 # GPG

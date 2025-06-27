@@ -29,9 +29,6 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-
-
-
 export GPG_TTY=$(tty)
 eval "$(zoxide init zsh)"
 
@@ -40,14 +37,32 @@ eval "$(zoxide init zsh)"
 # Key bindings
 #-----------------------
 # Bind keys for Home, End, and Delete
-bindkey "^[[H" beginning-of-line    # Home key
-bindkey "^[[F" end-of-line          # End key
-bindkey "^[[3~" delete-char         # Delete key
+
+bindkey "^[[H" beginning-of-line    # Home key goes to the beginning of the line
+bindkey "^[[F" end-of-line          # End key goes to the end of the line
+
+# Compatibility (alternates)
+bindkey "^[[1~" beginning-of-line    # Home key goes to the beginning of the line
+bindkey "^[[4~" end-of-line          # End key goes to the end of the line
+bindkey "^[[3~" delete-char         # Delete key deletes the character under the cursor
+bindkey "^[[5~" history-beginning-search-backward # Page Up
+bindkey "^[[6~" history-beginning-search-forward  # Page Down
+
+# Git
+#----------------------
+fpath=($HOME/.zsh /usr/share/zsh/site-functions $fpath)
+
+autoload -Uz compinit
+compinit
+
+
+# Autocompletion
+#----------------------
+#source ~/yadm/zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
 # PATH
 #-----------------------
-export PATH=$PATH:$HOME/.local/bin:$HOME/.local/lib/python3.8/
-
+export PATH=$PATH:$HOME/.local/bin
 
 alias sourcezsh='source ~/.zshrc'
 alias editzsh='nano ~/.zshrc'
