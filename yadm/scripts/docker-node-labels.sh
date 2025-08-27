@@ -66,3 +66,9 @@ echo "-------------------------------------"
 echo ""
 # cleanup
 rm nodes.json
+
+echo "You can filter the nodes by label with the command:"
+echo "docker node ls --filter node.label=LABELNAME=VALUE"
+echo "(e.g. docker node ls --filter node.label=swarmrole=worker)"
+echo ""
+echo ""
