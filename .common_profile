@@ -25,15 +25,27 @@ echo -ne "\033]0;$server_name\a"
 source ~/.config/shell/computer_specific
 
 # Modify path
-export PATH=~/.local/bin:$PATH
+export PATH=$PATH:~/.local/bin
 
 # Load secrets
 source ~/.shell_secrets
 
+# Python auto-completion
+source "/home/pranav/.local/pipx/venvs/argcomplete/lib64/python3.9/site-packages/argcomplete/bash_completion.d/_python-argcomplete"
+
+# HuggingFace
+HG_HOME=/mnt/swarmNFS/models/huggingface
 
 
 # Zoxide
 eval "$(zoxide init bash)"
+
+# nvitop exporter
+
+if [[ -o login ]]; then
+    bash ~/yadm/scripts/nvitop-exporter.sh
+fi
+
 
 # Aliases
 #-----------------------
@@ -41,6 +53,9 @@ alias path='sed "s/:/\n/g" <<< "$PATH"'
 
 alias editprofile='nano ~/.common_profile'
 alias editcommon='editprofile'
+
+# GPU
+alias nvitop="uvx nvitop"
 
 # Exa
 alias ls="eza --icons --group-directories-first"
@@ -54,6 +69,27 @@ function cls {
     clear && printf '\033c'
 }
 
+# UV
+export UV_NO_SYNC=1
+
+alias venv='source .venv/bin/activate'
+
+uv-list() {
+  if [ -z "$1" ]; then
+    echo -e "\033[1;31mUSAGE: uv-list <PACKAGE>\033[0m"
+    return 1
+  fi
+
+  local pkg="$1"
+  echo -e "\n\033[1;34m----- PACKAGES NEEDING '$pkg' -----\033[0m\n"
+  uv tree --invert --package "$pkg" || echo "No packages depend on '$pkg'."
+
+  echo -e "\n\n\033[1;32m----- '$pkg' DEPENDENCIES -----\033[0m\n"
+  uv tree --package "$pkg" || echo "No dependencies found for '$pkg'."
+  echo -e "\n\n"
+}
+
+
 # Poetry
 alias env-poetry='poetry env use $(pyenv which python) && poetry env info'
 
@@ -64,7 +100,7 @@ alias cd-programming='cd /mnt/c/Programming/'
 # Docker
 alias dockerup='docker compose up -d --remove-orphans && docker compose ps && dtop'
 alias ddown='docker compose down'
-alias dtop='docker ps -q | xargs  docker stats --no-stream'
+alias dtop='docker ps -q | xargs  docker stats --no-stream && echo "" && echo "" &&  docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias logd='docker logs -tf --tail="200"'
 
 function entercontainer() {
@@ -203,8 +239,8 @@ alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
 
 alias gpg-start='echo "Starting GPG" | gpg --clearsign'
 
-############################################
-# MIT License                              #
-#                                          #
-# Copyright © 2022 Pranav Kumar Mishra     #
-############################################
+#################################################
+# MIT License                                   #
+#                                               #
+# Copyright © 2022-2025 Pranav Kumar Mishra     #
+#################################################
