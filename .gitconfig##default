@@ -74,8 +74,7 @@
 	autoSetupMerge = always
 
 [annex "security"]
-	allowed-ip-addresses=192.168.0.53, 192.168.0.14
-
+	allowed-ip-addresses = 192.168.0.14 192.168.0.20
 
 [safe]
 	directory = *
