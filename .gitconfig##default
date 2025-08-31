@@ -1,10 +1,13 @@
+# This is the Git Config at .gitconfig##default
+
 [user]
 	name = Pranav Kumar Mishra
 	email = 62562712+pranavmishra90@users.noreply.github.com
-	signingkey = /home/pranav/.ssh/id_ed25519.pub
-	#signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDWKiAKIWUAAamY9AjUUCCE6yisHJpUowmpqhh9dJmQ Automated_Signature-Pranav_Mishra
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP0E0I/3nKExauEnELCjqszl4UwKJiGfhb421nUWxn1u Pranav_Kumar_Mishra-@pranavmishra90
+
 [core]
 	editor = nano
+	pager = less
 
 [init]
 	defaultBranch = main
@@ -15,16 +18,14 @@
 
 [push]
 	autoSetupRemote = true
+	default = current
 
 [checkout]
 	defaultRemote=origin
 
-[gcrypt]
-	rsync-put-flags = chrv
-	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
-
-[credential "https://gitea.mishracloud.com"]
-	provider = generic
+#[gcrypt]
+#	rsync-put-flags = chrv
+#	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
 
 [gpg]
 	program = /bin/gpg
@@ -43,12 +44,16 @@
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
 	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
+
 [merge]
 	verifySignatures = false
+
 [tag]
 	gpgsign = true
-[credential]
-	helper = cache
+
+[branch]
+	autoSetupMerge = always
+  
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -56,5 +61,33 @@
 	process = git-lfs filter-process
 	required = true
 
+[filter "annex"]
+	process = git-annex filter-process
+
+
 [datalad "ui"]
 	suppress-similar-results = off
+
+[credential]
+	credentialStore = gpg
+	debug = true
+	guiPrompt = true
+
+[branch]
+	autoSetupMerge = always
+
+[annex "security"]
+	allowed-ip-addresses = 192.168.0.14 192.168.0.20
+
+[safe]
+	directory = *
+[annex]
+	autocommit = false
+	fscknudge = false
+[http]
+	sslCAInfo = /etc/ssl/certs/ca-bundle.crt
+[pull]
+	rebase = false
+[fetch]
+	prune = true
+

@@ -10,6 +10,10 @@ fi
 
 server_name=$(cat ~/.server_name.txt )
 
+export EDITOR='nano'
+
+#alias yt-dlp="docker run --rm tnk4on/yt-dlp"
+
 # Join Message
 echo -e "\e[1;31m$server_name\e[0m"
 
@@ -21,10 +25,27 @@ echo -ne "\033]0;$server_name\a"
 source ~/.config/shell/computer_specific
 
 # Modify path
-export PATH=~/.local/bin:$PATH
+export PATH=$PATH:~/.local/bin
 
 # Load secrets
 source ~/.shell_secrets
+
+# Python auto-completion
+source "/home/pranav/.local/pipx/venvs/argcomplete/lib64/python3.9/site-packages/argcomplete/bash_completion.d/_python-argcomplete"
+
+# HuggingFace
+HG_HOME=/mnt/swarmNFS/models/huggingface
+
+
+# Zoxide
+eval "$(zoxide init bash)"
+
+# nvitop exporter
+
+if [[ -o login ]]; then
+    bash ~/yadm/scripts/nvitop-exporter.sh
+fi
+
 
 # Aliases
 #-----------------------
@@ -33,75 +54,155 @@ alias path='sed "s/:/\n/g" <<< "$PATH"'
 alias editprofile='nano ~/.common_profile'
 alias editcommon='editprofile'
 
+# GPU
+alias nvitop="uvx nvitop"
+
 # Exa
 alias ls="eza --icons --group-directories-first"
 alias ll="eza -lah --icons --group-directories-first --long --header --git --group"
 
+# Browsing
 
 alias grep='grep --color'
+
+function cls {
+    clear && printf '\033c'
+}
+
+# UV
+export UV_NO_SYNC=1
+
+alias venv='source .venv/bin/activate'
+
+uv-list() {
+  if [ -z "$1" ]; then
+    echo -e "\033[1;31mUSAGE: uv-list <PACKAGE>\033[0m"
+    return 1
+  fi
+
+  local pkg="$1"
+  echo -e "\n\033[1;34m----- PACKAGES NEEDING '$pkg' -----\033[0m\n"
+  uv tree --invert --package "$pkg" || echo "No packages depend on '$pkg'."
+
+  echo -e "\n\n\033[1;32m----- '$pkg' DEPENDENCIES -----\033[0m\n"
+  uv tree --package "$pkg" || echo "No dependencies found for '$pkg'."
+  echo -e "\n\n"
+}
+
+
+# Poetry
+alias env-poetry='poetry env use $(pyenv which python) && poetry env info'
 
 # Directories
 alias cd-programming='cd /mnt/c/Programming/'
 
 
 # Docker
-alias dockerup='docker-compose up -d --remove-orphans && docker-compose ps && dtop'
-alias dtop='docker ps -q | xargs  docker stats --no-stream'
+alias dockerup='docker compose up -d --remove-orphans && docker compose ps && dtop'
+alias ddown='docker compose down'
+alias dtop='docker ps -q | xargs  docker stats --no-stream && echo "" && echo "" &&  docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias logd='docker logs -tf --tail="200"'
 
 function entercontainer() {
 	docker exec -it $1 zsh
 }
 
+function dnode(){
+	local input_command="$1"
+	
+	if [[ $input_command == 'labels' ]]; then
+		docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
+	fi
 
-alias ctop='docker run --rm -ti  --name=ctop  --volume /var/run/docker.sock:/var/run/docker.sock:ro  quay.io/vektorlab/ctop:latest'
+	bash ~/yadm/scripts/docker-node-labels.sh
+}
+
+
+alias ctop='docker run --rm -ti  --volume /var/run/docker.sock:/var/run/docker.sock:ro  quay.io/vektorlab/ctop:latest'
 
 # Rar
 alias unrar-find='unrar e -r -o- *.rar ./'
 
 # Python
-alias python='python3'
+#alias python='python3'
 
 # Ansible
 
 alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/id_ed25519:/root/.ssh/id_ed25519:ro --entrypoint=/bin/sh docker.io/devture/ansible:2.13.6-r0-3"
 
+# Development
+
+alias semvar='semantic-release'
+
+alias semvar-print='semantic-release -v --noop version'
+
+alias act='gh act'
 
 # SSH
 #------------------
 # Start SSH Agent
 #eval $(ssh-agent -s)
 
-# SSH_AUTH_SOCK="$HOME/.ssh-agent.socket"
-
-[ -z "$SSH_AGENT_PID" ] &&
-export SSH_AGENT_PID=$(ps ux | grep -w ssh-agent | grep -vwE 'defunct|grep' | grep -wm1 "$SSH_AUTH_SOCK" | awk '{print $2}')
-
-[ -n "$SSH_AGENT_PID" ] && [ -z "$SSH_AUTH_SOCK" ] &&
-export SSH_AUTH_SOCK=$( (ps "$SSH_AGENT_PID" | grep -w -- '-a' | sed "s/.* -a //;s/ .*//" | grep -- /) || (find /tmp/ssh-* -name \*$(($SSH_AGENT_PID-1)) -o -name \*$(($SSH_AGENT_PID-2)) -type s 2> /dev/null) )
-
-( [ -z "$SSH_AGENT_PID" ] || [ -z "$SSH_AUTH_SOCK" ] ) &&
-eval $(ssh-agent $([ -n "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK" && echo -n "-a $SSH_AUTH_SOCK") -s) 1> /dev/null
-
+source ~/yadm/scripts/check_and_run_keychain.sh
 
 #Add all private keys to the agent
 #ssh-add -t 12h  ~/.ssh/id_ed25519
 
-alias add-ssh='ssh-add -t 12h ~/.ssh/id_ed25519'
+alias add-ssh='ssh-add -t 48h ~/.ssh/id_ed25519'
+
 
 # Git
 #------------------
-alias pre-commit='python3 ~/git/pre-commit/pre-commit-2.20.0.pyz'
+alias pre-commit='python3 ~/git/pre-commit/pre-commit.pyz'
 
 alias readme='reporoot && pwd && nano --view README.md'
 
-alias gitgraph='git log --oneline --graph --decorate --all'
-alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3'
+alias gitgraph="git -c log.showSignature=false log --oneline --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit"
+alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3 --abbrev-commit'
 
 function gitpush() {
 	git push $1 $2
 	git log --decorate --all --show-pulls --show-signature --max-count 1
 }
+
+function gitcleantags() {
+    local TAGS
+    TAGS=$(git tag -l "*-main*" "*-rc*")
+
+    if [ -z "$TAGS" ]; then
+        echo "No tags matching '*-main*' or '*-rc*' found."
+        return
+    fi
+
+    echo "The following tags match '*-main*' or '*-rc*':"
+    echo "$TAGS"
+    echo -n "Delete these tags locally? [y/N]: "
+    read -r CONFIRM_LOCAL
+
+    if [[ "$CONFIRM_LOCAL" =~ ^[Yy]$ ]]; then
+        echo "$TAGS" | xargs -n 1 git tag -d
+    else
+        echo "Skipped local deletion."
+    fi
+
+    echo -n "Also delete these tags from 'origin'? [y/N]: "
+    read -r CONFIRM_ORIGIN
+
+    if [[ "$CONFIRM_ORIGIN" =~ ^[Yy]$ ]]; then
+        echo "$TAGS" | xargs -n 1 -I {} git push origin :refs/tags/{}
+        if git remote | grep -q "^warehouse$"; then
+            echo "Deleting tags from 'warehouse' as well..."
+            echo "$TAGS" | xargs -n 1 -I {} git push warehouse :refs/tags/{}
+        fi
+    else
+        echo "Skipped remote deletion."
+    fi
+}
+# Datalad
+#-------------------
+#source <(datalad shell-completion)
+
+alias dl-push="datalad push --to warehouse && datalad push --to origin"
 
 #----------------------------------------------------------
 # Copyright 2009 Daniel Jackoway
@@ -117,6 +218,19 @@ done
 }
 #----------------------------------------------------------
 
+# Tmux / Tmuxinator
+#------------------
+#function ktr() {
+#    read -p "Do you want to kill the tmux session? [y/n] " choice
+#    [[ "$choice" == "y" ]] && tmux kill-session
+#}
+
+function ktr() {
+    printf "Do you want to kill the tmux session? [y/n] "
+    read choice
+    [[ "$choice" == "y" ]] && tmux kill-session
+}
+
 
 # GPG
 #------------------
@@ -124,8 +238,8 @@ alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
 
 alias gpg-start='echo "Starting GPG" | gpg --clearsign'
 
-############################################
-# MIT License                              #
-#                                          #
-# Copyright © 2022 Pranav Kumar Mishra     #
-############################################
+#################################################
+# MIT License                                   #
+#                                               #
+# Copyright © 2022-2025 Pranav Kumar Mishra     #
+#################################################

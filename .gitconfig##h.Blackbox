@@ -1,3 +1,5 @@
+# This is the Git Config at .gitconfig##h.Blackbox
+
 [user]
 	name = Pranav Kumar Mishra
 	email = 62562712+pranavmishra90@users.noreply.github.com
@@ -42,6 +44,6 @@
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
+
 [safe]
-	directory = /volume1/Pranav/programming/matrix-docker-ansible-deploy
 	directory = *

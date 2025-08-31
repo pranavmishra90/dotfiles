@@ -1,3 +1,5 @@
+# This is the bash_aliases file at .bash_aliases##default
+
 # Bash Formatting
 function color_my_prompt {
     local __user_and_host="\[\033[00;37m\]\u\[\033[01;32m\]@\h"
@@ -10,10 +12,6 @@ function color_my_prompt {
 }
 
 color_my_prompt
-
-
-# PATH
-export PATH=/home/pranav/.local/bin:$PATH
 
 
 # Alias Bash
