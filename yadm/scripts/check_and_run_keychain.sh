@@ -1,23 +1,22 @@
 #!/bin/bash
 
 # Get a list of all loaded keys and their information
-key_list=$(ssh-add -l 2>&1 | sed 's/^[ \t]*//;s/[ \t]*$//')
+key_list=$(ssh-add -l 2>&1)
 
-
-if [ "$key_list" = "The agent has no identities." ]; then
+if [[ -z "$key_list" || "$key_list" == *"agent"* ]]; then
   echo "No SSH keys found. Initializing keychain."
 
   # Check if keychain is installed
   if command -v keychain &> /dev/null; then
-    eval $(keychain --eval --agents ssh id_ed25519)
+    eval $(keychain --eval --quick --quiet --inherit any-once --ignore-missing --nogui --agents ssh id_ed25519 automated_ed25519)
+    keychain -L
   else
-    echo "keychain is not installed. Please install keychain to manage your SSH keys."
+    echo "Keychain is not installed. Please install keychain to manage your SSH keys."
+    eval $(ssh-agent)
+    ssh-add
   fi
 else
-  # Loop through each key in the list
-  echo "$key_list" | while IFS= read -r key_info; do
-    # Use sed to keep everything after SHA256:
-    trailing_info=$(echo "$key_info" | sed -e 's/^.*SHA256:[^ ]* //')
-    echo "Welcome: $trailing_info"
-  done
+  echo "SSH keys loaded:"
+  keychain -L
+
 fi
