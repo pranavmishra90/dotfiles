@@ -103,6 +103,8 @@ alias ddown='docker compose down'
 alias dtop='docker ps -q | xargs  docker stats --no-stream && echo "" && echo "" &&  docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias logd='docker logs -tf --tail="200"'
 
+STACK_DEPLOY_DETACHED=true
+
 function entercontainer() {
 	docker exec -it $1 zsh
 }
