@@ -108,15 +108,14 @@ function entercontainer() {
 }
 
 function dnode(){
-        local input_command="$1"
+	local input_command="$1"
+	
+	if [[ $input_command == 'labels' ]]; then
+		docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
+	fi
 
-        if [[ $input_command == 'labels' ]]; then
-                docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
-        fi
-
-        bash ~/yadm/scripts/docker-node-labels.sh
+	bash ~/yadm/scripts/docker-node-labels.sh
 }
-
 
 
 alias ctop='docker run --rm -ti  --volume /var/run/docker.sock:/var/run/docker.sock:ro  quay.io/vektorlab/ctop:latest'
