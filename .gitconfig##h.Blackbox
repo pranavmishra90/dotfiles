@@ -44,3 +44,6 @@
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
+
+[safe]
+	directory = *
