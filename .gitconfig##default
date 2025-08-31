@@ -7,6 +7,7 @@
 
 [core]
 	editor = nano
+	pager = less
 
 [init]
 	defaultBranch = main
@@ -17,13 +18,14 @@
 
 [push]
 	autoSetupRemote = true
+	default = current
 
 [checkout]
 	defaultRemote=origin
 
-[gcrypt]
-	rsync-put-flags = chrv
-	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
+#[gcrypt]
+#	rsync-put-flags = chrv
+#	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
 
 [gpg]
 	program = /bin/gpg
@@ -42,18 +44,12 @@
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
 	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
+
 [merge]
 	verifySignatures = false
+
 [tag]
 	gpgsign = true
-
-
-[credential]
-    helper = cache --timeout=3600
-    credentialStore = gpg
-
-[credential "https://gitea.mishracloud.com"]
-    provider = pass
 
 
 [filter "lfs"]
@@ -61,5 +57,34 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+
+[filter "annex"]
+	process = git-annex filter-process
+
+
 [datalad "ui"]
 	suppress-similar-results = off
+
+[credential]
+	credentialStore = gpg
+	debug = true
+	guiPrompt = true
+
+[branch]
+	autoSetupMerge = always
+
+[annex "security"]
+	allowed-ip-addresses=192.168.0.53, 192.168.0.14
+
+
+[safe]
+	directory = *
+[annex]
+	autocommit = false
+	fscknudge = false
+[http]
+	sslCAInfo = /etc/ssl/certs/ca-bundle.crt
+[pull]
+	rebase = false
+[fetch]
+	prune = true

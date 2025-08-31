@@ -17,7 +17,6 @@ color_my_prompt
 # PATH
 export PATH=/home/pranav/.local/bin:$PATH
 
-
 # Alias Bash
 #----------------
 alias zsh='exec zsh'
@@ -29,3 +28,5 @@ source ~/.common_profile
 
 GPG_TTY=$(tty)
 export GPG_TTY
+
+

@@ -38,6 +38,8 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
 
 unset rc
 
@@ -55,5 +57,9 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+
+# Datalad
+#-------------------
+source <(datalad shell-completion)
 
 eval "$(zoxide init bash)"
