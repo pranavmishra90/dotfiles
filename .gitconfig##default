@@ -51,6 +51,9 @@
 [tag]
 	gpgsign = true
 
+[branch]
+	autoSetupMerge = always
+  
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -87,3 +90,4 @@
 	rebase = false
 [fetch]
 	prune = true
+

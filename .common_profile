@@ -20,18 +20,15 @@ echo -e "\e[1;31m$server_name\e[0m"
 # Set Windows Terminal Tab Name
 echo -ne "\033]0;$server_name\a"
 
+# Certificates
+export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 
-# Computer specific
-source ~/.config/shell/computer_specific
 
 # Modify path
 export PATH=$PATH:~/.local/bin
 
 # Load secrets
 source ~/.shell_secrets
-
-# Python auto-completion
-source "/home/pranav/.local/pipx/venvs/argcomplete/lib64/python3.9/site-packages/argcomplete/bash_completion.d/_python-argcomplete"
 
 # HuggingFace
 HG_HOME=/mnt/swarmNFS/models/huggingface
@@ -103,6 +100,8 @@ alias ddown='docker compose down'
 alias dtop='docker ps -q | xargs  docker stats --no-stream && echo "" && echo "" &&  docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias logd='docker logs -tf --tail="200"'
 
+export STACK_DEPLOY_DETACHED=true
+
 function entercontainer() {
 	docker exec -it $1 zsh
 }
@@ -153,7 +152,7 @@ alias add-ssh='ssh-add -t 48h ~/.ssh/id_ed25519'
 
 # Git
 #------------------
-alias pre-commit='python3 ~/git/pre-commit/pre-commit.pyz'
+alias pre-commit='uvx pre-commit'
 
 alias readme='reporoot && pwd && nano --view README.md'
 
@@ -237,6 +236,13 @@ function ktr() {
 alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
 
 alias gpg-start='echo "Starting GPG" | gpg --clearsign'
+
+
+##### Computer Specific
+
+# After loading all configurations, then run the computer specific config
+source ~/.config/shell/computer_specific
+
 
 #################################################
 # MIT License                                   #
