@@ -2,7 +2,7 @@ repos:
 
   # PRE-COMMIT
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       # Lint files
       - id: check-executables-have-shebangs
@@ -13,7 +13,7 @@ repos:
         exclude: |
             (?x)^(
                 .devcontainer/devcontainer.json|
-                exclude.this.file
+                exclude.this.file.json
             )$
       - id: mixed-line-ending
         args: ["--fix=lf"]
@@ -25,6 +25,6 @@ repos:
 
 
   - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.23
+    rev: v0.1.30
     hooks:
       - id: markdown-link-check
