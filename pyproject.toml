@@ -1,7 +1,7 @@
 [project]
 name = "dotfiles"
 description = "Pranav Mishra's Dotfiles, managed with yadm"
-version = "0.0.0"
+version = "1.0.0"
 requires-python = ">=3.11,<3.14"
 dependencies = [
     "pre-commit>=4.3.0",
