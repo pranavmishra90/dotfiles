@@ -40,7 +40,7 @@ export STACK_DEPLOY_DETACHED=true
 export PATH=$PATH:~/.local/bin
 
 # UV
-export UV_NO_SYNC=1
+# export UV_NO_SYNC=1
 
 # Load secrets
 source ~/.shell_secrets
@@ -122,6 +122,13 @@ uv-list() {
   uv tree --package "$pkg" || echo "No dependencies found for '$pkg'."
   echo -e "\n\n"
 }
+
+# Node
+#------------------------------------------------
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
 
 # SSH
 #------------------------------------------------
