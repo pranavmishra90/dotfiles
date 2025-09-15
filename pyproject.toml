@@ -65,6 +65,6 @@ autoescape = true
 
 [tool.semantic_release.remote]
 name = "origin"
-type = "gitea"
+type = "github"
 ignore_token_for_push = true
 insecure = false
