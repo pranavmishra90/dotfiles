@@ -66,6 +66,7 @@
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
+
 	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
 
 
