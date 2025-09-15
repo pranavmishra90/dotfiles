@@ -61,10 +61,6 @@ autoload -Uz compinit
 compinit
 
 
-# Autocompletion
-#----------------------
-#source ~/yadm/zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
-
 # PATH
 #-----------------------
 alias sourcezsh='source ~/.zshrc'
