@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Computer specific settings: pminformatics
+
+# Code here will be specific to a given computer / server
+# and will be loaded into the ~/.common_profile by yadm
+
+# These settings will override any settings in ~/.common_profile
+#----------------------------------------------------------------------
+
+
+# Set Java version
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-21.0.8.0.9-1.el9.x86_64
+export PATH=$PATH:$JAVA_HOME/bin
+
+# Adding CUDA to PATH
+export CUDA_HOME=/usr/local/cuda
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
+
+# Certificates
+export SSL_CERT_FILE=/etc/pki/tls/certs/ca-bundle.crt

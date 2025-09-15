@@ -404,6 +404,18 @@ set -g mouse on
 # move status line to top
 #set -g status-position top
 
+# Disable activity monitoring (no beeps for mere output changes)
+setw -g monitor-activity off
+
+# Enable bell monitoring (beep only on actual terminal bells)
+setw -g monitor-bell on
+
+# Optional: visual bell in addition to audible bell
+set -g visual-bell on
+
+# Optional: define what windows beep
+set -g bell-action any 
+
 
 # -- tpm -----------------------------------------------------------------------
 

@@ -1,5 +1,15 @@
 #!/bin/bash
 
+function dnode(){
+	local input_command="$1"
+
+	if [[ $input_command == 'labels' ]]; then
+		docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
+	fi
+
+	bash ~/yadm/scripts/docker-node-labels.sh
+}
+
 deploy_stack() {
   local compose_args=()
   local detach_flag="$STACK_DEPLOY_DETACHED_VALUE"
