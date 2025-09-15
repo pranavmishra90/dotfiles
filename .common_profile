@@ -24,9 +24,23 @@ echo -e "\e[1;31m$server_name\e[0m"
 # Set Windows Terminal Tab Name
 echo -ne "\033]0;$server_name\a"
 
-# Environment Variables
+
+# PATH
 #------------------------------------------------
 
+# Add the user's local binaries to the PATH
+# if not already present
+
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
+
+
+# Environment Variables
+#------------------------------------------------
 export EDITOR='nano'
 
 # Certificates
@@ -35,15 +49,16 @@ export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 # Docker
 export STACK_DEPLOY_DETACHED=true
 
-
-# PATH
-export PATH=$PATH:~/.local/bin
-
 # UV
 # export UV_NO_SYNC=1
 
 # Load secrets
 source ~/.shell_secrets
+
+# Node Version Manager (NVM)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 
 # General Aliases
@@ -65,12 +80,19 @@ alias grep='grep --color'
 
 alias unrar-find='unrar e -r -o- *.rar ./'
 
-# General Functions
+# Functions
 #------------------------------------------------
 
-function cls {
-    clear && printf '\033c'
-}
+# Source all of the custom functions / scripts in /yadm/functions
+# This is analogous to how ~/.bashrc.d/ works
+if [ -d /yadm/functions ]; then
+    find /yadm/functions -type f \( -name "*.sh" -o -name "*.bash" -o -name "*.zsh" \) | while read -r rc; do
+        if [ "${YADM_CUSTOM_DEBUG}" = "1" ]; then
+            echo "Sourcing: $rc"
+        fi
+        . "$rc"
+    done
+fi
 
 # Docker
 #------------------------------------------------
@@ -81,15 +103,7 @@ alias dtop='docker ps -q | xargs  docker stats --no-stream && echo "" && echo ""
 alias logd='docker logs -tf --tail="200"'
 alias ctop='docker run --rm -ti  --volume /var/run/docker.sock:/var/run/docker.sock:ro  quay.io/vektorlab/ctop:latest'
 
-function dnode(){
-	local input_command="$1"
-	
-	if [[ $input_command == 'labels' ]]; then
-		docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
-	fi
 
-	bash ~/yadm/scripts/docker-node-labels.sh
-}
 
 # Development
 #------------------------------------------------
@@ -108,34 +122,14 @@ alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/i
 # Virtual Environment
 alias venv='source .venv/bin/activate'
 
-uv-list() {
-  if [ -z "$1" ]; then
-    echo -e "\033[1;31mUSAGE: uv-list <PACKAGE>\033[0m"
-    return 1
-  fi
-
-  local pkg="$1"
-  echo -e "\n\033[1;34m----- PACKAGES NEEDING '$pkg' -----\033[0m\n"
-  uv tree --invert --package "$pkg" || echo "No packages depend on '$pkg'."
-
-  echo -e "\n\n\033[1;32m----- '$pkg' DEPENDENCIES -----\033[0m\n"
-  uv tree --package "$pkg" || echo "No dependencies found for '$pkg'."
-  echo -e "\n\n"
-}
-
-# Node
-#------------------------------------------------
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-
 # SSH
 #------------------------------------------------
 
-source ~/yadm/scripts/check_and_run_keychain.sh
+# Provides the function add-ssh() to add ssh keys to the agent
+source ~/yadm/scripts/keychain/keychain_alias.sh
 
-alias add-ssh='ssh-add -t 48h ~/.ssh/id_ed25519'
+# For interactive shells, load the keychain environment if it exists
+source ~/yadm/scripts/keychain/keychain_interactive_shell.sh
 
 
 # Git
@@ -147,54 +141,6 @@ alias readme='reporoot && pwd && nano --view README.md'
 alias gitgraph="git -c log.showSignature=false log --oneline --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit"
 alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3 --abbrev-commit'
 
-function gitpush() {
-	git push $1 $2
-	git log --decorate --all --show-pulls --show-signature --max-count 1
-}
-
-function gitcleantags() {
-    local TAGS
-    TAGS=$(git tag -l "*-main*" "*-rc*" "*-beta*")
-
-    if [ -z "$TAGS" ]; then
-        echo 'No tags matching "*-main*" "*-rc*" "*-beta*" found.'
-        return
-    fi
-
-    echo 'The following tags match "*-main*" "*-rc*" "*-beta*":'
-    echo "$TAGS"
-    echo -n "Delete these tags locally? [y/N]: "
-    read -r CONFIRM_LOCAL
-
-    if [[ "$CONFIRM_LOCAL" =~ ^[Yy]$ ]]; then
-        echo "$TAGS" | xargs -n 1 git tag -d
-    else
-        echo "Skipped local deletion."
-    fi
-
-    echo -n "Also delete these tags from 'origin'? [y/N]: "
-    read -r CONFIRM_ORIGIN
-
-    if [[ "$CONFIRM_ORIGIN" =~ ^[Yy]$ ]]; then
-        echo "$TAGS" | xargs -n 1 -I {} git push origin :refs/tags/{}
-        if git remote | grep -q "^warehouse$"; then
-            echo "Deleting tags from 'warehouse' as well..."
-            echo "$TAGS" | xargs -n 1 -I {} git push warehouse :refs/tags/{}
-        fi
-    else
-        echo "Skipped remote deletion."
-    fi
-}
-
-function reporoot {
-  # Copyright 2009 Daniel Jackoway
-  # MIT License
-  while [ ! -d .git -a ! -f 'README.md' -a `pwd` != "/" ]
-  do
-      cd ".."; 
-  done
-}
-
 # Datalad
 #------------------------------------------------
 source <(datalad shell-completion) 2>/dev/null || true
@@ -204,14 +150,13 @@ alias dl-push="datalad push --to warehouse && datalad push --to origin"
 
 # Tmux / Tmuxinator
 #------------------------------------------------
-function ktr() {
-    printf "Do you want to kill the tmux session? [y/n] "
-    read choice
-    [[ "$choice" == "y" ]] && tmux kill-session
-}
+# Note: these functions are already sourced above
+# source ~/yadm/functions/tmux_functions.sh
 
 # GPG
 #------------------------------------------------
+export GPG_TTY=$(tty)
+
 alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
 
 alias gpg-start='echo "Starting GPG" | gpg --clearsign'
@@ -221,15 +166,21 @@ alias gpg-start='echo "Starting GPG" | gpg --clearsign'
 #------------------------------------------------
 
 # Zoxide
-eval "$(zoxide init bash)"
+if [ -n "$BASH_VERSION" ]; then
+    eval "$(zoxide init bash)"
+elif [ -n "$ZSH_VERSION" ]; then
+    eval "$(zoxide init zsh)"
+else
+    echo "Unable to initialize zoxide: Unknown shell"
+fi
 
 # System setup
 #------------------------------------------------
 
-# nvitop exporter
+# Start the nvitop exporter for monitoring GPU usage
 if command -v nvidia-smi &> /dev/null; then
   if [[ -o login ]]; then
-    bash ~/yadm/scripts/nvitop-exporter.sh
+    bash ~/yadm/scripts/monitoring/nvitop-exporter.sh
   fi
 fi
 
@@ -237,9 +188,11 @@ fi
 # Computer Specific
 ##################################################
 
-# After loading all configurations, then run the computer specific config
-source ~/.config/shell/computer_specific
+# After loading all configurations
+# Run the computer specific config
+# For overriding settings
 
+source ~/.config/shell/computer_specific
 
 #################################################
 # MIT License                                   #
