@@ -13,7 +13,7 @@ repos:
         exclude: |
             (?x)^(
                 .devcontainer/devcontainer.json|
-                exclude.this.file.json
+                exclude.example.json
             )$
       - id: mixed-line-ending
         args: ["--fix=lf"]
@@ -22,9 +22,3 @@ repos:
       # Detect problematic files
       - id: check-symlinks
       - id: check-added-large-files
-
-
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.30
-    hooks:
-      - id: markdown-link-check

@@ -22,18 +22,15 @@ packages = []
 version_toml = ["pyproject.toml:project.version"]
 assets = []
 build_command_env = ['GH_TOKEN']
-build_command = 'echo "No build step required" '
+build_command = 'bash yadm/self/pre-commit-test.sh'
 commit_message = "ci(semantic-release): automatic update - v{version}"
 commit_parser = "conventional"
 
 logging_use_named_masks = false
-allow_zero_version = true
-major_on_zero = true
 no_git_verify = false
 
 tag_format = "v{version}"
 upload_to_release = true
-template_dir="./github/templates"
 
 [tool.semantic_release.commit_author]
 env = "GIT_COMMIT_AUTHOR"
@@ -68,6 +65,6 @@ autoescape = true
 
 [tool.semantic_release.remote]
 name = "origin"
-type = "github"
+type = "gitea"
 ignore_token_for_push = true
 insecure = false
