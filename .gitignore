@@ -1,2 +1,10 @@
 .shell_secrets
 .bash_secrets
+
+
+*.env
+*.secrets
+
+# Python
+uv.lock
+**/*.egg-info

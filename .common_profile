@@ -1,18 +1,22 @@
+# Common Profile
+#------------------------------------------------
+# Source this file from .bashrc and .zshrc
+
+
+# Server ID
+#------------------------------------------------
+
 #Set the computer name here
 FILE=~/.server_name.txt
 
-if [ -f "$FILE" ]; then
-    echo ""
+if [ ! -f "$FILE" ]; then
+  echo "Insert a server name in ~/.server_name.txt" > ~/.server_name.txt
 else
-    echo "Insert a server name in ~/.server_name.txt" > ~/.server_name.txt
+  # NO-OP
+  :
 fi
 
-
 server_name=$(cat ~/.server_name.txt )
-
-export EDITOR='nano'
-
-#alias yt-dlp="docker run --rm tnk4on/yt-dlp"
 
 # Join Message
 echo -e "\e[1;31m$server_name\e[0m"
@@ -20,35 +24,30 @@ echo -e "\e[1;31m$server_name\e[0m"
 # Set Windows Terminal Tab Name
 echo -ne "\033]0;$server_name\a"
 
+# Environment Variables
+#------------------------------------------------
 
-# Computer specific
-source ~/.config/shell/computer_specific
+export EDITOR='nano'
 
-# Modify path
+# Certificates
+export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+
+# Docker
+export STACK_DEPLOY_DETACHED=true
+
+
+# PATH
 export PATH=$PATH:~/.local/bin
+
+# UV
+# export UV_NO_SYNC=1
 
 # Load secrets
 source ~/.shell_secrets
 
-# Python auto-completion
-source "/home/pranav/.local/pipx/venvs/argcomplete/lib64/python3.9/site-packages/argcomplete/bash_completion.d/_python-argcomplete"
 
-# HuggingFace
-HG_HOME=/mnt/swarmNFS/models/huggingface
-
-
-# Zoxide
-eval "$(zoxide init bash)"
-
-# nvitop exporter
-
-if [[ -o login ]]; then
-    bash ~/yadm/scripts/nvitop-exporter.sh
-fi
-
-
-# Aliases
-#-----------------------
+# General Aliases
+#------------------------------------------------
 alias path='sed "s/:/\n/g" <<< "$PATH"'
 
 alias editprofile='nano ~/.common_profile'
@@ -62,16 +61,51 @@ alias ls="eza --icons --group-directories-first"
 alias ll="eza -lah --icons --group-directories-first --long --header --git --group"
 
 # Browsing
-
 alias grep='grep --color'
+
+alias unrar-find='unrar e -r -o- *.rar ./'
+
+# General Functions
+#------------------------------------------------
 
 function cls {
     clear && printf '\033c'
 }
 
-# UV
-export UV_NO_SYNC=1
+# Docker
+#------------------------------------------------
 
+alias dockerup='docker compose up -d --remove-orphans && docker compose ps && dtop'
+alias ddown='docker compose down'
+alias dtop='docker ps -q | xargs  docker stats --no-stream && echo "" && echo "" &&  docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'
+alias logd='docker logs -tf --tail="200"'
+alias ctop='docker run --rm -ti  --volume /var/run/docker.sock:/var/run/docker.sock:ro  quay.io/vektorlab/ctop:latest'
+
+function dnode(){
+	local input_command="$1"
+	
+	if [[ $input_command == 'labels' ]]; then
+		docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
+	fi
+
+	bash ~/yadm/scripts/docker-node-labels.sh
+}
+
+# Development
+#------------------------------------------------
+
+alias semvar='semantic-release'
+
+alias semvar-print='semantic-release -v --noop version'
+
+alias act='gh act'
+
+alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/id_ed25519:/root/.ssh/id_ed25519:ro --entrypoint=/bin/sh docker.io/devture/ansible:2.13.6-r0-3"
+
+# Python
+#------------------------------------------------
+
+# Virtual Environment
 alias venv='source .venv/bin/activate'
 
 uv-list() {
@@ -89,71 +123,24 @@ uv-list() {
   echo -e "\n\n"
 }
 
+# Node
+#------------------------------------------------
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Poetry
-alias env-poetry='poetry env use $(pyenv which python) && poetry env info'
-
-# Directories
-alias cd-programming='cd /mnt/c/Programming/'
-
-
-# Docker
-alias dockerup='docker compose up -d --remove-orphans && docker compose ps && dtop'
-alias ddown='docker compose down'
-alias dtop='docker ps -q | xargs  docker stats --no-stream && echo "" && echo "" &&  docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'
-alias logd='docker logs -tf --tail="200"'
-
-function entercontainer() {
-	docker exec -it $1 zsh
-}
-
-function dnode(){
-	local input_command="$1"
-	
-	if [[ $input_command == 'labels' ]]; then
-		docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
-	fi
-
-	bash ~/yadm/scripts/docker-node-labels.sh
-}
-
-
-alias ctop='docker run --rm -ti  --volume /var/run/docker.sock:/var/run/docker.sock:ro  quay.io/vektorlab/ctop:latest'
-
-# Rar
-alias unrar-find='unrar e -r -o- *.rar ./'
-
-# Python
-#alias python='python3'
-
-# Ansible
-
-alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/id_ed25519:/root/.ssh/id_ed25519:ro --entrypoint=/bin/sh docker.io/devture/ansible:2.13.6-r0-3"
-
-# Development
-
-alias semvar='semantic-release'
-
-alias semvar-print='semantic-release -v --noop version'
-
-alias act='gh act'
 
 # SSH
-#------------------
-# Start SSH Agent
-#eval $(ssh-agent -s)
+#------------------------------------------------
 
 source ~/yadm/scripts/check_and_run_keychain.sh
-
-#Add all private keys to the agent
-#ssh-add -t 12h  ~/.ssh/id_ed25519
 
 alias add-ssh='ssh-add -t 48h ~/.ssh/id_ed25519'
 
 
 # Git
-#------------------
-alias pre-commit='python3 ~/git/pre-commit/pre-commit.pyz'
+#------------------------------------------------
+alias pre-commit='uvx pre-commit'
 
 alias readme='reporoot && pwd && nano --view README.md'
 
@@ -167,14 +154,14 @@ function gitpush() {
 
 function gitcleantags() {
     local TAGS
-    TAGS=$(git tag -l "*-main*" "*-rc*")
+    TAGS=$(git tag -l "*-main*" "*-rc*" "*-beta*")
 
     if [ -z "$TAGS" ]; then
-        echo "No tags matching '*-main*' or '*-rc*' found."
+        echo 'No tags matching "*-main*" "*-rc*" "*-beta*" found.'
         return
     fi
 
-    echo "The following tags match '*-main*' or '*-rc*':"
+    echo 'The following tags match "*-main*" "*-rc*" "*-beta*":'
     echo "$TAGS"
     echo -n "Delete these tags locally? [y/N]: "
     read -r CONFIRM_LOCAL
@@ -198,45 +185,61 @@ function gitcleantags() {
         echo "Skipped remote deletion."
     fi
 }
+
+function reporoot {
+  # Copyright 2009 Daniel Jackoway
+  # MIT License
+  while [ ! -d .git -a ! -f 'README.md' -a `pwd` != "/" ]
+  do
+      cd ".."; 
+  done
+}
+
 # Datalad
-#-------------------
-#source <(datalad shell-completion)
+#------------------------------------------------
+source <(datalad shell-completion) 2>/dev/null || true
 
 alias dl-push="datalad push --to warehouse && datalad push --to origin"
 
-#----------------------------------------------------------
-# Copyright 2009 Daniel Jackoway
-# MIT License
-
-# Get to the root of a git directory
-
-function reporoot { 
-while [ ! -d .git -a ! -f 'README.md' -a `pwd` != "/" ]
-do
-    cd ".."; 
-done
-}
-#----------------------------------------------------------
 
 # Tmux / Tmuxinator
-#------------------
-#function ktr() {
-#    read -p "Do you want to kill the tmux session? [y/n] " choice
-#    [[ "$choice" == "y" ]] && tmux kill-session
-#}
-
+#------------------------------------------------
 function ktr() {
     printf "Do you want to kill the tmux session? [y/n] "
     read choice
     [[ "$choice" == "y" ]] && tmux kill-session
 }
 
-
 # GPG
-#------------------
+#------------------------------------------------
 alias gpg-restart='killall gpg-agent && sleep 1 && gpg-connect-agent /bye'
 
 alias gpg-start='echo "Starting GPG" | gpg --clearsign'
+
+
+# Terminal setup
+#------------------------------------------------
+
+# Zoxide
+eval "$(zoxide init bash)"
+
+# System setup
+#------------------------------------------------
+
+# nvitop exporter
+if command -v nvidia-smi &> /dev/null; then
+  if [[ -o login ]]; then
+    bash ~/yadm/scripts/nvitop-exporter.sh
+  fi
+fi
+
+##################################################
+# Computer Specific
+##################################################
+
+# After loading all configurations, then run the computer specific config
+source ~/.config/shell/computer_specific
+
 
 #################################################
 # MIT License                                   #
