@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This is a yadm bootstrap file, executed after the initial clone of the dotfiles repository.
+# It can be manually called using `yadm bootstrap`
 
 cd "$HOME"
 
@@ -8,7 +9,7 @@ HOSTNAME_SHORT=$(hostname | cut -d'.' -f1)
 # echo "Short hostname: $HOSTNAME_SHORT"
 
 echo "Updating the yadm repo origin URL"
-yadm remote set-url origin "git@github.com:pranavmishra90/dotfiles.git"
+yadm remote set-url origin "ssh://git@gitea-ssh.mishracloud.com:2221/pranavmishra90/dotfiles.git"
 
 yadm checkout $HOSTNAME_SHORT || yadm checkout develop
 echo "Yadm is on branch: $(yadm branch --show-current -v)"
