@@ -1,5 +1,24 @@
 # Update-WSLPortProxy.ps1
-# Forward Windows host ports to current WSL2 IP (Streamlit + Docker Swarm)
+# Forward Windows host ports to current WSL2 IP
+
+# This script requires running PowerShell as Administrator.
+# Create a task in Windows Task Scheduler, in the "Task Scheduler Library" to run this file with the following settings:
+# General:
+#   - Name: WSL2_Port_Forwarding
+#   - Run with highest privileges
+#   - Configure for: Windows 10
+#   - Hidden: checked
+# Triggers: none
+# Actions:
+#   - Action: Start a program
+#   - Program/script: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+#   - Add arguments: -WindowStyle Hidden -ExecutionPolicy Bypass -File "C:\Users\pmish\yadm\scripts\powershell\Update-WSLPortProxy.ps1"
+# Settings:
+#   - Allow task to be run on demand: checked
+#   - Run task as soon as possible after a scheduled start is missed: checked
+#   - Stop the task if it runs longer than: 1 hour
+#   - If the running task does not end when requested, force it to stop: checked
+#   - Do not start a new instance
 
 # Ports to forward
 $tcpPorts = @(8501, 7496, 7497)  # TCP ports (Streamlit + swarm)
