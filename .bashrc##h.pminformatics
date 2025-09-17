@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This is the bashrc file at .bashrc##h.pminformatics
+# It is specific for RHEL based systems
 
 # If not running interactively, exit immediately (stop loading .bashrc)
 case $- in
@@ -35,6 +36,7 @@ source ~/.bash_completion
 
 # Load the bash aliases (yadm managed)
 #----------------------------------------------------------
+# Alias definitions
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
