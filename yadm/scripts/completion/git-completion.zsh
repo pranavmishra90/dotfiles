@@ -21,6 +21,9 @@
 #  zstyle ':completion:*:*:git:*' script ~/.git-completion.bash
 #
 
+## Load this file from yadm
+## zstyle ':completion:*:*:git:*' script ~/yadm/scripts/completion/git-completion.zsh
+
 zstyle -T ':completion:*:*:git:*' tag-order && \
 	zstyle ':completion:*:*:git:*' tag-order 'common-commands'
 

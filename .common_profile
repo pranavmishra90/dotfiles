@@ -31,13 +31,13 @@ echo -ne "\033]0;$server_name\a"
 # Add the user's local binaries to the PATH
 # if not already present
 
-if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
-then
-    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+
+if [ -d "$HOME/.local/bin" ]; then
+  export PATH=$HOME/.local/bin:$PATH
 fi
-export PATH
-
-
+if [ -d "$HOME/bin" ]; then
+  export PATH=$HOME/.local/bin:$PATH
+fi
 
 # Environment Variables
 #------------------------------------------------
@@ -60,6 +60,16 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
+
+# Cargo
+if [ -f "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi
+
+# Argcomplete
+if [ -f "/etc/bash_completion.d/python-argcomplete" ]; then
+  . "/etc/bash_completion.d/python-argcomplete"
+fi
 
 # General Aliases
 #------------------------------------------------
@@ -85,14 +95,31 @@ alias unrar-find='unrar e -r -o- *.rar ./'
 
 # Source all of the custom functions / scripts in /yadm/functions
 # This is analogous to how ~/.bashrc.d/ works
-if [ -d /yadm/functions ]; then
-    find /yadm/functions -type f \( -name "*.sh" -o -name "*.bash" -o -name "*.zsh" \) | while read -r rc; do
+
+if [ -d "$HOME/yadm/functions" ]; then
+    # Detect zsh vs bash
+    if [ -n "$ZSH_VERSION" ]; then
+        # Temporarily enable null_glob so unmatched patterns vanish
+        setopt local_options null_glob
+    fi
+
+    for rc in "$HOME/yadm/functions"/*.{sh,bash}; do
+        [ -f "$rc" ] || continue
         if [ "${YADM_CUSTOM_DEBUG}" = "1" ]; then
             echo "Sourcing: $rc"
         fi
-        . "$rc"
+        source "$rc"
     done
 fi
+
+
+# Autocompletions
+#------------------------------------------------
+# Alacritty
+if [ -f "$HOME/.bash_completion/alacritty" ]; then
+  . "$HOME/.bash_completion/alacritty"
+fi
+
 
 # Docker
 #------------------------------------------------
@@ -143,7 +170,6 @@ alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count
 
 # Datalad
 #------------------------------------------------
-source <(datalad shell-completion) 2>/dev/null || true
 
 alias dl-push="datalad push --to warehouse && datalad push --to origin"
 
@@ -192,7 +218,7 @@ fi
 # Run the computer specific config
 # For overriding settings
 
-source ~/.config/shell/computer_specific
+source ~/yadm/shell/computer_specific
 
 #################################################
 # MIT License                                   #

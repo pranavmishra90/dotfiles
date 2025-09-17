@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Source keychain if it exists
+# Initialize keychain for non-login shells
+alias keychain-init='keychain --eval --agents ssh id_ed25519'
 
+# Function to add SSH keys to the agent using keychain
 function add-ssh() {
 
   # Load the keychain environment if it exists
