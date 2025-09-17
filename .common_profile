@@ -149,6 +149,8 @@ alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/i
 # Virtual Environment
 alias venv='source .venv/bin/activate'
 
+alias active-python='~/yadm/scripts/python/active-python.sh'
+
 # SSH
 #------------------------------------------------
 
