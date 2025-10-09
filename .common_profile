@@ -161,7 +161,7 @@ source ~/yadm/scripts/keychain/keychain_interactive_shell.sh
 
 # Git
 #------------------------------------------------
-alias pre-commit='uvx pre-commit'
+#alias pre-commit='uvx pre-commit'
 
 alias readme='reporoot && pwd && nano --view README.md'
 

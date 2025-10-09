@@ -2,7 +2,7 @@
 
 
 function active-python(){
-uv run -- python - <<'PY'
+uv run --no-project -- python - <<'PY'
 import sys, os, pathlib
 from rich import print
 print("uv sys.executable:", sys.executable)
