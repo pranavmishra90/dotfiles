@@ -1,1 +1,1 @@
-.zshrc##h.pminformatics
+.zshrc##default
