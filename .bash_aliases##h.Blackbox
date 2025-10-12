@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # This is the bash_aliases file at .bash_aliases##h.blackbox
 
 # Bash Formatting
@@ -12,6 +14,7 @@ function color_my_prompt {
 
 color_my_prompt
 
+# Common Profile
 source ~/.common_profile
 
 #Bash Profile edits
@@ -30,11 +33,7 @@ alias m4b-tool='docker run -it --rm -u $(id -u):$(id -g) -v "$(pwd)":/mnt sandre
 
 alias mishracloud='cd /volume1/docker/MishraCloud'
 alias cd-docker='cd /volume1/docker'
-alias cd-complete='cd /volume1/Plex-Media/Import/in-progress/complete/'
 alias cd-drishti='cd /volume1/docker/Drishti'
-alias drishti-update='cd-drishti && docker-compose up -d'
-alias drishti-minimal='cd-drishti && sh drishti-minimal.sh'
-alias drishti-full='cd-drishti && sh drishti-full.sh'
 
 alias plex-media='cd /volume1/Plex-Media'
 
@@ -64,8 +63,3 @@ alias nginx-ports="sudo netstat -tulpn | grep LISTEN | grep 'nginx'"
 ##Pranav
 alias cd-pranav='cd /volume1/Pranav'
 alias cd-programming='cd /volume1/Pranav/programming'
-
-# PREPAREDx Ansible Playbook
-
-alias cd-pdx='cd /volume1/Pranav/preparedx/preparedx-ansible'
-alias pdx-ansible='cd-pdx && docker run -it --rm -w /work -v /volume1/Pranav/preparedx/preparedx-ansible:/work -v $HOME/.ssh/oracle/oracle:/root/.ssh/id_rsa:ro --entrypoint=/bin/sh docker.io/devture/ansible:2.9.14-r0'

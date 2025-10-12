@@ -9,24 +9,31 @@
 	editor = nano
 	pager = less
 
+# Local operations
 [init]
 	defaultBranch = main
 
-[commit]
-	template = ~/git/git-commit-template.txt
-	gpgsign = true
+[branch]
+	autoSetupMerge = always
+
+[merge]
+	verifySignatures = false
+
+# Remote operations
+[checkout]
+	defaultRemote=origin
+
+[pull]
+	rebase = false
+
+[fetch]
+	prune = true
 
 [push]
 	autoSetupRemote = true
 	default = current
 
-[checkout]
-	defaultRemote=origin
-
-#[gcrypt]
-#	rsync-put-flags = chrv
-#	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
-
+# Signed Git Operations
 [gpg]
 	program = /bin/gpg
 	format = ssh
@@ -34,26 +41,33 @@
 [gpg "ssh"]
 	allowedSignersFile = /home/pranav/.ssh/allowed_signers
 
+[tag]
+	gpgsign = true
+
+[commit]
+	template = ~/git/git-commit-template.txt
+	gpgsign = true
+
 [log]
 	showSignature = true
 
-[help]
-	autocorrect = 20
+# Credentials and Certificates
+[credential]
+	credentialStore = gpg
+	debug = true
+	guiPrompt = true
 
+[http]
+	sslCAInfo = /etc/ssl/certs/ca-bundle.crt
+
+# Git Aliases
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
 	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
 
-[merge]
-	verifySignatures = false
 
-[tag]
-	gpgsign = true
-
-[branch]
-	autoSetupMerge = always
-  
+# Git LFS, Git Annex, and Datalad
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -64,30 +78,31 @@
 [filter "annex"]
 	process = git-annex filter-process
 
-
-[datalad "ui"]
-	suppress-similar-results = off
-
-[credential]
-	credentialStore = gpg
-	debug = true
-	guiPrompt = true
-
-[branch]
-	autoSetupMerge = always
+[annex]
+	autocommit = false
+	fscknudge = false
 
 [annex "security"]
 	allowed-ip-addresses = 192.168.0.14 192.168.0.20
 
+[datalad "ui"]
+	suppress-similar-results = off
+  progressbar = tqdm
+
+[gcrypt]
+	rsync-put-flags = chrvP
+	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
+
+# Miscellaneous
+[help]
+	autocorrect = 20
+
 [safe]
 	directory = *
-[annex]
-	autocommit = false
-	fscknudge = false
-[http]
-	sslCAInfo = /etc/ssl/certs/ca-bundle.crt
-[pull]
-	rebase = false
-[fetch]
-	prune = true
 
+
+# Computer Specific
+#----------------------------------------------------
+# This section is for pasting in computer specific 
+# configurations which will be switched out by yadm
+#----------------------------------------------------
