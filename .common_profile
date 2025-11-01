@@ -197,8 +197,6 @@ function reporoot {
 
 # Datalad
 #------------------------------------------------
-source <(datalad shell-completion) 2>/dev/null || true
-
 alias dl-push="datalad push --to warehouse && datalad push --to origin"
 
 
