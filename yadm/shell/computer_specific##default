@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Computer specific settings: default
+
+# Code here will be specific to a given computer / server
+# and will be loaded into the ~/.common_profile by yadm
+
+# These settings will override any settings in ~/.common_profile
+#----------------------------------------------------------------------
+

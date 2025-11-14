@@ -1,3 +1,3 @@
 #!/bin/bash
 
-bash ~/yadm/scripts/kill_keychain.sh
+bash ~/yadm/scripts/keychain/kill_keychain.sh
