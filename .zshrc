@@ -95,6 +95,8 @@ if command -v datalad &>/dev/null; then
   eval "$(register-python-argcomplete datalad)"
 fi
 
+eval $(ssh-agent)
+
 # Aliases 
 #-----------------------
 alias sourcezsh='source ~/.zshrc'
