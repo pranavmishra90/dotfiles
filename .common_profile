@@ -172,7 +172,6 @@ alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count
 
 # Datalad
 #------------------------------------------------
-
 alias dl-push="datalad push --to warehouse && datalad push --to origin"
 
 
