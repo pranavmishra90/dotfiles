@@ -1,4 +1,4 @@
-set linenumbers
+#set linenumbers
 
 include "~/.nano/apacheconf.nanorc"
 include "~/.nano/arduino.nanorc"
