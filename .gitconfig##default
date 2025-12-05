@@ -56,6 +56,7 @@
 	credentialStore = gpg
 	debug = true
 	guiPrompt = true
+	helper = cache
 
 # Git Aliases
 [alias]

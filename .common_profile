@@ -154,16 +154,40 @@ alias active-python='~/yadm/scripts/python/active-python.sh'
 # SSH
 #------------------------------------------------
 
+# ~/.bashrc or ~/.bash_profile
+
+
+
+
 # Provides the function add-ssh() to add ssh keys to the agent
 source ~/yadm/scripts/keychain/keychain_alias.sh
 
 # For interactive shells, load the keychain environment if it exists
-source ~/yadm/scripts/keychain/keychain_interactive_shell.sh
+#source ~/yadm/scripts/keychain/keychain_interactive_shell.sh
+
+
+# ~/.common_profile or sourced from both .bashrc and .bash_profile
+
+# Only run if keychain is installed
+if command -v keychain &>/dev/null; then
+    KC_ENV="$HOME/.keychain/$HOSTNAME-sh"
+
+    # If existing Keychain environment file exists, source it
+    if [ -f "$KC_ENV" ]; then
+        source "$KC_ENV"
+    else
+        # Start keychain and add default SSH key(s)
+        eval "$(keychain --quiet --eval --agents ssh id_ed25519)"
+    fi
+
+    # Optional: export variables for other tools (VS Code, tmux)
+    export SSH_AUTH_SOCK SSH_AGENT_PID
+fi
 
 
 # Git
 #------------------------------------------------
-alias pre-commit='uvx pre-commit'
+#alias pre-commit='uvx pre-commit'
 
 alias readme='reporoot && pwd && nano --view README.md'
 
