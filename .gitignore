@@ -8,3 +8,6 @@
 # Python
 uv.lock
 **/*.egg-info
+
+# Nano 
+.nano/search_history
