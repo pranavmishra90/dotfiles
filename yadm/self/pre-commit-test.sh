@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 
 uvx pre-commit install
 

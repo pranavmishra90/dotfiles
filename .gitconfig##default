@@ -58,6 +58,7 @@
 	guiPrompt = true
 
 [http]
+	helper = cache
 
 # Git Aliases
 [alias]
