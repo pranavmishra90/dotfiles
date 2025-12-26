@@ -58,7 +58,6 @@
 	guiPrompt = true
 
 [http]
-	sslCAInfo = /etc/ssl/certs/ca-bundle.crt
 
 # Git Aliases
 [alias]
