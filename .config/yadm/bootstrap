@@ -42,8 +42,11 @@ printf "\n\n"
 
 
 # Move the pyproject.toml file so that uv does not think that the home directory is a python project
-mv ~/pyproject.toml ~/yadm/pyproject.toml
-logger DEBUG "Moved ~/pyproject.toml into the yadm directory to avoid uv project nesting issues"
+
+if [ -f ~/pyproject.toml ]; then
+  mv ~/pyproject.toml ~/yadm/pyproject.toml
+  logger DEBUG "Moved ~/pyproject.toml into the yadm directory to avoid uv project nesting issues"
+fi
 
 # Bootstrap scripts
 #-------------------------------
