@@ -29,9 +29,15 @@ logger INFO "Logging yadm bootstrap for tmux to: $LOG_FILE"
 logger INFO "Updating the yadm repo origin URL"
 yadm remote set-url origin "ssh://gitea/pranavmishra90/dotfiles.git"
 
+
 yadm checkout $HOSTNAME_SHORT || yadm checkout develop
 logger DEBUG "Yadm is on branch: $(yadm branch --show-current -v)"
 logger DEBUG "Yadm remote is: $(yadm remote -v)"
+
+logger INFO "Fetching and merging latest changes from origin/master"
+yadm fetch origin
+yadm merge --ff-only origin/master --no-gpg-sign
+
 printf "\n\n"
 
 # Clone down the submodules tied to this repository
