@@ -115,10 +115,6 @@ logger() {
     esac
 
 
-    # Normalize level to uppercase and pick color (fallback to grey)
-    LEVEL="${LEVEL^^}"
-    COLOR="${LEVEL_COLORS[$LEVEL]:-$COLOR_GREY}"
-
     # Log message to terminal with color and to file without color
     echo -e "$COLOR$TIMESTAMP [$LEVEL] $MESSAGE$COLOR_RESET" | tee >(sed "s/\x1b\[[0-9;]*m//g" >> "$LOG_FILE")
 
