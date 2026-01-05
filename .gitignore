@@ -11,3 +11,6 @@ uv.lock
 
 # Nano 
 .nano/search_history
+
+# Log files
+*.log
