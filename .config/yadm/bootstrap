@@ -35,8 +35,8 @@ logger DEBUG "Yadm is on branch: $(yadm branch --show-current -v)"
 logger DEBUG "Yadm remote is: $(yadm remote -v)"
 
 logger INFO "Fetching and merging latest changes from origin/master"
-yadm fetch origin
-yadm merge --ff-only origin/master --no-gpg-sign
+yadm pull origin
+yadm merge -v --ff-only origin/master --no-gpg-sign
 
 printf "\n\n"
 
