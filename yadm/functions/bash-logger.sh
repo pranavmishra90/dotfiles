@@ -44,6 +44,39 @@ current_datetime() {
     date +"%Y-%m-%dT%H:%M:%S%:z"
 }
 
+# Function to send notifications
+send_notification() {
+    local verbose=0
+    if [ "$1" = "-v" ]; then
+        verbose=1
+        shift
+    fi
+
+    local message="$1"
+    local topic="${NTFY_DRPM_TOPIC:-mishralab}"
+    local token="$NTFY_DRPM_TOKEN"
+
+    local response http_code body
+
+    # Capture both body and HTTP code
+    response=$(curl -s -w "\n%{http_code}" \
+        -H "Authorization: Bearer $token" \
+        -H "Markdown: yes" \
+        -H "Title: MishraLab - Build" \
+        -d "$message" \
+        "https://ntfy.drpranavmishra.com/$topic")
+
+    http_code=$(echo "$response" | tail -n1)
+    body=$(echo "$response" | sed '$d')
+
+    if [ "$http_code" != "200" ]; then
+        echo "Error sending ntfy message. Code: $http_code" >&2
+    fi
+
+    if [ "$verbose" -eq 1 ]; then
+        echo "$body"
+    fi
+}
 
 
 # Function to log messages with levels and optional notification
