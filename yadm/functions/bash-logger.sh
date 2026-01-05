@@ -3,7 +3,7 @@
 # Example pre-amble needed in a script using this logger
 
 
-
+# ```
 # # Report errors and exit if detected
 # trap 'logger ERROR "line $LINENO: $BASH_COMMAND"; exit 1' ERR
 # set -e
@@ -14,6 +14,8 @@
 # echo "Current directory is: " $(pwd)
 
 # LOG_FILE="$(realpath log/docker-build.log)"
+#```
+
 
 ############################################################################################################
 # Functions
@@ -89,23 +91,39 @@ logger() {
     local COLOR_RESET="\033[0m"
     local COLOR_YELLOW="\033[33m"    # Yellow
     local COLOR_RED="\033[31m"       # Red
+    local COLOR_BLUE="\033[34m"      # Blue
+    local COLOR_GREY="\033[90m"      # Grey
 
     # Determine color based on log level
     local COLOR
     case "$LEVEL" in
-        WARN|ERROR|CRITICAL)
+        DEBUG|TRACE)
+            COLOR=$COLOR_GREY
+            ;;
+        INFO)
+            COLOR=$COLOR_BLUE
+            ;;
+        WARN)
+            COLOR=$COLOR_YELLOW
+            ;;
+        ERROR|CRITICAL|FATAL)
             COLOR=$COLOR_RED
             ;;
         *)
-            COLOR=$COLOR_YELLOW
+            COLOR=$COLOR_GREY
             ;;
     esac
+
+
+    # Normalize level to uppercase and pick color (fallback to grey)
+    LEVEL="${LEVEL^^}"
+    COLOR="${LEVEL_COLORS[$LEVEL]:-$COLOR_GREY}"
 
     # Log message to terminal with color and to file without color
     echo -e "$COLOR$TIMESTAMP [$LEVEL] $MESSAGE$COLOR_RESET" | tee >(sed "s/\x1b\[[0-9;]*m//g" >> "$LOG_FILE")
 
-    # Send notification for WARN, ERROR, and CRITICAL levels
-    if [[ "$LEVEL" == "WARN" || "$LEVEL" == "ERROR" || "$LEVEL" == "CRITICAL" ]]; then
-        send_notification "$TIMESTAMP [$LEVEL] $MESSAGE"
-    fi
+    # # Send notification for WARN, ERROR, and CRITICAL levels
+    # if [[ "$LEVEL" == "WARN" || "$LEVEL" == "ERROR" || "$LEVEL" == "CRITICAL" ]]; then
+    #     send_notification "$TIMESTAMP [$LEVEL] $MESSAGE"
+    # fi
 }

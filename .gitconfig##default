@@ -57,6 +57,9 @@
 	debug = true
 	guiPrompt = true
 
+[http]
+	helper = cache
+
 # Git Aliases
 [alias]
 	last = log -1 HEAD

@@ -8,3 +8,9 @@
 # Python
 uv.lock
 **/*.egg-info
+
+# Nano 
+.nano/search_history
+
+# Log files
+*.log
