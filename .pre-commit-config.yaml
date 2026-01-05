@@ -13,7 +13,7 @@ repos:
         exclude: |
             (?x)^(
                 .devcontainer/devcontainer.json|
-                exclude.example.json
+                .vscode/.*\.json
             )$
       - id: mixed-line-ending
         args: ["--fix=lf"]
