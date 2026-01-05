@@ -63,4 +63,5 @@ bash "$HOME/yadm/bootstrap/setup-tmux.sh"
 
 # Done
 #-------------------------------
+printf "\n\n"
 logger INFO "Completed yadm bootstrap scripts"
