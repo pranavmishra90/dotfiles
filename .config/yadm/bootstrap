@@ -3,26 +3,55 @@
 # This is a yadm bootstrap file, executed after the initial clone of the dotfiles repository.
 # It can be manually called using `yadm bootstrap`
 
-cd "$HOME"
+#------------------------------------------------------------------------------
+# Initialization
+#------------------------------------------------------------------------------
 
+cd "$HOME"
 HOSTNAME_SHORT=$(hostname | cut -d'.' -f1)
 # echo "Short hostname: $HOSTNAME_SHORT"
 
-echo "Updating the yadm repo origin URL"
+# Logger
+#----------
+# Report errors and exit if detected
+trap 'logger ERROR "line $LINENO: $BASH_COMMAND"; exit 1' ERR
+set -e
+
+. "$HOME/yadm/functions/bash-logger.sh"
+
+LOG_FILE="$HOME/.config/yadm/bootstrap.log"
+
+create_log_file "$LOG_FILE"
+logger INFO "Logging yadm bootstrap for tmux to: $LOG_FILE"
+
+# yadm local repository setup
+#-------------------------------
+logger INFO "Updating the yadm repo origin URL"
 yadm remote set-url origin "ssh://gitea/pranavmishra90/dotfiles.git"
 
 yadm checkout $HOSTNAME_SHORT || yadm checkout develop
-echo "Yadm is on branch: $(yadm branch --show-current -v)"
-echo "Yadm remote is: $(yadm remote -v)"
+logger DEBUG "Yadm is on branch: $(yadm branch --show-current -v)"
+logger DEBUG "Yadm remote is: $(yadm remote -v)"
 printf "\n\n"
 
 # Clone down the submodules tied to this repository
-echo "Cloning yadm submodules"
+logger INFO "Cloning yadm submodules"
 yadm submodule update --init --recursive
-echo "Completed cloning yadm submodules"
+logger INFO "Completed cloning yadm submodules"
 printf "\n\n"
 
 
 # Move the pyproject.toml file so that uv does not think that the home directory is a python project
 mv ~/pyproject.toml ~/yadm/pyproject.toml
+logger DEBUG "Moved ~/pyproject.toml into the yadm directory to avoid uv project nesting issues"
 
+# Bootstrap scripts
+#-------------------------------
+logger INFO "Starting yadm bootstrap scripts"
+
+bash "$HOME/yadm/bootstrap/setup-tmux.sh"
+
+
+# Done
+#-------------------------------
+logger INFO "Completed yadm bootstrap scripts"
