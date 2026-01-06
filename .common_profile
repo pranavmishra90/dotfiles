@@ -194,6 +194,9 @@ alias readme='reporoot && pwd && nano --view README.md'
 alias gitgraph="git -c log.showSignature=false log --oneline --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit"
 alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3 --abbrev-commit'
 
+
+alias bfg="java -jar ~/.local/bin/bfg.jar"
+
 # Datalad
 #------------------------------------------------
 alias dl-push="datalad push --to warehouse && datalad push --to origin"
