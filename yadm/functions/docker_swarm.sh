@@ -48,6 +48,7 @@ deploy_stack() {
     echo "Warning: .env file not found, continuing without environment variables." >&2
   fi
   set +a
+  echo ""
   docker stack deploy "${compose_args[@]}" --detach="$detach_flag" "$stack_name"
 }
 
