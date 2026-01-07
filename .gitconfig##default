@@ -49,7 +49,7 @@
 	gpgsign = true
 
 [log]
-	showSignature = true
+	showSignature = false
 
 # Credentials and Certificates
 [credential]

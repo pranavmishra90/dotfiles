@@ -147,6 +147,7 @@ alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/i
 #------------------------------------------------
 
 # Virtual Environment
+alias python='python3'
 alias venv='source .venv/bin/activate'
 
 alias active-python='~/yadm/scripts/python/active-python.sh'
@@ -207,7 +208,7 @@ fi
 #------------------------------------------------
 #alias pre-commit='uvx pre-commit'
 
-alias readme='reporoot && pwd && nano --view README.md'
+alias readme='reporoot && pwd && nano --view README.md || nano --view readme.md'
 
 alias gitgraph="git -c log.showSignature=false log --oneline --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit"
 alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3 --abbrev-commit'
