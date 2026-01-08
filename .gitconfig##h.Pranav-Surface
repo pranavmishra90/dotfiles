@@ -1,7 +1,5 @@
 # This is the Git Config at .gitconfig##h.Pranav-Surface
 
-# This is the Git Config at .gitconfig##default
-
 [user]
 	name = Pranav Kumar Mishra
 	email = 62562712+pranavmishra90@users.noreply.github.com
@@ -58,9 +56,6 @@
 	credentialStore = gpg
 	debug = true
 	guiPrompt = true
-
-[http]
-	sslCAInfo = /etc/ssl/certs/ca-bundle.crt
 
 # Git Aliases
 [alias]

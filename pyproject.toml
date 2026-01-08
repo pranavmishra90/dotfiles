@@ -8,12 +8,10 @@ dependencies = [
     "python-semantic-release>=10.2.0",
     "setuptools>=80.9.0",
 ]
-
 # Dummy build system (to supress errors from uv)
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
-
 [tool.setuptools]
 packages = []
 
@@ -25,17 +23,14 @@ build_command_env = ['GH_TOKEN']
 build_command = 'bash yadm/self/pre-commit-test.sh'
 commit_message = "ci(semantic-release): automatic update - v{version}"
 commit_parser = "conventional"
-
 logging_use_named_masks = false
 no_git_verify = false
-
 tag_format = "v{version}"
 upload_to_release = true
 
 [tool.semantic_release.commit_author]
 env = "GIT_COMMIT_AUTHOR"
 default = "Pranav Kumar Mishra <62562712+pranavmishra90@users.noreply.github.com>"
-
 [tool.semantic_release.commit_parser_options]
 allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]
 minor_tags = ["feat", "docs"]
