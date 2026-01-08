@@ -116,4 +116,6 @@ fi
 
 
 eval "$(zoxide init bash)"
-eval "$(fzf --bash)"
+#eval "$(fzf --bash)"
+
+export PATH=$PATH:$HOME/.TinyTeX/bin/x86_64-linux
