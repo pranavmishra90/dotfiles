@@ -35,8 +35,8 @@ echo -ne "\033]0;$server_name\a"
 if [ -d "$HOME/.local/bin" ]; then
   export PATH=$HOME/.local/bin:$PATH
 fi
-if [ -d "$HOME/bin" ]; then
-  export PATH=$HOME/.local/bin:$PATH
+if [ -d "/usr/local/go/bin" ]; then
+  export PATH=$PATH:/usr/local/go/bin
 fi
 
 # Environment Variables
