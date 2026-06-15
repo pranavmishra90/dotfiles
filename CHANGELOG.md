@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.3.1 (2026-06-14)
+
+### Bug Fixes
+
+- Synatx of PSR release section since it's not a pyproject.toml file
+  ([`5d33dd5`](https://github.com/pranavmishra90/dotfiles/commit/5d33dd5d39bcf811303d84ff123a890c6aba62d6))
+
+
 ## v1.3.0 (2026-06-14)
 
 ### Bug Fixes
