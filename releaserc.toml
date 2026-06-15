@@ -46,7 +46,7 @@ keep_trailing_newline = false
 extensions = []
 autoescape = true
 
-[tool.semantic_release.remote]
+[semantic_release.remote]
 name = "origin"
 type = "gitea"
 domain = "git.mishracloud.com"
@@ -54,5 +54,5 @@ token = { env = "FORGEJO_TOKEN" }
 ignore_token_for_push = true
 insecure = false
 
-[tool.semantic_release.publish]
+[semantic_release.publish]
 upload_to_vcs_release = true
