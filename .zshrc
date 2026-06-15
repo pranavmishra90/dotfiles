@@ -95,9 +95,8 @@ if command -v datalad &>/dev/null; then
   eval "$(register-python-argcomplete datalad)"
 fi
 
-eval $(ssh-agent)
 
-# Aliases 
+# Aliases
 #-----------------------
 alias sourcezsh='source ~/.zshrc'
 alias editzsh='nano ~/.zshrc'
@@ -111,8 +110,3 @@ source ~/.common_profile
 #                                               #
 # Copyright © 2022-2025 Pranav Kumar Mishra     #
 #################################################
-
-# Added by biomni setup
-# Remove any old paths first to avoid duplicates
-PATH=$(echo $PATH | tr ':' '\n' | grep -v "biomni_tools/bin" | tr '\n' ':' | sed 's/:$//')
-export PATH="/home/pranav/work/software/Biomni/biomni_env/biomni_tools/bin:$PATH"
