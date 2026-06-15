@@ -39,18 +39,10 @@ alias plex-media='cd /volume1/Plex-Media'
 
 alias cd-research='cd /volume1/Pranav/Research && ls -lh'
 
-alias ll='ls -alF'
+alias ll='ls -lahF'
 
 #Scripts
 alias youtube-to-plex='sh /volume1/Scripts/plex-scripts/youtube-to-plex'
-
-#Plex
-alias stop-plex='synoservice -stop pkgctl-Plex\ Media\ Server'
-alias start-plex='synoservice -start pkgctl-Plex\ Media\ Server'
-
-#Programs
-alias iperf3-start='docker run  -it --rm --name=iperf3 -p 5201:5201 networkstatic/iperf3 -s'
-alias speedtest-run='python3 /volume1/Scripts/speedtest-cli/speedtest-cli'
 
 alias unrar-find='unrar e -r -o- *.rar ./'
 
@@ -59,7 +51,3 @@ alias unrar-find='unrar e -r -o- *.rar ./'
 alias restart-nginx='sudo synoservice --restart nginx'
 
 alias nginx-ports="sudo netstat -tulpn | grep LISTEN | grep 'nginx'"
-
-##Pranav
-alias cd-pranav='cd /volume1/Pranav'
-alias cd-programming='cd /volume1/Pranav/programming'

@@ -106,5 +106,3 @@ fi
 
 
 eval "$(zoxide init bash)"
-
-echo ".bashrc executed"
