@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.3.0 (2026-06-14)
+
+### Bug Fixes
+
+- Use root directory changelog for generation, then move into yadm directory
+  ([`61b03c1`](https://github.com/pranavmishra90/dotfiles/commit/61b03c1bf0461cb287bda7d2cc8520ee23ca1e90))
+
+### Documentation
+
+- Update license year and remove root dir changelog
+  ([`f747600`](https://github.com/pranavmishra90/dotfiles/commit/f7476009db4c5c7368318f706a4b4ea7f809c1ad))
+
+
 ## Unreleased
 
 ### Documentation
