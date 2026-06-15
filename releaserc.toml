@@ -26,7 +26,7 @@ patch_tags = ["fix", "perf"]
 default_bump_level = 0
 
 [semantic_release.branches.main]
-match = "main|master"
+match = "main|master|release"
 
 [semantic_release.changelog.default_templates]
 changelog_file = "yadm/CHANGELOG.md"
@@ -46,10 +46,13 @@ keep_trailing_newline = false
 extensions = []
 autoescape = true
 
-[semantic_release.remote]
+[tool.semantic_release.remote]
 name = "origin"
 type = "gitea"
-domain = "gitea.mishracloud.com"
-token = { env = "GITEA_TOKEN" }
+domain = "git.mishracloud.com"
+token = { env = "FORGEJO_TOKEN" }
 ignore_token_for_push = true
 insecure = false
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
