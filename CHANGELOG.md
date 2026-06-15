@@ -23,14 +23,6 @@
   ([`f747600`](https://github.com/pranavmishra90/dotfiles/commit/f7476009db4c5c7368318f706a4b4ea7f809c1ad))
 
 
-## Unreleased
-
-### Documentation
-
-- Update license year and remove root dir changelog
-  ([`f747600`](https://github.com/pranavmishra90/dotfiles/commit/f7476009db4c5c7368318f706a4b4ea7f809c1ad))
-
-
 ## v1.2.0 (2026-06-14)
 
 ### Bug Fixes
