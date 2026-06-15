@@ -55,6 +55,11 @@ if [ -f ~/pyproject.toml ]; then
   logger DEBUG "Moved ~/pyproject.toml into the yadm directory to avoid uv project nesting issues"
 fi
 
+if [ -f ~/CHANGELOG.md ]; then
+  mv ~/CHANGELOG.md ~/yadm/CHANGELOG.md
+  logger DEBUG "Moved ~/CHANGELOG.md into the yadm directory"
+fi
+
 # Bootstrap scripts
 #-------------------------------
 logger INFO "Starting yadm bootstrap scripts"
