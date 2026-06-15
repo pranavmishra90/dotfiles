@@ -1,1 +1,1 @@
-.bashrc##h.drpm
+.bashrc##h.pminformatics
