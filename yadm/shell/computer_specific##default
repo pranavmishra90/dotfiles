@@ -8,3 +8,4 @@
 # These settings will override any settings in ~/.common_profile
 #----------------------------------------------------------------------
 
+export GIT_COMMIT_AUTHOR="Pranav Kumar Mishra <62562712+pranavmishra90@users.noreply.github.com>"
