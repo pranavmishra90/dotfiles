@@ -8,6 +8,8 @@
 # These settings will override any settings in ~/.common_profile
 #----------------------------------------------------------------------
 
+# PSR environment variables
+export PSR_RUNNER_TYPE='gitea'
 
 # Set Java version
 export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-21.0.8.0.9-1.el9.x86_64"
