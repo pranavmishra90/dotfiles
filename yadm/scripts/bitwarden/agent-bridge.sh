@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
-
 NPIPERELAY="/mnt/c/Users/pmish/AppData/Local/Microsoft/WinGet/Packages/albertony.npiperelay_Microsoft.Winget.Source_8wekyb3d8bbwe/npiperelay.exe"
 
 # already running
