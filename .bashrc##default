@@ -104,4 +104,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-eval $(ssh-agent)
+
+eval "$(zoxide init bash)"
+
+echo ".bashrc executed"
