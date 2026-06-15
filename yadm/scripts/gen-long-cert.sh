@@ -3,7 +3,7 @@
 ### Example Usage
 # ~/yadm/scripts/gen-long-cert.sh
 
-# CERT_NAME=uptimekuma
+# CERT_NAME=gatus
 # DOMAIN_URL=status.int.mishracloud.com
 # DURATION_YRS=3
 
