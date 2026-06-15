@@ -103,7 +103,7 @@ if [ -d "$HOME/yadm/functions" ]; then
         setopt local_options null_glob
     fi
 
-    for rc in "$HOME/yadm/functions"/*.{sh,bash}; do
+    for rc in "$HOME/yadm/functions"/*.{bash}; do
         [ -f "$rc" ] || continue
         if [ "${YADM_CUSTOM_DEBUG}" = "1" ]; then
             echo "Sourcing: $rc"
