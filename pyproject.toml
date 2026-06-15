@@ -4,10 +4,10 @@ description = "Pranav Mishra's Dotfiles, managed with yadm"
 version = "1.1.0"
 
 # Python Semantic Release Configuration
-[semantic_release]
-version_toml = ["releaserc.toml:project.version"]
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
 assets = []
-build_command_env = ['GH_TOKEN']
+build_command_env = ['FORGEJO_TOKEN']
 build_command = 'bash yadm/self/pre-commit-test.sh'
 commit_message = "ci(semantic-release): automatic update - v{version}"
 commit_parser = "conventional"
@@ -16,23 +16,23 @@ no_git_verify = false
 tag_format = "v{version}"
 upload_to_release = true
 
-[semantic_release.commit_author]
+[tool.semantic_release.commit_author]
 env = "GIT_COMMIT_AUTHOR"
 default = "Pranav Kumar Mishra <62562712+pranavmishra90@users.noreply.github.com>"
-[semantic_release.commit_parser_options]
+[tool.semantic_release.commit_parser_options]
 allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]
 minor_tags = ["feat", "docs"]
 patch_tags = ["fix", "perf"]
 default_bump_level = 0
 
-[semantic_release.branches.main]
+[tool.semantic_release.branches.main]
 match = "main|master|release"
 
-[semantic_release.changelog.default_templates]
+[tool.semantic_release.changelog.default_templates]
 changelog_file = "CHANGELOG.md"
 output_format="md"
 
-[semantic_release.changelog.environment]
+[tool.semantic_release.changelog.environment]
 block_start_string = "{%"
 block_end_string = "%}"
 variable_start_string = "{{"
@@ -46,7 +46,7 @@ keep_trailing_newline = false
 extensions = []
 autoescape = true
 
-[semantic_release.remote]
+[tool.semantic_release.remote]
 name = "origin"
 type = "gitea"
 domain = "git.mishracloud.com"
@@ -54,5 +54,5 @@ token = { env = "FORGEJO_TOKEN" }
 ignore_token_for_push = true
 insecure = false
 
-[semantic_release.publish]
+[tool.semantic_release.publish]
 upload_to_vcs_release = true
