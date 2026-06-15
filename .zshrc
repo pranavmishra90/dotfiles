@@ -108,5 +108,5 @@ source ~/.common_profile
 #################################################
 # MIT License                                   #
 #                                               #
-# Copyright © 2022-2025 Pranav Kumar Mishra     #
+# Copyright © 2022-2026 Pranav Kumar Mishra     #
 #################################################
