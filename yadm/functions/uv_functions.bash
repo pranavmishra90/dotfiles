@@ -2,7 +2,7 @@
 
 uv-dep() {
   if [ -z "$1" ]; then
-    echo -e "\033[1;31mUSAGE: uv-list <PACKAGE>\033[0m"
+    echo -e "\033[1;31mUSAGE: uv-dep <PACKAGE>\033[0m"
     return 1
   fi
 
