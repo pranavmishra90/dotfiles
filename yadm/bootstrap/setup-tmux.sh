@@ -13,7 +13,7 @@
 trap 'logger ERROR "line $LINENO: $BASH_COMMAND"; exit 1' ERR
 set -e
 
-. "$HOME/yadm/functions/bash-logger.sh"
+. "$HOME/yadm/functions/bash-logger.bash"
 
 LOG_FILE="$HOME/.config/yadm/bootstrap.log"
 
