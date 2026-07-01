@@ -1,11 +1,9 @@
 # This is the Git Config at .gitconfig##h.Pranav-Surface
 
-# This is the Git Config at .gitconfig##default
-
 [user]
 	name = Pranav Kumar Mishra
 	email = 62562712+pranavmishra90@users.noreply.github.com
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP0E0I/3nKExauEnELCjqszl4UwKJiGfhb421nUWxn1u Pranav_Kumar_Mishra-@pranavmishra90
+	signingkey = ~/.ssh/id_ed25519.pub
 
 [core]
 	editor = nano
@@ -58,9 +56,6 @@
 	credentialStore = gpg
 	debug = true
 	guiPrompt = true
-
-[http]
-	sslCAInfo = /etc/ssl/certs/ca-bundle.crt
 
 # Git Aliases
 [alias]

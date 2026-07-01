@@ -1,41 +1,24 @@
 [project]
 name = "dotfiles"
 description = "Pranav Mishra's Dotfiles, managed with yadm"
-version = "1.0.0"
-requires-python = ">=3.11,<3.14"
-dependencies = [
-    "pre-commit>=4.3.0",
-    "python-semantic-release>=10.2.0",
-    "setuptools>=80.9.0",
-]
-
-# Dummy build system (to supress errors from uv)
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-packages = []
+version = "1.3.1"
 
 # Python Semantic Release Configuration
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
 assets = []
-build_command_env = ['GH_TOKEN']
+build_command_env = ['FORGEJO_TOKEN']
 build_command = 'bash yadm/self/pre-commit-test.sh'
 commit_message = "ci(semantic-release): automatic update - v{version}"
 commit_parser = "conventional"
-
 logging_use_named_masks = false
 no_git_verify = false
-
 tag_format = "v{version}"
 upload_to_release = true
 
 [tool.semantic_release.commit_author]
 env = "GIT_COMMIT_AUTHOR"
 default = "Pranav Kumar Mishra <62562712+pranavmishra90@users.noreply.github.com>"
-
 [tool.semantic_release.commit_parser_options]
 allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]
 minor_tags = ["feat", "docs"]
@@ -43,10 +26,10 @@ patch_tags = ["fix", "perf"]
 default_bump_level = 0
 
 [tool.semantic_release.branches.main]
-match = "main|master"
+match = "main|master|release"
 
 [tool.semantic_release.changelog.default_templates]
-changelog_file = "yadm/CHANGELOG.md"
+changelog_file = "CHANGELOG.md"
 output_format="md"
 
 [tool.semantic_release.changelog.environment]
@@ -64,7 +47,12 @@ extensions = []
 autoescape = true
 
 [tool.semantic_release.remote]
-name = "upstream"
-type = "github"
+name = "origin"
+type = "gitea"
+domain = "git.mishracloud.com"
+token = { env = "FORGEJO_TOKEN" }
 ignore_token_for_push = true
 insecure = false
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true

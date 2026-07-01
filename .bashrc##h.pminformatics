@@ -29,8 +29,6 @@ fi
 unset rc
 
 
-# Zoxide
-eval "$(zoxide init bash)"
 
 source ~/.bash_completion
 
