@@ -1,3 +1,5 @@
+#!/bin/bash
+
 source_dot_script() {
     local path="$1"
 

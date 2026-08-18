@@ -2,6 +2,102 @@
 
 <!-- version list -->
 
+## v1.4.0 (2026-08-18)
+
+### Bug Fixes
+
+- .local/bin/ to use dynamic $HOME
+  ([`630d85e`](https://github.com/pranavmishra90/dotfiles/commit/630d85ec45a06f9972ed06ac7d44ffcd0761ea90))
+
+- Add back in newer config parameters for btop
+  ([`40bbf3a`](https://github.com/pranavmishra90/dotfiles/commit/40bbf3ae5768bf751a0c4f70859628200ba22f47))
+
+- Bash-logger from sh to bash extension
+  ([`2ada0ea`](https://github.com/pranavmishra90/dotfiles/commit/2ada0ea4d8e5d84888202c726360251c569408e2))
+
+- Have parameters for YADM_CUSTOM_DEBUG either 0 or 1 based on YADM_TEST
+  ([`02c8405`](https://github.com/pranavmishra90/dotfiles/commit/02c84051bfab233ba53a40a895da1dc1617f4539))
+
+- Make the conda init script dynamic for $HOME
+  ([`d6df26e`](https://github.com/pranavmishra90/dotfiles/commit/d6df26eb6eabb9fb1ee9f595f785e27b111a15e2))
+
+- Set default eth NIC for pminformatics, remove ssh-agent init in bashrc from mishracloud
+  ([`f124696`](https://github.com/pranavmishra90/dotfiles/commit/f124696da5241ebf63997035739fd9622531e37b))
+
+- Setup-tmux from sh to bash extension
+  ([`8320fa7`](https://github.com/pranavmishra90/dotfiles/commit/8320fa7a4800f2f13a5b12fa33dd1d651cc0a8f7))
+
+- Setup-tmux from sh to bash extension
+  ([`7a7e4ee`](https://github.com/pranavmishra90/dotfiles/commit/7a7e4eeb8e5159089170e5d122ab3afe4d364662))
+
+- Source a bash logger script from github directly if the local one is not working
+  ([`c5b78d7`](https://github.com/pranavmishra90/dotfiles/commit/c5b78d7fa92543697c64404fb320b70e2f915ff3))
+
+- Switch to HOME variable rather than ~/ expansion
+  ([`4f7ee23`](https://github.com/pranavmishra90/dotfiles/commit/4f7ee23e926bfec1d5394b78d6ab74dac47cb8a7))
+
+### Chores
+
+- Add on proxmox
+  ([`1830516`](https://github.com/pranavmishra90/dotfiles/commit/1830516624841cb2a21d3051755358dd33b1edc8))
+
+- Change machine
+  ([`e3ab51b`](https://github.com/pranavmishra90/dotfiles/commit/e3ab51b103e2f3a81c8f1a34bd28e66fd4c886a1))
+
+- Cleanup changelog
+  ([`10de83f`](https://github.com/pranavmishra90/dotfiles/commit/10de83fa07f9a6642747f8bfa2c90eb92693254c))
+
+- Create docs dir
+  ([`bb9d30c`](https://github.com/pranavmishra90/dotfiles/commit/bb9d30cd2f1eb7c8aa152ef3e7164694253c42c1))
+
+- Pranav-surface
+  ([`172be41`](https://github.com/pranavmishra90/dotfiles/commit/172be41231c43ce289da95bbfe1b9ea82430e751))
+
+- Pranav-surface
+  ([`85c84d4`](https://github.com/pranavmishra90/dotfiles/commit/85c84d44cdef0b7df962789180f8be0cf99e73bc))
+
+- Remove mamba init from bashrc
+  ([`54e5241`](https://github.com/pranavmishra90/dotfiles/commit/54e52410a0a73e8b9c26d0a0b1d66496d8b85428))
+
+- Switch to default
+  ([`966bb33`](https://github.com/pranavmishra90/dotfiles/commit/966bb33b37a0f21bd99a2d4f689b8dbd5c011b31))
+
+### Features
+
+- Add script to verify the dotfiles script [WIP]
+  ([`5deb873`](https://github.com/pranavmishra90/dotfiles/commit/5deb873129b47cf77204e6e1088b1a4dedb98bf5))
+
+- Add validation when starting the ssh agent
+  ([`22b4e8f`](https://github.com/pranavmishra90/dotfiles/commit/22b4e8f9a267f10715e50894fa160f0886cf27dd))
+
+- Add verbosity functionality
+  ([`e96be8f`](https://github.com/pranavmishra90/dotfiles/commit/e96be8f6509dbc5750640b2fffb299abd1b828d8))
+
+- Create "start-ssh-agent.bash" script which is copied from and updating the wsl script's behavior
+  ([`61b9351`](https://github.com/pranavmishra90/dotfiles/commit/61b9351b6688bf28e92914330393a6e27c5d791a))
+
+- Make scripts safe for sh/POSIX
+  ([`85e2873`](https://github.com/pranavmishra90/dotfiles/commit/85e2873064ba888e530e9f45d48f98bf6fc03d3a))
+
+- Prefer inherited socket and validate
+  ([`628ae9f`](https://github.com/pranavmishra90/dotfiles/commit/628ae9fab422c50378b1a809ae346a5003861540))
+
+- Split the functions into a separate library file
+  ([`f211672`](https://github.com/pranavmishra90/dotfiles/commit/f211672aa2565d4499edb3e4622dfb8aa813ece0))
+
+- Update btop config for v1.4.6
+  ([`22fec49`](https://github.com/pranavmishra90/dotfiles/commit/22fec49be4475d50e3f6d448a0395774d7a19701))
+
+### Testing
+
+- Create a script to init a test environment which allows for a custom YADM_ROOT,
+  YADM_TEST_HOME/HOME, YADM_CUSTOM_DEBUG
+  ([`53732fd`](https://github.com/pranavmishra90/dotfiles/commit/53732fd55c6cb5567ae3427b50c5fdadc1602ccf))
+
+- Create a test suite using pytest which checks multiple shells (sh, bash, zsh)
+  ([`8292483`](https://github.com/pranavmishra90/dotfiles/commit/8292483ddbb214b27b70a1c7c3a692387910a306))
+
+
 ## v1.3.1 (2026-06-14)
 
 ### Bug Fixes
