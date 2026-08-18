@@ -14,3 +14,7 @@ uv.lock
 
 # Log files
 *.log
+
+# pytest
+.pytest_cache/
+**/__pycache__/
