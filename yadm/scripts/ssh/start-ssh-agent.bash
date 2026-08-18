@@ -54,8 +54,10 @@ ssh_find_existing_agent() {
 
 ssh_start_agent() {
     local sock="${1:-$HOME/.ssh/ssh_auth_sock}"
+    local agent_output
+    local agent_rc
 
-    mkdir -p "$(dirname "$sock")"
+    mkdir -p "$(dirname "$sock")" || return 1
 
     if ssh_sock_is_valid "$sock"; then
         export SSH_AUTH_SOCK="$sock"
@@ -64,8 +66,25 @@ ssh_start_agent() {
 
     rm -f "$sock"
 
-    eval "$(ssh-agent -a "$sock")" >/dev/null
+    agent_output="$(ssh-agent -a "$sock")"
+    agent_rc=$?
+    if [ "$agent_rc" -ne 0 ]; then
+        echo "ERROR: failed to start ssh-agent on socket: $sock" >&2
+        return 1
+    fi
+
+    if ! eval "$agent_output" >/dev/null; then
+        echo "ERROR: failed to apply ssh-agent environment on socket: $sock" >&2
+        return 1
+    fi
+
+    if ! ssh_sock_is_valid "$sock"; then
+        echo "ERROR: ssh-agent started but socket is not usable: $sock" >&2
+        return 1
+    fi
+
     export SSH_AUTH_SOCK="$sock"
+    return 0
 }
 
 
