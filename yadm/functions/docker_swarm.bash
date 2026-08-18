@@ -7,7 +7,7 @@ function dnode(){
 		docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
 	fi
 
-	bash ~/yadm/scripts/docker-node-labels.sh
+	bash $HOME/yadm/scripts/docker-node-labels.sh
 }
 
 deploy_stack() {
