@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 require_ssh_tools() {
     if ! command -v ssh-add >/dev/null 2>&1; then
@@ -15,14 +15,15 @@ require_ssh_tools() {
 }
 
 ssh_sock_is_valid() {
-    local sock="${1:-}"
+    ssh_sock_path=$1
 
-    [ -n "$sock" ] || return 1
-    [ -S "$sock" ] || return 1
+    [ -n "$ssh_sock_path" ] || return 1
+    [ -S "$ssh_sock_path" ] || return 1
 
-    SSH_AUTH_SOCK="$sock" ssh-add -l >/dev/null 2>&1
+    SSH_AUTH_SOCK="$ssh_sock_path" ssh-add -l >/dev/null 2>&1
 
-    case $? in
+    ssh_sock_rc=$?
+    case "$ssh_sock_rc" in
         0|1)
             return 0
             ;;
@@ -34,8 +35,8 @@ ssh_sock_is_valid() {
 
 
 ssh_find_existing_agent() {
-    local fixed_sock="$HOME/.ssh/ssh_auth_sock"
-    local runtime_sock="${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket"
+    ssh_find_fixed_sock="$HOME/.ssh/ssh_auth_sock"
+    ssh_find_runtime_sock="${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket"
 
     # Prefer inherited socket
     if [ -n "${SSH_AUTH_SOCK:-}" ] &&
@@ -44,15 +45,15 @@ ssh_find_existing_agent() {
     fi
 
     # Use our persistent socket
-    if ssh_sock_is_valid "$fixed_sock"; then
-        export SSH_AUTH_SOCK="$fixed_sock"
+    if ssh_sock_is_valid "$ssh_find_fixed_sock"; then
+        export SSH_AUTH_SOCK="$ssh_find_fixed_sock"
         return 0
     fi
 
     # Use runtime socket and normalize to fixed socket path.
-    if ssh_sock_is_valid "$runtime_sock"; then
-        ln -snf "$runtime_sock" "$fixed_sock" || return 1
-        export SSH_AUTH_SOCK="$fixed_sock"
+    if ssh_sock_is_valid "$ssh_find_runtime_sock"; then
+        ln -snf "$ssh_find_runtime_sock" "$ssh_find_fixed_sock" || return 1
+        export SSH_AUTH_SOCK="$ssh_find_fixed_sock"
         return 0
     fi
 
@@ -61,37 +62,35 @@ ssh_find_existing_agent() {
 
 
 ssh_start_agent() {
-    local sock="${1:-$HOME/.ssh/ssh_auth_sock}"
-    local agent_output
-    local agent_rc
+    ssh_start_sock=${1:-$HOME/.ssh/ssh_auth_sock}
 
-    mkdir -p "$(dirname "$sock")" || return 1
+    mkdir -p "$(dirname "$ssh_start_sock")" || return 1
 
-    if ssh_sock_is_valid "$sock"; then
-        export SSH_AUTH_SOCK="$sock"
+    if ssh_sock_is_valid "$ssh_start_sock"; then
+        export SSH_AUTH_SOCK="$ssh_start_sock"
         return 0
     fi
 
-    rm -f "$sock"
+    rm -f "$ssh_start_sock"
 
-    agent_output="$(ssh-agent -a "$sock")"
-    agent_rc=$?
-    if [ "$agent_rc" -ne 0 ]; then
-        echo "ERROR: failed to start ssh-agent on socket: $sock" >&2
+    ssh_agent_output="$(ssh-agent -a "$ssh_start_sock")"
+    ssh_agent_rc=$?
+    if [ "$ssh_agent_rc" -ne 0 ]; then
+        echo "ERROR: failed to start ssh-agent on socket: $ssh_start_sock" >&2
         return 1
     fi
 
-    if ! eval "$agent_output" >/dev/null; then
-        echo "ERROR: failed to apply ssh-agent environment on socket: $sock" >&2
+    if ! eval "$ssh_agent_output" >/dev/null; then
+        echo "ERROR: failed to apply ssh-agent environment on socket: $ssh_start_sock" >&2
         return 1
     fi
 
-    if ! ssh_sock_is_valid "$sock"; then
-        echo "ERROR: ssh-agent started but socket is not usable: $sock" >&2
+    if ! ssh_sock_is_valid "$ssh_start_sock"; then
+        echo "ERROR: ssh-agent started but socket is not usable: $ssh_start_sock" >&2
         return 1
     fi
 
-    export SSH_AUTH_SOCK="$sock"
+    export SSH_AUTH_SOCK="$ssh_start_sock"
     return 0
 }
 
