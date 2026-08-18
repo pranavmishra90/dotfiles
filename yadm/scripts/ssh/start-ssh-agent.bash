@@ -35,6 +35,7 @@ ssh_sock_is_valid() {
 
 ssh_find_existing_agent() {
     local fixed_sock="$HOME/.ssh/ssh_auth_sock"
+    local runtime_sock="${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket"
 
     # Prefer inherited socket
     if [ -n "${SSH_AUTH_SOCK:-}" ] &&
@@ -44,6 +45,13 @@ ssh_find_existing_agent() {
 
     # Use our persistent socket
     if ssh_sock_is_valid "$fixed_sock"; then
+        export SSH_AUTH_SOCK="$fixed_sock"
+        return 0
+    fi
+
+    # Use runtime socket and normalize to fixed socket path.
+    if ssh_sock_is_valid "$runtime_sock"; then
+        ln -snf "$runtime_sock" "$fixed_sock" || return 1
         export SSH_AUTH_SOCK="$fixed_sock"
         return 0
     fi
