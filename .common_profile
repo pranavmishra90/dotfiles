@@ -55,6 +55,9 @@ export STACK_DEPLOY_DETACHED=true
 # YADM
 if [ -z "${YADM_TEST:-}" ]; then
   export YADM_ROOT="$HOME/yadm"
+
+  export YADM_CUSTOM_DEBUG=0
+
 else
   yadm_test_root="$(git rev-parse --show-toplevel 2>/dev/null)"
   if [ -n "$yadm_test_root" ]; then
@@ -62,7 +65,7 @@ else
   else
     export YADM_ROOT="$HOME/yadm"
   fi
-  export YADM_CUSTOM_DEBUG=0
+  export YADM_CUSTOM_DEBUG=1
 fi
 
 
