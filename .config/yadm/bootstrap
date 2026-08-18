@@ -3,6 +3,8 @@
 # This is a yadm bootstrap file, executed after the initial clone of the dotfiles repository.
 # It can be manually called using `yadm bootstrap`
 
+set -uo pipefail
+
 #------------------------------------------------------------------------------
 # Initialization
 #------------------------------------------------------------------------------
@@ -17,7 +19,15 @@ HOSTNAME_SHORT=$(hostname | cut -d'.' -f1)
 trap 'logger ERROR "line $LINENO: $BASH_COMMAND"; exit 1' ERR
 set -e
 
-. "$HOME/yadm/functions/bash-logger.bash"
+
+if [ ! -f /tmp/bash-logger.bash ]; then
+    wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/f2769cb50b36fe6a1b667f79a92a5a803e2d223e/yadm/functions/bash-logger.bash
+fi
+
+. "$HOME/yadm/functions/bash-logger.bash" || . /tmp/bash-logger.bash
+
+
+
 
 LOG_FILE="$HOME/.config/yadm/bootstrap.log"
 
@@ -27,7 +37,7 @@ logger INFO "Logging yadm bootstrap for tmux to: $LOG_FILE"
 # yadm local repository setup
 #-------------------------------
 logger INFO "Updating the yadm repo origin URL"
-yadm remote set-url origin "ssh://git-ssh.mishracloud.com/pranavmishra90/dotfiles.git"
+yadm remote set-url origin "ssh://git@git-ssh.mishracloud.com/pranavmishra90/dotfiles.git"
 
 
 yadm checkout $HOSTNAME_SHORT || yadm checkout develop

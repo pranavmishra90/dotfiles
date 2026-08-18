@@ -52,8 +52,27 @@ export STACK_DEPLOY_DETACHED=true
 # UV
 # export UV_NO_SYNC=1
 
+# YADM
+if [ -z "${YADM_TEST:-}" ]; then
+  export YADM_ROOT="$HOME/yadm"
+
+  export YADM_CUSTOM_DEBUG=0
+
+else
+  yadm_test_root="$(git rev-parse --show-toplevel 2>/dev/null)"
+  if [ -n "$yadm_test_root" ]; then
+    export YADM_ROOT="$yadm_test_root"
+  else
+    export YADM_ROOT="$HOME/yadm"
+  fi
+  export YADM_CUSTOM_DEBUG=1
+fi
+
+
 # Load secrets
-source ~/.shell_secrets
+if [ -f ~/.shell_secrets ]; then
+	source ~/.shell_secrets
+fi
 
 # Node Version Manager (NVM)
 export NVM_DIR="$HOME/.nvm"
@@ -156,7 +175,7 @@ alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/i
 alias python='python3'
 alias venv='source .venv/bin/activate'
 
-alias active-python='~/yadm/scripts/python/active-python.sh'
+alias active-python='${YADM_ROOT}/scripts/python/active-python.sh'
 
 # SSH
 #------------------------------------------------
@@ -166,10 +185,10 @@ alias active-python='~/yadm/scripts/python/active-python.sh'
 
 
 # Provides the function add-ssh() to add ssh keys to the agent
-#source ~/yadm/scripts/keychain/keychain_alias.sh
+#source $YADM_ROOT/scripts/keychain/keychain_alias.sh
 
 # For interactive shells, load the keychain environment if it exists
-#source ~/yadm/scripts/keychain/keychain_interactive_shell.sh
+#source $YADM_ROOT/scripts/keychain/keychain_interactive_shell.sh
 
 
 # ~/.common_profile or sourced from both .bashrc and .bash_profile
@@ -194,7 +213,7 @@ alias dl-push="datalad push --to warehouse && datalad push --to origin"
 # Tmux / Tmuxinator
 #------------------------------------------------
 # Note: these functions are already sourced above
-# source ~/yadm/functions/tmux_functions.sh
+# source $YADM_ROOT/functions/tmux_functions.sh
 
 # GPG
 #------------------------------------------------
@@ -223,7 +242,7 @@ fi
 # Start the nvitop exporter for monitoring GPU usage
 if command -v nvidia-smi &> /dev/null; then
   if [[ -o login ]]; then
-    bash ~/yadm/scripts/monitoring/nvitop-exporter.sh
+    bash $YADM_ROOT/scripts/monitoring/nvitop-exporter.sh
   fi
 fi
 
@@ -235,7 +254,7 @@ fi
 # Run the computer specific config
 # For overriding settings
 
-source ~/yadm/shell/computer_specific
+source $YADM_ROOT/shell/computer_specific
 
 #################################################
 # MIT License                                   #
