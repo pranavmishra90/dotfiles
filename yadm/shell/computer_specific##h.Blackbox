@@ -6,6 +6,9 @@
 # and will be loaded into the ~/.common_profile by yadm
 # using symlinks
 
+export PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:/usr/local/bin:$PATH"
+
+. /opt/etc/profile
 
 # Directories
 alias mishracloud='cd /volume1/docker/MishraCloud'
@@ -35,3 +38,4 @@ alias nginx-ports="sudo netstat -tulpn | grep LISTEN | grep 'nginx'"
 # PREPAREDx Ansible Playbook
 
 alias cd-pdx='cd /volume1/Pranav/preparedx/preparedx-ansible'
+
