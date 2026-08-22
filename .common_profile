@@ -75,9 +75,11 @@ if [ -f ~/.shell_secrets ]; then
 fi
 
 # Node Version Manager (NVM)
+if [ -d "$HOME/.nvm" ]; then
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+fi
 
 
 # Cargo
@@ -107,6 +109,15 @@ alias ls="eza --group-directories-first"
 alias ll="eza -lah --group-directories-first --long --header --group"
 
 # Browsing
+if [ -z "$(command -v eza)" ]; then
+  alias ls="ls --group-directories-first --classify"
+  alias ll="ls -lah --time-style long-iso --group-directories-first"
+else
+  alias ls="eza --icons --group-directories-first"
+  alias ll="eza -lahg --header --icons --group-directories-first --time-style long-iso --git"
+fi
+
+
 alias grep='grep --color'
 
 alias unrar-find='unrar e -r -o- *.rar ./'
