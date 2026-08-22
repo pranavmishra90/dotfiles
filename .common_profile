@@ -171,9 +171,9 @@ alias ctop='docker run --rm -ti  --volume /var/run/docker.sock:/var/run/docker.s
 # Development
 #------------------------------------------------
 
-alias semvar='semantic-release'
+alias semver='semantic-release'
 
-alias semvar-print='semantic-release -v --noop version'
+alias semver-print='semantic-release -v --noop version'
 
 alias act='gh act'
 
