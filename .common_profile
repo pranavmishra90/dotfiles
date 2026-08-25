@@ -55,7 +55,6 @@ export STACK_DEPLOY_DETACHED=true
 # YADM
 if [ -z "${YADM_TEST:-}" ]; then
   export YADM_ROOT="$HOME/yadm"
-
   export YADM_CUSTOM_DEBUG=0
 
 else
@@ -71,14 +70,14 @@ fi
 
 # Load secrets
 if [ -f ~/.shell_secrets ]; then
-	source ~/.shell_secrets
+source ~/.shell_secrets
 fi
 
 # Node Version Manager (NVM)
 if [ -d "$HOME/.nvm" ]; then
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 fi
 
 
@@ -102,12 +101,6 @@ alias editcommon='editprofile'
 # GPU
 alias nvitop="uvx nvitop"
 
-# Exa
-#alias ls="eza --icons --group-directories-first"
-alias ls="eza --group-directories-first"
-#alias ll="eza -lah --icons --group-directories-first --long --header --git --group"
-alias ll="eza -lah --group-directories-first --long --header --group"
-
 # Browsing
 if [ -z "$(command -v eza)" ]; then
   alias ls="ls --group-directories-first --classify"
@@ -124,6 +117,7 @@ alias unrar-find='unrar e -r -o- *.rar ./'
 
 alias mux='tmuxinator'
 
+#TODO: make this into a function that can take the num levels as an argument
 alias du-sort='du -hd 1 | sort -h'
 
 # Functions
@@ -186,7 +180,7 @@ alias ansible-start="docker run -it --rm -w /work -v `pwd`:/work -v $HOME/.ssh/i
 alias python='python3'
 alias venv='source .venv/bin/activate'
 
-alias active-python='${YADM_ROOT}/scripts/python/active-python.sh'
+alias active-python='~/yadm/scripts/python/active-python.sh'
 
 # SSH
 #------------------------------------------------
@@ -196,35 +190,32 @@ alias active-python='${YADM_ROOT}/scripts/python/active-python.sh'
 
 
 # Provides the function add-ssh() to add ssh keys to the agent
-#source $YADM_ROOT/scripts/keychain/keychain_alias.sh
+#source ~/yadm/scripts/keychain/keychain_alias.sh
 
 # For interactive shells, load the keychain environment if it exists
-#source $YADM_ROOT/scripts/keychain/keychain_interactive_shell.sh
+#source ~/yadm/scripts/keychain/keychain_interactive_shell.sh
 
 
 # ~/.common_profile or sourced from both .bashrc and .bash_profile
 
 # Git
 #------------------------------------------------
-#alias pre-commit='uvx pre-commit'
+alias reporoot='cd $(git rev-parse --show-toplevel)'
 
 alias readme='reporoot && pwd && nano --view README.md || nano --view readme.md'
 
 alias gitgraph="git -c log.showSignature=false log --oneline --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit"
+
 alias gitlog='git log --decorate --all --show-pulls --show-signature --max-count 3 --abbrev-commit'
-
-
-alias bfg="java -jar ~/.local/bin/bfg.jar"
 
 # Datalad
 #------------------------------------------------
 alias dl-push="datalad push --to warehouse && datalad push --to origin"
 
 
-# Tmux / Tmuxinator
+# Transcriptomics
 #------------------------------------------------
-# Note: these functions are already sourced above
-# source $YADM_ROOT/functions/tmux_functions.sh
+alias bfg="java -jar ~/.local/bin/bfg.jar"
 
 # GPG
 #------------------------------------------------
@@ -253,7 +244,7 @@ fi
 # Start the nvitop exporter for monitoring GPU usage
 if command -v nvidia-smi &> /dev/null; then
   if [[ -o login ]]; then
-    bash $YADM_ROOT/scripts/monitoring/nvitop-exporter.sh
+    bash ~/yadm/scripts/monitoring/nvitop-exporter.sh
   fi
 fi
 
@@ -265,7 +256,7 @@ fi
 # Run the computer specific config
 # For overriding settings
 
-source $YADM_ROOT/shell/computer_specific
+source ~/yadm/shell/computer_specific
 
 #################################################
 # MIT License                                   #
