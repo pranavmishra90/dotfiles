@@ -64,6 +64,7 @@ name = "upstream"
 type = "github"
 ignore_token_for_push = true
 insecure = false
+token = { env = "GH_TOKEN" }
 
 # [tool.semantic_release.remote]
 # name = "origin"
@@ -75,5 +76,3 @@ insecure = false
 
 [tool.semantic_release.publish]
 upload_to_vcs_release = true
-
-
