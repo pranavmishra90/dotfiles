@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.5.1 (2026-08-26)
+
+### Bug Fixes
+
+- Remote name token
+  ([`25503cb`](https://github.com/pranavmishra90/dotfiles/commit/25503cb5b9df6c37dd63b1c5ff4758f3995423e9))
+
+
 ## v1.5.0 (2026-08-26)
 
 ### Bug Fixes
