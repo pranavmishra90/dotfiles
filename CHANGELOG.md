@@ -2,6 +2,47 @@
 
 <!-- version list -->
 
+## v1.5.0 (2026-08-26)
+
+### Bug Fixes
+
+- Spelling issue for psr alias
+  ([`5c4b1c9`](https://github.com/pranavmishra90/dotfiles/commit/5c4b1c97ed6bd5efdd4b835f30095becab5b8483))
+
+### Chores
+
+- Create a bootstrap.d directory and run all of the files in there
+  ([`7766f36`](https://github.com/pranavmishra90/dotfiles/commit/7766f3633734a550d767ce0dfeb5637c7ccc1845))
+
+- Move step script into a dedicated dir
+  ([`191ae1b`](https://github.com/pranavmishra90/dotfiles/commit/191ae1be6bd4eb453bba365bb14b1af299e8ccff))
+
+- Rename back (preserves the git history on the previous commit)
+  ([`cff89b0`](https://github.com/pranavmishra90/dotfiles/commit/cff89b0524e0374e037884d155a81dafeee2bfdd))
+
+### Features
+
+- Add a tailscale override to, by default, deny tailscale DNS and not use subnet routing
+  ([`d7211a6`](https://github.com/pranavmishra90/dotfiles/commit/d7211a6892c1af0bffac9c9ff53f018e1823c14b))
+
+- Add step-bootstrap.sh to setup Step CA with SSH Certs
+  ([`081603e`](https://github.com/pranavmishra90/dotfiles/commit/081603e59323cfdeeaca3230cde33cb4ecb505ad))
+
+- Dynamically set aliases for `ls` and `ll` depending on whether eza is installed
+  ([`54ef237`](https://github.com/pranavmishra90/dotfiles/commit/54ef23754c25215acd01422224b34db9dfb0b1cb))
+
+- WIP finding / resetting the yadm symlinks to the default option
+  ([`4c029ce`](https://github.com/pranavmishra90/dotfiles/commit/4c029ce67dcaaa1cb5c01b2eb107d939c7574681))
+
+### Refactoring
+
+- Consolidate bash_aliases into one file, use yadm/shell/computer_sepecific to handle nuances.
+  ([`ccd87c0`](https://github.com/pranavmishra90/dotfiles/commit/ccd87c08c9ac731ff2b9cae952b28cb0b066dc1d))
+
+- Use ~/yadm rather than YADM_ROOT
+  ([`96a0050`](https://github.com/pranavmishra90/dotfiles/commit/96a00505758079f086b1d790f28af2383abe1e05))
+
+
 ## v1.4.0 (2026-08-18)
 
 ### Bug Fixes
