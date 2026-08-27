@@ -37,8 +37,8 @@ logger INFO "Logging yadm bootstrap for tmux to: $LOG_FILE"
 # yadm local repository setup
 #-------------------------------
 logger INFO "Updating the yadm repo origin URL"
-yadm remote rename origin upstream
 yadm remote set-url origin "ssh://git@git-ssh.mishracloud.com/pranavmishra90/dotfiles.git"
+yadm remote set-url upstream "git@github.com:pranavmishra90/dotfiles.git"
 yadm branch -u origin/master master
 
 
