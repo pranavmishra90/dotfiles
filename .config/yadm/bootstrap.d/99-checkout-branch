@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Initialize logger
+. "$HOME/yadm/functions/bash-logger.bash"
+LOG_FILE="$HOME/.config/yadm/bootstrap.log"
+create_log_file "$LOG_FILE"
+
+
+# Detect the system variant using systemd-detect-virt
+export SYSTEM_VARIANT=$(systemd-detect-virt)
+
+# Switch the yadm branch based on the detected system variant
+if [[ "$SYSTEM_VARIANT" == "wsl" ]]; then
+		echo "Detected WSL environment"
+		yadm checkout pranav-surface
+
+elif [[ "$SYSTEM_VARIANT" == "lxc" || "$SYSTEM_VARIANT" == "lxc-libvirt" ]]; then
+		echo "Detected LXC/LXD environment"
+		yadm checkout lxc
+
+else
+		yadm checkout $hostname || echo "No specific branch for hostname '$hostname', trying develop"
+		yadm checkout develop || echo "Could not checkout develop branch, staying on current branch"
+fi

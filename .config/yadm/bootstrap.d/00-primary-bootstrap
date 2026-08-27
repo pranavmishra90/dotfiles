@@ -29,26 +29,24 @@ fi
 
 . "$HOME/yadm/functions/bash-logger.bash" || . /tmp/bash-logger.bash
 
-
-
-
 LOG_FILE="$HOME/.config/yadm/bootstrap.log"
-
 create_log_file "$LOG_FILE"
+
 logger INFO "Logging yadm bootstrap for tmux to: $LOG_FILE"
 
 # yadm local repository setup
 #-------------------------------
 logger INFO "Updating the yadm repo origin URL"
+yadm remote rename origin upstream
 yadm remote set-url origin "ssh://git@git-ssh.mishracloud.com/pranavmishra90/dotfiles.git"
+yadm branch -u origin/master master
 
 
-yadm checkout $HOSTNAME_SHORT || yadm checkout develop
 logger DEBUG "Yadm is on branch: $(yadm branch --show-current -v)"
 logger DEBUG "Yadm remote is: $(yadm remote -v)"
 
 logger INFO "Fetching and merging latest changes from origin/master"
-yadm pull origin
+yadm fetch origin
 yadm pull origin master:master
 yadm merge -v --ff-only origin/master --no-gpg-sign
 
