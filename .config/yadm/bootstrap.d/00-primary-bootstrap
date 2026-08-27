@@ -9,6 +9,9 @@ set -uo pipefail
 # Initialization
 #------------------------------------------------------------------------------
 
+echo "This is the primary bootstrap script for yadm"
+echo "It is being run from: $0"
+
 cd "$HOME"
 HOSTNAME_SHORT=$(hostname | cut -d'.' -f1)
 # echo "Short hostname: $HOSTNAME_SHORT"
