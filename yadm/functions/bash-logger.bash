@@ -115,8 +115,11 @@ logger() {
     esac
 
 
-    # Log message to terminal with color and to file without color
-    echo -e "$COLOR$TIMESTAMP [$LEVEL] $MESSAGE$COLOR_RESET" | tee >(sed "s/\x1b\[[0-9;]*m//g" >> "$LOG_FILE")
+    # Log message to terminal with color and to file without color.
+    # Important: emit to stderr so command substitutions can safely capture
+    # a remote URL without accidentally swallowing logger output.
+    printf '%s\n' "$TIMESTAMP [$LEVEL] $MESSAGE" >> "$LOG_FILE"
+    echo -e "$COLOR$TIMESTAMP [$LEVEL] $MESSAGE$COLOR_RESET" >&2
 
     # # Send notification for WARN, ERROR, and CRITICAL levels
     # if [[ "$LEVEL" == "WARN" || "$LEVEL" == "ERROR" || "$LEVEL" == "CRITICAL" ]]; then
