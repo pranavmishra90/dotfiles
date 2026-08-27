@@ -37,10 +37,21 @@ logger INFO "Logging yadm bootstrap for tmux to: $LOG_FILE"
 # yadm local repository setup
 #-------------------------------
 logger INFO "Updating the yadm repo origin URL"
-yadm remote set-url origin "ssh://git@git-ssh.mishracloud.com/pranavmishra90/dotfiles.git"
-yadm remote set-url upstream "git@github.com:pranavmishra90/dotfiles.git"
-yadm branch -u origin/master master
 
+
+ssh -T -o StrictHostKeyChecking=no git@git-ssh.mishracloud.com
+status=$?
+
+if (( status > 1 )); then
+    logger WARNING "SSH connection to git-ssh.mishracloud.com failed with exit code $status."
+		logger WARNING "Keeping the github yadm remote"
+
+else
+	logger INFO "SSH connection to git-ssh.mishracloud.com succeeded. Changing the yadm remote"
+	yadm remote rename origin upstream
+	yadm remote add origin ssh://git@git-ssh.mishracloud.com/pranavmishra90/dotfiles.git
+	yadm branch -u origin/master master
+fi
 
 logger DEBUG "Yadm is on branch: $(yadm branch --show-current -v)"
 logger DEBUG "Yadm remote is: $(yadm remote -v)"
