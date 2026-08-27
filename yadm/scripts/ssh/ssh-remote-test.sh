@@ -3,6 +3,10 @@
 set -uo pipefail
 
 VERBOSE="${VERBOSE:-0}"
+# Keep compatibility with the existing env variable while using the actual script flag.
+if [ -n "${VERBOSITY:-}" ] && [ "$VERBOSE" -eq 0 ]; then
+    VERBOSE=1
+fi
 
 CURRENT_REPO_URL=$(git remote get-url origin)
 
@@ -16,16 +20,6 @@ FORGEJO_REPO_HTTPS_URL="${FORGEJO_HTTPS_URL}/${REPO_PATH}"
 GITHUB_REPO_SSH_URL="git@github.com:${REPO_PATH}"
 GITHUB_REPO_HTTPS_URL="https://github.com/${REPO_PATH}"
 
-# Initialize logger
-if [ ! -f /tmp/bash-logger.bash ]; then
-    wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/f2769cb50b36fe6a1b667f79a92a5a803e2d223e/yadm/functions/bash-logger.bash
-fi
-
-. "$HOME/yadm/functions/bash-logger.bash" || . /tmp/bash-logger.bash
-
-LOG_FILE="/tmp/git-remote-test.log"
-create_log_file "$LOG_FILE"
-
 # Define functions
 check_remote_access() {
     local label="$1"
@@ -37,7 +31,7 @@ check_remote_access() {
     local remote_status=0
 
     if [ "$VERBOSE" -eq 1 ]; then
-        logger DEBUG "Testing ${label} remote: ${remote_url}"
+        echo "[DEBUG] Testing ${label} remote: ${remote_url}"
     fi
 
     git ls-remote "$remote_url" HEAD >/dev/null 2>&1
@@ -45,9 +39,9 @@ check_remote_access() {
 
     if [ "$VERBOSE" -eq 1 ]; then
         if [ "$remote_status" -eq 0 ]; then
-            logger INFO "${label} repository is accessible via Git."
+            echo "[DEBUG] ${label} repository is accessible via Git."
         else
-            logger WARN "${label} repository is NOT accessible via Git (exit status: $remote_status)."
+            echo "[WARN] ${label} repository is NOT accessible via Git (exit status: $remote_status)."
         fi
     fi
 
@@ -62,11 +56,11 @@ check_remote_access() {
 
         if [ "$VERBOSE" -eq 1 ]; then
             if [ "$ssh_status" -eq 0 ]; then
-                logger INFO "SSH authentication to ${ssh_host} succeeded."
+                echo "[INFO] SSH authentication to ${ssh_host} succeeded."
             elif [ "$ssh_status" -eq 1 ]; then
-                logger WARN "SSH authentication to ${ssh_host} failed (this does not necessarily mean Git access fails)."
+                echo "[WARN] SSH authentication to ${ssh_host} failed (this does not necessarily mean Git access fails)."
             else
-                logger ERROR "SSH authentication to ${ssh_host} failed with exit code $ssh_status."
+                echo "[ERROR] SSH authentication to ${ssh_host} failed with exit code $ssh_status."
             fi
         fi
     fi
@@ -78,69 +72,106 @@ check_remote_access() {
     return 1
 }
 
+resolve_candidate() {
+    local -n candidates_ref="$1"
+    local candidate_value=""
+    local label=""
+    local ssh_host=""
+    local ssh_user=""
 
+    RESOLVED_CANDIDATE=""
+
+    for candidate_name in "${candidates_ref[@]}"; do
+        candidate_value="${!candidate_name}"
+
+        case "$candidate_name" in
+            FORGEJO_REPO_URL)
+                label="Forgejo SSH"
+                ssh_host="$FORGEJO_SSH_URL"
+                ssh_user="git"
+                ;;
+            FORGEJO_REPO_HTTPS_URL)
+                label="Forgejo HTTPS"
+                ssh_host=""
+                ssh_user=""
+                ;;
+            GITHUB_REPO_SSH_URL)
+                label="GitHub SSH"
+                ssh_host="github.com"
+                ssh_user="git"
+                ;;
+            GITHUB_REPO_HTTPS_URL)
+                label="GitHub HTTPS"
+                ssh_host=""
+                ssh_user=""
+                ;;
+            *)
+                label="$candidate_name"
+                ssh_host=""
+                ssh_user=""
+                ;;
+        esac
+
+        if check_remote_access "$label" "$candidate_value" "$ssh_host" "$ssh_user"; then
+            RESOLVED_CANDIDATE="$candidate_value"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+ORIGIN_CANDIDATES=(
+    FORGEJO_REPO_URL
+    GITHUB_REPO_SSH_URL
+    FORGEJO_REPO_HTTPS_URL
+    GITHUB_REPO_HTTPS_URL
+)
+
+UPSTREAM_CANDIDATES=(
+    GITHUB_REPO_SSH_URL
+    GITHUB_REPO_HTTPS_URL
+)
 
 if [ "$VERBOSE" -eq 1 ]; then
-    logger DEBUG "Current repository: $REPO_PATH"
-    logger DEBUG "Forgejo repository URL: $FORGEJO_REPO_URL"
-    logger DEBUG "GitHub repository SSH URL: $GITHUB_REPO_SSH_URL"
-    logger DEBUG "GitHub repository HTTPS URL: $GITHUB_REPO_HTTPS_URL"
-    logger DEBUG "Forgejo repository HTTPS URL: $FORGEJO_REPO_HTTPS_URL"
+    echo "[DEBUG] Current repository: $REPO_PATH"
+    echo "[DEBUG] Forgejo repository URL: $FORGEJO_REPO_URL"
+    echo "[DEBUG] Forgejo repository HTTPS URL: $FORGEJO_REPO_HTTPS_URL"
+    echo "[DEBUG] GitHub repository SSH URL: $GITHUB_REPO_SSH_URL"
+    echo "[DEBUG] GitHub repository HTTPS URL: $GITHUB_REPO_HTTPS_URL"
 fi
 
-if check_remote_access "Forgejo" "$FORGEJO_REPO_URL" "$FORGEJO_SSH_URL" "git"; then
-    FORGEJO_ACCESSIBLE=1
+resolve_candidate ORIGIN_CANDIDATES
+ORIGIN_STATUS=$?
+ORIGIN_CANDIDATE="$RESOLVED_CANDIDATE"
+
+if [ "$ORIGIN_STATUS" -eq 0 ] && [ -n "$ORIGIN_CANDIDATE" ]; then
+    git remote set-url origin "$ORIGIN_CANDIDATE"
+    echo "[INFO] Origin set to $ORIGIN_CANDIDATE"
 else
-    FORGEJO_ACCESSIBLE=0
+    echo "[ERROR] No reachable origin candidate found; origin remains unchanged."
 fi
 
-if check_remote_access "Forgejo HTTPS" "$FORGEJO_REPO_HTTPS_URL"; then
-    FORGEJO_HTTPS_ACCESSIBLE=1
-else
-    FORGEJO_HTTPS_ACCESSIBLE=0
-fi
+if [ "$ORIGIN_CANDIDATE" != "$GITHUB_REPO_SSH_URL" ] && [ "$ORIGIN_CANDIDATE" != "$GITHUB_REPO_HTTPS_URL" ]; then
+    resolve_candidate UPSTREAM_CANDIDATES
+    UPSTREAM_STATUS=$?
+    UPSTREAM_CANDIDATE="$RESOLVED_CANDIDATE"
 
-if check_remote_access "GitHub SSH" "$GITHUB_REPO_SSH_URL" "github.com" "git"; then
-    GITHUB_SSH_ACCESSIBLE=1
-else
-    GITHUB_SSH_ACCESSIBLE=0
-fi
-
-if check_remote_access "GitHub HTTPS" "$GITHUB_REPO_HTTPS_URL"; then
-    GITHUB_HTTPS_ACCESSIBLE=1
-else
-    GITHUB_HTTPS_ACCESSIBLE=0
-fi
-
-if [ "$VERBOSE" -eq 1 ]; then
-    logger DEBUG "Selection summary: evaluating final remote configuration"
-fi
-
-if [ "$FORGEJO_ACCESSIBLE" -eq 1 ]; then
-    git remote set-url origin "$FORGEJO_REPO_URL"
-    logger INFO "Origin set to Forgejo: $FORGEJO_REPO_URL"
-
-    if [ "$GITHUB_SSH_ACCESSIBLE" -eq 1 ]; then
-        git remote set-url upstream "$GITHUB_REPO_SSH_URL"
-        logger INFO "Upstream set to GitHub SSH: $GITHUB_REPO_SSH_URL"
-    elif [ "$GITHUB_HTTPS_ACCESSIBLE" -eq 1 ]; then
-        git remote set-url upstream "$GITHUB_REPO_HTTPS_URL"
-        logger INFO "Upstream set to GitHub HTTPS: $GITHUB_REPO_HTTPS_URL"
+    if [ "$UPSTREAM_STATUS" -eq 0 ] && [ -n "$UPSTREAM_CANDIDATE" ]; then
+        if git remote get-url upstream >/dev/null 2>&1; then
+            git remote set-url upstream "$UPSTREAM_CANDIDATE"
+        else
+            git remote add upstream "$UPSTREAM_CANDIDATE"
+        fi
+        echo "[INFO] Upstream set to $UPSTREAM_CANDIDATE"
     else
         git remote remove upstream 2>/dev/null || true
-        logger WARN "No GitHub upstream configured because neither SSH nor HTTPS is reachable while Forgejo is available."
+        echo "[WARN] No GitHub upstream configured because no reachable GitHub remote is available or it is already the origin."
     fi
 else
-    if [ "$GITHUB_SSH_ACCESSIBLE" -eq 1 ]; then
-        git remote set-url origin "$GITHUB_REPO_SSH_URL"
-        logger WARN "Forgejo is not reachable; origin set to GitHub SSH: $GITHUB_REPO_SSH_URL"
-    elif [ "$GITHUB_HTTPS_ACCESSIBLE" -eq 1 ]; then
-        git remote set-url origin "$GITHUB_REPO_HTTPS_URL"
-        logger WARN "Forgejo is not reachable; origin set to GitHub HTTPS: $GITHUB_REPO_HTTPS_URL"
-    else
-        logger ERROR "Forgejo and GitHub are not reachable; origin remains unchanged."
-    fi
-
     git remote remove upstream 2>/dev/null || true
-    logger INFO "No upstream configured because Forgejo is unavailable and GitHub is being used as the only reachable remote."
+    echo "[INFO] No upstream configured because GitHub is already being used as origin."
 fi
+
+printf "\n\n"
+printf "[INFO] Current remotes: \n$(git remote -v)"
