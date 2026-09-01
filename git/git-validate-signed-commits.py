@@ -4,7 +4,7 @@
 # dependencies = []
 # ///
 
-"""Inspect SSH signing keys and certificates embedded in Git commits."""
+"""Validate SSH signing keys and certificates embedded in Git commits."""
 
 from __future__ import annotations
 
@@ -17,12 +17,55 @@ import struct
 import subprocess
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 
 
 SSH_BEGIN = b"-----BEGIN SSH SIGNATURE-----"
 SSH_END = b"-----END SSH SIGNATURE-----"
 
 CERTIFICATE_KEY_SUFFIX = "-cert-v01@openssh.com"
+
+VALID_PRINCIPAL_KINDS = {
+    "person",
+    "bot",
+    "machine",
+    "service",
+}
+
+
+@dataclass(frozen=True)
+class Principal:
+    """An SSH certificate principal."""
+
+    raw: str
+    kind: str | None
+    name: str | None
+
+    @classmethod
+    def parse(cls, value: str) -> Principal:
+        """Parse a principal such as person/pranav."""
+        kind, separator, name = value.partition("/")
+
+        if not separator:
+            return cls(
+                raw=value,
+                kind=None,
+                name=None,
+            )
+
+        return cls(
+            raw=value,
+            kind=kind,
+            name=name,
+        )
+
+    @property
+    def valid(self) -> bool:
+        """Whether the principal uses a recognized namespace."""
+        return (
+            self.kind in VALID_PRINCIPAL_KINDS
+            and bool(self.name)
+        )
 
 
 @dataclass(frozen=True)
@@ -46,10 +89,41 @@ class Inspection:
 
     commit: str
     key_id: str
+    principals: tuple[Principal, ...]
     public: str
     ca: str
     trust: str
+    ssh_public_cert: str | None = None
 
+    @property
+    def principal(self) -> str:
+        """Return recognized principals for human-readable output."""
+        principals = [
+            principal.raw
+            for principal in self.principals
+            if principal.valid
+        ]
+
+        return ", ".join(principals) or "-"
+
+    @property
+    def principal_types(self) -> tuple[str, ...]:
+        """Return unique recognized principal types."""
+        return tuple(
+            dict.fromkeys(
+                principal.kind
+                for principal in self.principals
+                if principal.valid and principal.kind is not None
+            )
+        )
+
+    @property
+    def valid_principals(self) -> bool:
+        """Whether the certificate has at least one recognized principal."""
+        return bool(self.principals) and all(
+            principal.valid
+            for principal in self.principals
+        )
 
 def run(
     command: list[str],
@@ -66,7 +140,9 @@ def run(
 
     if result.returncode:
         message = result.stderr.strip() or "command failed"
-        raise RuntimeError(f"{' '.join(command)}: {message}")
+        raise RuntimeError(
+            f"{' '.join(command)}: {message}"
+        )
 
     return result.stdout
 
@@ -97,7 +173,9 @@ def extract_public_key(commit: str) -> bytes:
             value = line[len(b"gpgsig ") :]
 
             if value != SSH_BEGIN:
-                raise RuntimeError("gpgsig is not an SSH signature")
+                raise RuntimeError(
+                    "gpgsig is not an SSH signature"
+                )
 
             in_signature = True
             continue
@@ -124,16 +202,22 @@ def extract_public_key(commit: str) -> bytes:
             validate=True,
         )
     except binascii.Error as exc:
-        raise ValueError("invalid SSH signature encoding") from exc
+        raise ValueError(
+            "invalid SSH signature encoding"
+        ) from exc
 
     if signature[:6] != b"SSHSIG":
-        raise ValueError("signature is not an SSHSIG signature")
+        raise ValueError(
+            "signature is not an SSHSIG signature"
+        )
 
     offset = 6
 
     # uint32 version
     if len(signature) < offset + 4:
-        raise ValueError("truncated SSHSIG signature")
+        raise ValueError(
+            "truncated SSHSIG signature"
+        )
 
     version = struct.unpack(
         ">I",
@@ -141,13 +225,17 @@ def extract_public_key(commit: str) -> bytes:
     )[0]
 
     if version != 1:
-        raise ValueError(f"unsupported SSHSIG version: {version}")
+        raise ValueError(
+            f"unsupported SSHSIG version: {version}"
+        )
 
     offset += 4
 
     # SSH string containing the public key.
     if len(signature) < offset + 4:
-        raise ValueError("truncated SSHSIG signature")
+        raise ValueError(
+            "truncated SSHSIG signature"
+        )
 
     length = struct.unpack(
         ">I",
@@ -158,7 +246,9 @@ def extract_public_key(commit: str) -> bytes:
     end = offset + length
 
     if end > len(signature):
-        raise ValueError("truncated SSH public-key blob")
+        raise ValueError(
+            "truncated SSH public-key blob"
+        )
 
     return signature[offset:end]
 
@@ -166,24 +256,36 @@ def extract_public_key(commit: str) -> bytes:
 def ssh_key_type(public_key: bytes) -> str:
     """Extract the key type from an SSH public-key blob."""
     if len(public_key) < 4:
-        raise ValueError("invalid SSH public-key blob")
+        raise ValueError(
+            "invalid SSH public-key blob"
+        )
 
-    length = struct.unpack(">I", public_key[:4])[0]
+    length = struct.unpack(
+        ">I",
+        public_key[:4],
+    )[0]
+
     end = 4 + length
 
     if end > len(public_key):
-        raise ValueError("invalid SSH public-key blob")
+        raise ValueError(
+            "invalid SSH public-key blob"
+        )
 
     try:
         return public_key[4:end].decode("ascii")
     except UnicodeDecodeError as exc:
-        raise ValueError("invalid SSH key type") from exc
+        raise ValueError(
+            "invalid SSH key type"
+        ) from exc
 
 
 def ssh_public_key_line(public_key: bytes) -> str:
     """Convert an SSH public-key blob to authorized_keys format."""
     key_type = ssh_key_type(public_key)
-    encoded = base64.b64encode(public_key).decode("ascii")
+    encoded = base64.b64encode(
+        public_key
+    ).decode("ascii")
 
     return f"{key_type} {encoded}"
 
@@ -191,12 +293,17 @@ def ssh_public_key_line(public_key: bytes) -> str:
 def ssh_fingerprint(public_key: bytes) -> str:
     """Return an OpenSSH-style SHA256 fingerprint."""
     digest = hashlib.sha256(public_key).digest()
-    encoded = base64.b64encode(digest).decode("ascii").rstrip("=")
+
+    encoded = base64.b64encode(
+        digest
+    ).decode("ascii").rstrip("=")
 
     return f"SHA256:{encoded}"
 
 
-def fingerprint_suffix(fingerprint: str | None) -> str:
+def fingerprint_suffix(
+    fingerprint: str | None,
+) -> str:
     """Return the final six characters of a fingerprint."""
     if not fingerprint:
         return "-"
@@ -204,7 +311,7 @@ def fingerprint_suffix(fingerprint: str | None) -> str:
     return fingerprint[-6:]
 
 
-def allowed_signers_file() -> str:
+def allowed_signers_file() -> Path:
     """Return Git's configured SSH allowed-signers file."""
     path = git(
         "config",
@@ -217,7 +324,7 @@ def allowed_signers_file() -> str:
             "gpg.ssh.allowedSignersFile is not configured"
         )
 
-    return path
+    return Path(path).expanduser()
 
 
 def load_allowed_signers() -> list[AllowedSigner]:
@@ -225,10 +332,13 @@ def load_allowed_signers() -> list[AllowedSigner]:
     path = allowed_signers_file()
 
     try:
-        lines = open(path, encoding="utf-8").read().splitlines()
+        lines = path.read_text(
+            encoding="utf-8"
+        ).splitlines()
     except OSError as exc:
         raise RuntimeError(
-            f"could not read allowed-signers file {path}: {exc}"
+            f"could not read allowed-signers file "
+            f"{path}: {exc}"
         ) from exc
 
     signers: list[AllowedSigner] = []
@@ -241,10 +351,6 @@ def load_allowed_signers() -> list[AllowedSigner]:
 
         parts = line.split()
 
-        # Expected format:
-        #
-        # @cert-authority HOSTS KEY-TYPE BASE64-KEY
-        #
         if len(parts) < 4:
             continue
 
@@ -275,16 +381,27 @@ def load_allowed_signers() -> list[AllowedSigner]:
     return signers
 
 
+def format_trust(line: str) -> str:
+    """Remove CA public-key material from an allowed-signers entry."""
+    parts = line.split()
+
+    if len(parts) >= 4:
+        return " ".join(parts[:3])
+
+    return line
+
+
 def find_trust(
     ca_fingerprint: str,
     allowed_signers: list[AllowedSigner],
 ) -> str:
-    """Find and format the allowed-signers entry matching a CA."""
+    """Find the allowed-signers entry matching a CA fingerprint."""
     for signer in allowed_signers:
         if signer.fingerprint == ca_fingerprint:
             return format_trust(signer.line)
 
     return "-"
+
 
 def inspect_with_step(public_key: bytes) -> dict:
     """Inspect an SSH public key/certificate with step."""
@@ -306,7 +423,8 @@ def inspect_with_step(public_key: bytes) -> dict:
 
     if result.returncode:
         raise RuntimeError(
-            result.stderr.strip() or "step ssh inspect failed"
+            result.stderr.strip()
+            or "step ssh inspect failed"
         )
 
     try:
@@ -316,15 +434,18 @@ def inspect_with_step(public_key: bytes) -> dict:
             "step ssh inspect returned invalid JSON"
         ) from exc
 
-def format_trust(line: str) -> str:
-    """Remove the CA public-key material from an allowed-signers entry."""
-    parts = line.split()
 
-    if len(parts) >= 4:
-        return " ".join(parts[:3])
+def parse_principals(
+    values: list[str] | None,
+) -> tuple[Principal, ...]:
+    """Parse SSH certificate principals."""
+    if not values:
+        return ()
 
-    return line
-
+    return tuple(
+        Principal.parse(value)
+        for value in values
+    )
 
 def inspect_signed_commit(
     commit: str,
@@ -337,14 +458,18 @@ def inspect_signed_commit(
     public = fingerprint_suffix(public_fingerprint)
 
     key_type = ssh_key_type(public_key)
+    ssh_public_cert = ssh_public_key_line(public_key)
 
+    # A non-certificate SSH key is a valid bare SSH signature.
     if not key_type.endswith(CERTIFICATE_KEY_SUFFIX):
         return Inspection(
             commit=commit,
             key_id="bare",
+            principals=(),
             public=public,
             ca="-",
             trust="bare key",
+            ssh_public_cert=ssh_public_cert,
         )
 
     info = inspect_with_step(public_key)
@@ -361,22 +486,28 @@ def inspect_signed_commit(
         ca = "-"
         trust = "-"
 
+    principals = parse_principals(
+        info.get("Principals")
+    )
+
     return Inspection(
         commit=commit,
         key_id=info.get("KeyID", "-"),
+        principals=principals,
         public=fingerprint_suffix(
-            info.get("KeyFingerprint") or public_fingerprint
+            info.get("KeyFingerprint")
+            or public_fingerprint
         ),
         ca=ca,
         trust=trust,
+        ssh_public_cert=ssh_public_cert,
     )
-
 
 def inspect_commit(
     commit: str,
     allowed_signers: list[AllowedSigner],
 ) -> Inspection | None:
-    """Inspect a commit, returning None if it is unsigned."""
+    """Inspect a commit, returning None if unsigned."""
     try:
         return inspect_signed_commit(
             commit,
@@ -404,7 +535,11 @@ def find_branch_point() -> str:
     except RuntimeError:
         upstream = ""
 
-    candidates = [upstream] if upstream else []
+    candidates = (
+        [upstream]
+        if upstream
+        else []
+    )
 
     candidates.extend(
         branch
@@ -427,42 +562,86 @@ def find_branch_point() -> str:
 
     raise RuntimeError(
         "could not determine branch point; "
-        "set an upstream branch or have a local main/master branch"
+        "set an upstream branch or have a local "
+        "main/master branch"
     )
 
 
 def branch_commits() -> list[str]:
-    """Return commits after the branch point, oldest first."""
-    branch_point = find_branch_point()
-
+    """Return commits after branch point, oldest first."""
     return list(
         reversed(
             git(
                 "rev-list",
                 "--first-parent",
                 "HEAD",
-                f"^{branch_point}",
+                f"^{find_branch_point()}",
             ).splitlines()
         )
     )
 
 
-def unsigned_inspection(commit: str) -> Inspection:
-    """Create an inspection row for an unsigned commit."""
+def unsigned_inspection(
+    commit: str,
+) -> Inspection:
+    """Create an inspection for an unsigned commit."""
     return Inspection(
         commit=commit,
         key_id="Unsigned",
+        principals=(),
+        ssh_public_key=None,
         public="-",
         ca="-",
         trust="-",
     )
 
 
-def print_table(rows: list[Inspection]) -> None:
+def inspection_to_json(
+    inspection: Inspection,
+) -> dict:
+    """Convert an inspection to JSON-compatible data."""
+    return {
+        "commit": inspection.commit,
+        "key_id": inspection.key_id,
+        "principals": [
+            {
+                "kind": principal.kind,
+                "name": principal.name,
+                "valid": principal.valid,
+            }
+            for principal in inspection.principals
+        ],
+        "public": inspection.public,
+        "ca": inspection.ca,
+        "trust": inspection.trust,
+        "ssh_key": inspection.ssh_public_cert,
+    }
+
+def branch_to_json(
+    branch_point: str,
+    rows: list[Inspection],
+    failures: int,
+) -> dict:
+    """Build the unified JSON representation."""
+    return {
+        "branch_point": branch_point,
+        "inspected": len(rows),
+        "failures": failures,
+        "commits": {
+            row.commit: inspection_to_json(row)
+            for row in rows
+        },
+    }
+
+
+def print_table(
+    rows: list[Inspection],
+) -> None:
     """Render inspections as a table."""
     headers = (
         "Commit",
         "Key ID",
+        "Principal",
         "Public",
         "CA",
         "Trust",
@@ -472,12 +651,17 @@ def print_table(rows: list[Inspection]) -> None:
         (
             row.commit[:12],
             row.key_id,
+            row.principal,
             row.public,
             row.ca,
             row.trust,
         )
         for row in rows
     ]
+
+    if not values:
+        print("No commits to inspect.")
+        return
 
     widths = [
         max(
@@ -487,16 +671,25 @@ def print_table(rows: list[Inspection]) -> None:
         for index, header in enumerate(headers)
     ]
 
-    def format_row(row: tuple[str, ...]) -> str:
+    def format_row(
+        row: tuple[str, ...],
+    ) -> str:
         return "  ".join(
             value.ljust(width)
-            for value, width in zip(row, widths)
+            for value, width in zip(
+                row,
+                widths,
+            )
         ).rstrip()
 
     print(format_row(headers))
+
     print(
         format_row(
-            tuple("-" * width for width in widths)
+            tuple(
+                "-" * width
+                for width in widths
+            )
         )
     )
 
@@ -504,7 +697,10 @@ def print_table(rows: list[Inspection]) -> None:
         print(format_row(row))
 
 
-def inspect_branch() -> int:
+def inspect_branch(
+    *,
+    json_output: bool,
+) -> int:
     """Inspect all commits on the current branch."""
     branch_point = find_branch_point()
     commits = branch_commits()
@@ -521,7 +717,9 @@ def inspect_branch() -> int:
             )
 
             if inspection is None:
-                rows.append(unsigned_inspection(commit))
+                rows.append(
+                    unsigned_inspection(commit)
+                )
             else:
                 rows.append(inspection)
 
@@ -536,21 +734,30 @@ def inspect_branch() -> int:
             )
             failures += 1
 
-    print_table(rows)
+    if json_output:
+        print(
+            json.dumps(
+                branch_to_json(
+                    branch_point,
+                    rows,
+                    failures,
+                ),
+                indent=2,
+            )
+        )
+    else:
+        print_table(rows)
 
-    print(file=sys.stderr)
-    print(
-        f"Branch point: {branch_point}",
-        file=sys.stderr,
-    )
-    print(
-        f"Inspected:    {len(commits)}",
-        file=sys.stderr,
-    )
-    print(
-        f"Failures:     {failures}",
-        file=sys.stderr,
-    )
+        print()
+        print(
+            f"Branch point: {branch_point}"
+        )
+        print(
+            f"Inspected:    {len(commits)}"
+        )
+        print(
+            f"Failures:     {failures}"
+        )
 
     return 1 if failures else 0
 
@@ -559,8 +766,8 @@ def build_argument_parser() -> argparse.ArgumentParser:
     """Build the command-line parser."""
     parser = argparse.ArgumentParser(
         description=(
-            "Inspect SSH signing keys and certificates embedded "
-            "in Git commit signatures."
+            "Validate SSH signing keys and certificates "
+            "embedded in Git commits."
         ),
     )
 
@@ -569,9 +776,15 @@ def build_argument_parser() -> argparse.ArgumentParser:
         nargs="?",
         default="HEAD",
         help=(
-            "Git commit-ish to inspect, or 'branch' to inspect all "
-            "commits from HEAD to the branch point."
+            "Git commit-ish to inspect, or 'branch' to "
+            "inspect all commits from HEAD to the branch point."
         ),
+    )
+
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output one unified JSON document.",
     )
 
     return parser
@@ -583,20 +796,52 @@ def main() -> int:
 
     try:
         if args.commit == "branch":
-            return inspect_branch()
+            return inspect_branch(
+                json_output=args.json,
+            )
 
         commit = resolve_commit(args.commit)
-
-        # Keep single-commit behavior useful for scripting while using
-        # the same normalized inspection model as branch inspection.
         allowed_signers = load_allowed_signers()
+
         inspection = inspect_commit(
             commit,
             allowed_signers,
         )
 
         if inspection is None:
-            print("Unsigned")
+            if args.json:
+                print(
+                    json.dumps(
+                        {
+                            commit: {
+                                "commit": commit,
+                                "key_id": "Unsigned",
+                                "principals": [],
+                                "ssh_public_key": None,
+                                "public": "-",
+                                "ca": "-",
+                                "trust": "-",
+                            }
+                        },
+                        indent=2,
+                    )
+                )
+            else:
+                print("Unsigned")
+
+            return 0
+
+        if args.json:
+            print(
+                json.dumps(
+                    {
+                        commit: inspection_to_json(
+                            inspection
+                        )
+                    },
+                    indent=2,
+                )
+            )
         else:
             print_table([inspection])
 
@@ -607,7 +852,10 @@ def main() -> int:
         ValueError,
         json.JSONDecodeError,
     ) as exc:
-        print(f"ERROR: {exc}", file=sys.stderr)
+        print(
+            f"ERROR: {exc}",
+            file=sys.stderr,
+        )
         return 1
 
 
