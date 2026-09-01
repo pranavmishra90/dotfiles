@@ -185,16 +185,7 @@ alias active-python='~/yadm/scripts/python/active-python.sh'
 # SSH
 #------------------------------------------------
 
-# ~/.bashrc or ~/.bash_profile
-
-
-
-# Provides the function add-ssh() to add ssh keys to the agent
-#source ~/yadm/scripts/keychain/keychain_alias.sh
-
-# For interactive shells, load the keychain environment if it exists
-#source ~/yadm/scripts/keychain/keychain_interactive_shell.sh
-
+alias step-login='step ssh certificate --sign   --principal person/pranav --principal pranavmishra90 --private-key ~/.ssh/id_ed25519   pranav ~/.ssh/id_ed25519.pub'
 
 # ~/.common_profile or sourced from both .bashrc and .bash_profile
 
