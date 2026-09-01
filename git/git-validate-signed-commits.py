@@ -354,12 +354,14 @@ def load_allowed_signers() -> list[AllowedSigner]:
         if len(parts) < 4:
             continue
 
-        if parts[0] != "@cert-authority":
-            continue
-
-        principals = parts[1]
+        principals = parts[0]
+        options = parts[1]
         key_type = parts[2]
         encoded_key = parts[3]
+
+        if "cert-authority" not in options.split(","):
+            continue
+
 
         try:
             key = base64.b64decode(
@@ -403,7 +405,11 @@ def find_trust(
     return "-"
 
 
-def inspect_with_step(public_key: bytes) -> dict:
+def inspect_with_step(
+    public_key: bytes,
+    *,
+    json_output: bool = True,
+) -> dict | str:
     """Inspect an SSH public key/certificate with step."""
     key = ssh_public_key_line(public_key)
 
@@ -414,7 +420,7 @@ def inspect_with_step(public_key: bytes) -> dict:
             "inspect",
             "/dev/stdin",
             "--format",
-            "json",
+            "json" if json_output else "text",
         ],
         input=key + "\n",
         text=True,
@@ -427,12 +433,96 @@ def inspect_with_step(public_key: bytes) -> dict:
             or "step ssh inspect failed"
         )
 
+    if not json_output:
+        return result.stdout.rstrip()
+
     try:
         return json.loads(result.stdout)
     except json.JSONDecodeError as exc:
         raise RuntimeError(
             "step ssh inspect returned invalid JSON"
         ) from exc
+
+def print_step_details(
+    inspection: Inspection,
+) -> None:
+    """Print detailed SSH certificate information for one commit."""
+    if not inspection.ssh_public_cert:
+        return
+
+    if not inspection.ssh_public_cert.split()[0].endswith(
+        CERTIFICATE_KEY_SUFFIX
+    ):
+        return
+
+    public_key = extract_public_key(inspection.commit)
+
+    details = inspect_with_step(
+        public_key,
+        json_output=False,
+    )
+
+    print()
+    print(details)
+
+def inspect_single_commit(
+    commit: str,
+    *,
+    json_output: bool,
+) -> int:
+    """Inspect one commit."""
+    full_commit = resolve_commit(commit)
+    allowed_signers = load_allowed_signers()
+
+    inspection = inspect_commit(
+        full_commit,
+        allowed_signers,
+    )
+
+    if inspection is None:
+        if json_output:
+            print(
+                json.dumps(
+                    {
+                        full_commit: {
+                            "commit": full_commit,
+                            "key_id": "Unsigned",
+                            "principals": [],
+                            "public": "-",
+                            "ca": "-",
+                            "trust": "-",
+                            "ssh_key": None,
+                        }
+                    },
+                    indent=2,
+                )
+            )
+        else:
+            print_table(
+                [
+                    unsigned_inspection(full_commit)
+                ]
+            )
+
+        return 0
+
+    if json_output:
+        print(
+            json.dumps(
+                {
+                    full_commit: inspection_to_json(
+                        inspection
+                    )
+                },
+                indent=2,
+            )
+        )
+        return 0
+
+    print_table([inspection])
+    print_step_details(inspection)
+
+    return 0
 
 
 def parse_principals(
@@ -800,52 +890,10 @@ def main() -> int:
                 json_output=args.json,
             )
 
-        commit = resolve_commit(args.commit)
-        allowed_signers = load_allowed_signers()
-
-        inspection = inspect_commit(
-            commit,
-            allowed_signers,
+        return inspect_single_commit(
+            args.commit,
+            json_output=args.json,
         )
-
-        if inspection is None:
-            if args.json:
-                print(
-                    json.dumps(
-                        {
-                            commit: {
-                                "commit": commit,
-                                "key_id": "Unsigned",
-                                "principals": [],
-                                "ssh_public_key": None,
-                                "public": "-",
-                                "ca": "-",
-                                "trust": "-",
-                            }
-                        },
-                        indent=2,
-                    )
-                )
-            else:
-                print("Unsigned")
-
-            return 0
-
-        if args.json:
-            print(
-                json.dumps(
-                    {
-                        commit: inspection_to_json(
-                            inspection
-                        )
-                    },
-                    indent=2,
-                )
-            )
-        else:
-            print_table([inspection])
-
-        return 0
 
     except (
         RuntimeError,
@@ -857,7 +905,6 @@ def main() -> int:
             file=sys.stderr,
         )
         return 1
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
