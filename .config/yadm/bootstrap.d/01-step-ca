@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# Bootstraps the step-ca server and provisions the SSH client with the necessary certificates and configuration.
+# wget -q -O /tmp/step-bootstrap.sh https://drpranavmishra.com/homelab/step-ca/step-bootstrap.sh && chmod +x /tmp/step-bootstrap.sh && /tmp/step-bootstrap.sh
+
+#----------------------------------------------------------------------------------
+
+set -euo pipefail
+
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit
+fi
+
+export STEPPATH=/etc/step
+export CURRENT_HOME=$HOME
+
+if [ ! -f /tmp/bash-logger.bash ]; then
+    wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/f2769cb50b36fe6a1b667f79a92a5a803e2d223e/yadm/functions/bash-logger.bash
+fi
+
+source /tmp/bash-logger.bash
+
+LOG_FILE="/tmp/step-bootstrap.log"
+create_log_file $LOG_FILE
+
+# Determine the host information
+if DETECT_VIRT=$(systemd-detect-virt 2>/dev/null); then
+  DETECT_VIRT=$(systemd-detect-virt)
+else
+  DETECT_VIRT="bare-metal"
+fi
+
+echo "Machine type: $DETECT_VIRT"
+
+
+if [ -z "$(command -v step)" ]; then
+  logger INFO "step-cli is not installed. Installing step-cli..."
+
+  sudo apt-get update && sudo apt-get install -y --no-install-recommends curl gpg ca-certificates
+  sudo curl -fsSL https://packages.smallstep.com/keys/apt/repo-signing-key.gpg -o /etc/apt/keyrings/smallstep.asc
+  cat << EOF > /etc/apt/sources.list.d/smallstep.sources
+Types: deb
+URIs: https://packages.smallstep.com/stable/debian
+Suites: debs
+Components: main
+Signed-By: /etc/apt/keyrings/smallstep.asc
+EOF
+
+	sudo apt-get update && sudo apt-get -y install step-cli
+
+else
+  logger INFO "step-cli is already installed."
+fi
+
+# Bootstrap the CA
+logger INFO "Bootstrapping the CA..."
+
+
+sudo mkdir -p $STEPPATH
+
+sudo step ca bootstrap --ca-url https://step.int.mishracloud.com --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
+
+last_command_status=$?
+
+if [ $last_command_status -ne 0 ]; then
+	logger ERROR "Step CA bootstrap failed with exit code $last_command_status. Please check the logs for more information."
+	exit $last_command_status
+fi
+
+
+
+
+sudo cp -r -v $CURRENT_HOME/yadm/etc/systemd/system/ /etc/systemd/system/
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable --now ssh-cert-renewer.service
+sudo systemctl enable --now ssh-cert-renewer.timer
+
+sudo systemctl status ssh-cert-renewer.service --no-pager
+sudo systemctl status ssh-cert-renewer.timer --no-pager
+sudo systemctl list-timers --no-pager | grep cert
+
+sudo systemctl list-unit-files --all --no-pager '*cert*'
+
