@@ -102,7 +102,7 @@ logger INFO "Configuring SSHD to use the signed host certificate and trust the S
 tee /etc/ssh/sshd_config.d/01-Step-CA.conf > /dev/null <<EOF
 # Step SSH CA Configuration
 # The path to the CA public key for authenticatin user certificates
-TrustedUserCAKeys MishraLab_step_ssh_user_key.pub
+TrustedUserCAKeys /etc/ssh/MishraLab_step_ssh_user_key.pub
 # Path to the private key and certificate
 HostKey $STEP_KEY_TO_SIGN
 HostCertificate $STEP_KEY_TO_SIGN-cert.pub
