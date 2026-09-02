@@ -67,7 +67,6 @@ else
   export YADM_CUSTOM_DEBUG=1
 fi
 
-
 # Load secrets
 if [ -f ~/.shell_secrets ]; then
 source ~/.shell_secrets
@@ -184,6 +183,15 @@ alias active-python='~/yadm/scripts/python/active-python.sh'
 
 # SSH
 #------------------------------------------------
+
+# SSH agent bootstrap
+if [ -f "$YADM_ROOT/functions/ssh/start-ssh-agent.lib.bash" ]; then
+  . "$YADM_ROOT/functions/ssh/start-ssh-agent.lib.bash"
+  if command -v ssh-agent >/dev/null 2>&1 && command -v ssh-add >/dev/null 2>&1; then
+    bootstrap_ssh_agent >/dev/null 2>&1 || true
+  fi
+fi
+
 
 alias step-login='step ssh certificate --sign   --principal person/pranav --principal pranavmishra90 --private-key ~/.ssh/id_ed25519   pranav ~/.ssh/id_ed25519.pub'
 
