@@ -68,6 +68,12 @@ if [ $last_command_status -ne 0 ]; then
 	exit $last_command_status
 fi
 
+# Detect and correct/update if Step has been installed into the user directory
+if [ -f "$HOME/.step/config/defaults.json" ]; then
+	logger DEBUG "Step environment found in the user home directory. Copying to the system directory at $STEPPATH  "
+	rsync -ahP $HOME/.step/ $STEPPATH/
+fi
+
 logger INFO "Copying systemd files for step-ca service and timer..."
 
 # Copy the systemd files for x509 and SSH certificate renewals
