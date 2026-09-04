@@ -192,12 +192,15 @@ if [ -f "$YADM_ROOT/functions/ssh/start-ssh-agent.lib.bash" ]; then
   fi
 fi
 
-CURRENT_KEYS=$(ssh-add -L)
+CURRENT_KEYS=$(ssh-add -L 2>/dev/null)
 
-if [ -z "$CURRENT_KEYS" ]; then
-	echo "No SSH keys loaded. Please run 'ssh-add ~/.ssh/id_ed25519' to load your key."
+if [ "$CURRENT_KEYS" = "The agent has no identities." ]; then
+    echo "No SSH keys loaded. Loading keys with ssh-add"
+    ssh-add
+else
+    echo "SSH key comments:"
+    ssh-add -l | cut -d ' ' -f3-
 fi
-
 
 alias step-login='step ssh certificate --sign   --principal person/pranav --principal pranavmishra90 --private-key ~/.ssh/id_ed25519   pranav ~/.ssh/id_ed25519.pub'
 
