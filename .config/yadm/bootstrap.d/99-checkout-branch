@@ -22,5 +22,5 @@ elif [[ "$SYSTEM_VARIANT" == "lxc" || "$SYSTEM_VARIANT" == "lxc-libvirt" ]]; the
 
 else
 		yadm checkout $hostname || echo "No specific branch for hostname '$hostname', trying develop"
-		yadm checkout develop || echo "Could not checkout develop branch, staying on current branch"
+		yadm checkout develop || yadm checkout -B develop 
 fi
