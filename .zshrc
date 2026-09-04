@@ -13,7 +13,9 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 ####################################################################################
 
-eval "$(zoxide init zsh)"
+if command -v zoxide >/dev/null 2>&1; then
+		eval "$(zoxide init bash)"
+fi
 
 
 # Zsh completion
