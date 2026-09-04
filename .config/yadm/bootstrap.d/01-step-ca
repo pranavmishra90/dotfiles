@@ -69,6 +69,74 @@ fi
 
 logger INFO "Copying systemd files for step-ca service and timer..."
 
+
+
+# Provision the SSH host
+logger INFO "Provisioning the SSH host"
+
+STEP_HOSTID=$(cat /etc/machine-id)
+STEP_HOSTNAME=$(hostname -f)
+STEP_KEY_TO_SIGN=/etc/ssh/ssh_host_ed25519_key
+
+logger INFO "Signing a host certificate for $STEP_HOSTNAME with host ID $STEP_HOSTID (/etc/machine-id) using the public key at $STEP_KEY_TO_SIGN"
+
+#   --principle $STEP_HOSTNAME --principle $(hostname) \
+step ssh certificate $STEP_HOSTNAME $STEP_KEY_TO_SIGN.pub \
+  --host --host-id $STEP_HOSTID \
+  --sign --provisioner pranavmishra@protonmail.com --force 
+  
+
+sleep 2
+
+logger INFO "Configuring SSHD to accept the root host certificate"
+
+tee /etc/ssh/MishraLab_step_ssh_user_key.pub > /dev/null <<EOF
+ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGUUsdglmVexK5m2Gg+HamswJH6vwApat5W01CtXJ/m4nLQYgkg0a9OWLBjO7Vb6He75rSub6WuvE1b/ck0I+pc=
+EOF
+
+logger INFO "Configuring the system known_hosts at /etc/ssh/known_hosts to trust the SSH CA"
+
+tee /etc/ssh/known_hosts > /dev/null <<EOF
+@cert-authority * ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAoIOkszxD5t3WJf77YIklW+8TzRQ4or4fB/ylDxLBDhMpdf+GXqQ6pzTkBgbz6760DMISZa8ls6aRlDzhge6OQ=
+EOF
+
+
+
+# Configure `sshd`
+logger INFO "Configuring SSHD to use the signed host certificate and trust the SSH CA"
+
+tee /etc/ssh/sshd_config.d/01-Step-CA.conf > /dev/null <<EOF
+# Step SSH CA Configuration
+# The path to the CA public key for authenticatin user certificates
+TrustedUserCAKeys /etc/ssh/MishraLab_step_ssh_user_key.pub
+# Path to the private key and certificate
+HostKey $STEP_KEY_TO_SIGN
+HostCertificate $STEP_KEY_TO_SIGN-cert.pub
+EOF
+
+chmod 644 /etc/ssh/sshd_config
+chmod 644 /etc/ssh/known_hosts
+chmod 444 /etc/ssh/MishraLab_step_ssh_user_key.pub
+chmod 644 /etc/ssh/sshd_config.d/01-Step-CA.conf
+
+# Test the SSHD configuration
+printf "\n\n"
+logger DEBUG "Current SSHD configuration:"
+sshd -T | grep 'MishraLab'
+sshd -T | grep $STEP_KEY_TO_SIGN
+
+logger INFO "Verifying SSHD configuration"
+sshd -t
+
+logger INFO "Restarting SSHD to apply the new configuration"
+systemctl restart sshd
+
+printf "\n\n"
+logger INFO "Checking SSHD status"
+systemctl status sshd --no-pager
+
+logger INFO "Completed SSH host provisioning and configuration."
+
 # Copy the systemd files for x509 and SSH certificate renewals
 sudo cp -r -v $CURRENT_HOME/yadm/etc/systemd/system/ /etc/systemd
 
