@@ -47,30 +47,37 @@ else
   logger INFO "step-cli is already installed."
 fi
 
-# Bootstrap the CA
-logger INFO "Bootstrapping the CA..."
+
 
 sudo mkdir -p $STEPPATH
 
 # This command does not work well with sudo, so we will copy the configuration output after outputting to the local user
-step ca bootstrap --ca-url https://step.lab.mishracloud.com --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
 
-last_command_status=$?
+if [ ! -f "/etc/step/certs/root_ca.crt" ]; then
+  # Bootstrap the CA
+  logger INFO "Bootstrapping the CA..."
+  step ca bootstrap --ca-url https://step.lab.mishracloud.com --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
 
-if [ $last_command_status -ne 0 ]; then
-  logger ERROR "Step CA bootstrap failed with exit code $last_command_status. Please check the logs for more information."
-  exit $last_command_status
+  last_command_status=$?
+
+  if [ $last_command_status -ne 0 ]; then
+    logger ERROR "Step CA bootstrap failed with exit code $last_command_status. Please check the logs for more information."
+    exit $last_command_status
+  fi
+
+else
+  logger INFO "Step CA is already bootstrapped at $STEPPATH"
 fi
+
+
 
 # Detect and correct/update if Step has been installed into the user directory
 if [ -f "$HOME/.step/config/defaults.json" ]; then
-	logger DEBUG "Step environment found in the user home directory. Copying to the system directory at $STEPPATH  "
-	rsync -ahP $HOME/.step/ $STEPPATH/
+  logger DEBUG "Step environment found in the user home directory. Copying to the system directory at $STEPPATH  "
+  rsync -ahPcd  --update $HOME/.step/ $STEPPATH/
 fi
 
 logger INFO "Copying systemd files for step-ca service and timer..."
-
-
 
 # Provision the SSH host
 logger INFO "Provisioning the SSH host"
@@ -79,15 +86,44 @@ STEP_HOSTID=$(cat /etc/machine-id)
 STEP_HOSTNAME=$(hostname -f)
 STEP_KEY_TO_SIGN=/etc/ssh/ssh_host_ed25519_key
 
-logger INFO "Signing a host certificate for $STEP_HOSTNAME with host ID $STEP_HOSTID (/etc/machine-id) using the public key at $STEP_KEY_TO_SIGN"
 
-#   --principle $STEP_HOSTNAME --principle $(hostname) \
-sudo step ssh certificate $STEP_HOSTNAME $STEP_KEY_TO_SIGN.pub \
+
+logger INFO "Checking and provisioning SSH host certificates"
+
+if [ ! -f "$STEP_KEY_TO_SIGN.pub" ]; then
+	logger INFO "Signing a host certificate for $STEP_HOSTNAME with host ID $STEP_HOSTID (/etc/machine-id) using the public key at $STEP_KEY_TO_SIGN"
+  printf "\n\n"
+  logger WARNING "Authentication may be required for the next step: generating host certificates"
+  echo ""
+
+  sudo step ssh certificate $STEP_HOSTNAME $STEP_KEY_TO_SIGN.pub \
   --host --host-id $STEP_HOSTID \
-  --sign --provisioner pranavmishra@protonmail.com --force 
-  
+  --sign --provisioner pranavmishra@protonmail.com --force \
+  --ca-config $STEPPATH/config/ca.json --ca-url https://step.lab.mishracloud.com --root $STEPPATH/certs/root_ca.crt 
 
-sleep 2
+  printf "\n\n"  
+
+  sleep 2
+else
+  logger INFO "Host certificate already exists at $STEP_KEY_TO_SIGN-cert.pub"
+  logger DEBUG "Checking validity and expiration"
+
+  if (step ssh needs-renewal $STEP_KEY_TO_SIGN-cert.pub); then
+    logger WARNING "The host certificate is expired. Renewing ..."
+    sudo step ssh certificate $STEP_HOSTNAME $STEP_KEY_TO_SIGN.pub \
+          --host --host-id $STEP_HOSTID \
+          --sign --provisioner pranavmishra@protonmail.com --force \
+          --ca-config $STEPPATH/config/ca.json --ca-url https://step.lab.mishracloud.com --root $STEPPATH/certs/root_ca.crt
+  else
+    
+    logger INFO "The host certificate is valid and does not require renewal."
+		
+  fi
+fi
+
+# Print out the host SSH certificate
+logger DEBUG "$(ssh-keygen -L -f $STEP_KEY_TO_SIGN-cert.pub)"
+
 
 logger INFO "Configuring SSHD to accept the root host certificate"
 
@@ -97,7 +133,7 @@ EOF
 
 logger INFO "Configuring the system known_hosts at /etc/ssh/known_hosts to trust the SSH CA"
 
-sudo tee /etc/ssh/known_hosts > /dev/null <<EOF
+sudo tee /etc/ssh/ssh_known_hosts > /dev/null <<EOF
 @cert-authority * ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAoIOkszxD5t3WJf77YIklW+8TzRQ4or4fB/ylDxLBDhMpdf+GXqQ6pzTkBgbz6760DMISZa8ls6aRlDzhge6OQ=
 EOF
 
@@ -123,11 +159,11 @@ sudo chmod 644 /etc/ssh/sshd_config.d/01-Step-CA.conf
 # Test the SSHD configuration
 printf "\n\n"
 logger DEBUG "Current SSHD configuration:"
-sshd -T | grep 'MishraLab'
-sshd -T | grep $STEP_KEY_TO_SIGN
+sudo sshd -T | grep 'MishraLab'
+sudo sshd -T | grep $STEP_KEY_TO_SIGN
 
 logger INFO "Verifying SSHD configuration"
-sshd -t
+sudo sshd -t
 
 logger INFO "Restarting SSHD to apply the new configuration"
 sudo systemctl restart sshd
@@ -139,17 +175,23 @@ sudo systemctl status sshd --no-pager
 logger INFO "Completed SSH host provisioning and configuration."
 
 # Copy the systemd files for x509 and SSH certificate renewals
-sudo cp -r -v $CURRENT_HOME/yadm/etc/systemd/system/ /etc/systemd
 
-logger DEBUG "/etc/systemd/system: $(ls -l /etc/systemd/system/ | grep cert)"
+logger INFO "Configuring systemd"
+
+sudo cp -r $CURRENT_HOME/yadm/etc/systemd/system/ /etc/systemd
+
+logger DEBUG "cert files in /etc/systemd/system: $(ls /etc/systemd/system/ | grep cert)"
 
 sudo systemctl daemon-reload
 
 sudo systemctl enable --now ssh-cert-renewer.service
 sudo systemctl enable --now ssh-cert-renewer.timer
 
-sudo systemctl status ssh-cert-renewer.service --no-pager
-sudo systemctl status ssh-cert-renewer.timer --no-pager
-sudo systemctl list-timers --no-pager | grep cert
-
+logger INFO "Checking the status of the SSH certificate renewer service and timer"
 sudo systemctl list-unit-files --all --no-pager '*cert*'
+
+logger DEBUG "SSH certificate renewer service and timer status:"
+
+logger INFO "Step CA bootstrap and SSH host provisioning completed. Exiting"
+
+exit 0
