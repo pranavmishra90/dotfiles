@@ -16,7 +16,7 @@ export STEPPATH=/etc/step
 export CURRENT_HOME=$HOME
 
 if [ ! -f /tmp/bash-logger.bash ]; then
-    wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/refs/heads/master/yadm/functions/bash-logger.bash
+  wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/refs/heads/master/yadm/functions/bash-logger.bash
 fi
 
 source /tmp/bash-logger.bash
@@ -33,13 +33,12 @@ fi
 
 echo "Machine type: $DETECT_VIRT"
 
-
 if [ -z "$(command -v step)" ]; then
   logger INFO "step-cli is not installed. Installing step-cli..."
 
   sudo apt-get update && sudo apt-get install -y --no-install-recommends curl gpg ca-certificates
   sudo curl -fsSL https://packages.smallstep.com/keys/apt/repo-signing-key.gpg -o /etc/apt/keyrings/smallstep.asc
-  cat << EOF > /etc/apt/sources.list.d/smallstep.sources
+  cat <<EOF >/etc/apt/sources.list.d/smallstep.sources
 Types: deb
 URIs: https://packages.smallstep.com/stable/debian
 Suites: debs
@@ -56,16 +55,15 @@ fi
 # Bootstrap the CA
 logger INFO "Bootstrapping the CA..."
 
-
 sudo mkdir -p $STEPPATH
 
-sudo step ca bootstrap --ca-url https://step.lab.mishracloud.com --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
+step ca bootstrap --ca-url https://step.lab.mishracloud.com --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
 
 last_command_status=$?
 
 if [ $last_command_status -ne 0 ]; then
-	logger ERROR "Step CA bootstrap failed with exit code $last_command_status. Please check the logs for more information."
-	exit $last_command_status
+  logger ERROR "Step CA bootstrap failed with exit code $last_command_status. Please check the logs for more information."
+  exit $last_command_status
 fi
 
 # Detect and correct/update if Step has been installed into the user directory
@@ -91,4 +89,3 @@ sudo systemctl status ssh-cert-renewer.timer --no-pager
 sudo systemctl list-timers --no-pager | grep cert
 
 sudo systemctl list-unit-files --all --no-pager '*cert*'
-
