@@ -71,7 +71,7 @@ fi
 logger INFO "Copying systemd files for step-ca service and timer..."
 
 # Copy the systemd files for x509 and SSH certificate renewals
-sudo cp -r -v $CURRENT_HOME/yadm/etc/systemd/system/ /etc/systemd/system/
+sudo cp -r -v $CURRENT_HOME/yadm/etc/systemd/system/ /etc/systemd
 
 logger DEBUG "/etc/systemd/system: $(ls -l /etc/systemd/system/ | grep cert)"
 
