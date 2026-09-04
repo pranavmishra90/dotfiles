@@ -52,6 +52,7 @@ logger INFO "Bootstrapping the CA..."
 
 sudo mkdir -p $STEPPATH
 
+# This command does not work well with sudo, so we will copy the configuration output after outputting to the local user
 step ca bootstrap --ca-url https://step.lab.mishracloud.com --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
 
 last_command_status=$?
@@ -81,7 +82,7 @@ STEP_KEY_TO_SIGN=/etc/ssh/ssh_host_ed25519_key
 logger INFO "Signing a host certificate for $STEP_HOSTNAME with host ID $STEP_HOSTID (/etc/machine-id) using the public key at $STEP_KEY_TO_SIGN"
 
 #   --principle $STEP_HOSTNAME --principle $(hostname) \
-step ssh certificate $STEP_HOSTNAME $STEP_KEY_TO_SIGN.pub \
+sudo step ssh certificate $STEP_HOSTNAME $STEP_KEY_TO_SIGN.pub \
   --host --host-id $STEP_HOSTID \
   --sign --provisioner pranavmishra@protonmail.com --force 
   
@@ -90,13 +91,13 @@ sleep 2
 
 logger INFO "Configuring SSHD to accept the root host certificate"
 
-tee /etc/ssh/MishraLab_step_ssh_user_key.pub > /dev/null <<EOF
+sudo tee /etc/ssh/MishraLab_step_ssh_user_key.pub > /dev/null <<EOF
 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGUUsdglmVexK5m2Gg+HamswJH6vwApat5W01CtXJ/m4nLQYgkg0a9OWLBjO7Vb6He75rSub6WuvE1b/ck0I+pc=
 EOF
 
 logger INFO "Configuring the system known_hosts at /etc/ssh/known_hosts to trust the SSH CA"
 
-tee /etc/ssh/known_hosts > /dev/null <<EOF
+sudo tee /etc/ssh/known_hosts > /dev/null <<EOF
 @cert-authority * ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAoIOkszxD5t3WJf77YIklW+8TzRQ4or4fB/ylDxLBDhMpdf+GXqQ6pzTkBgbz6760DMISZa8ls6aRlDzhge6OQ=
 EOF
 
@@ -105,7 +106,7 @@ EOF
 # Configure `sshd`
 logger INFO "Configuring SSHD to use the signed host certificate and trust the SSH CA"
 
-tee /etc/ssh/sshd_config.d/01-Step-CA.conf > /dev/null <<EOF
+sudo tee /etc/ssh/sshd_config.d/01-Step-CA.conf > /dev/null <<EOF
 # Step SSH CA Configuration
 # The path to the CA public key for authenticatin user certificates
 TrustedUserCAKeys /etc/ssh/MishraLab_step_ssh_user_key.pub
@@ -114,10 +115,10 @@ HostKey $STEP_KEY_TO_SIGN
 HostCertificate $STEP_KEY_TO_SIGN-cert.pub
 EOF
 
-chmod 644 /etc/ssh/sshd_config
-chmod 644 /etc/ssh/known_hosts
-chmod 444 /etc/ssh/MishraLab_step_ssh_user_key.pub
-chmod 644 /etc/ssh/sshd_config.d/01-Step-CA.conf
+sudo chmod 644 /etc/ssh/sshd_config
+sudo chmod 644 /etc/ssh/known_hosts
+sudo chmod 444 /etc/ssh/MishraLab_step_ssh_user_key.pub
+sudo chmod 644 /etc/ssh/sshd_config.d/01-Step-CA.conf
 
 # Test the SSHD configuration
 printf "\n\n"
@@ -129,11 +130,11 @@ logger INFO "Verifying SSHD configuration"
 sshd -t
 
 logger INFO "Restarting SSHD to apply the new configuration"
-systemctl restart sshd
+sudo systemctl restart sshd
 
 printf "\n\n"
 logger INFO "Checking SSHD status"
-systemctl status sshd --no-pager
+sudo systemctl status sshd --no-pager
 
 logger INFO "Completed SSH host provisioning and configuration."
 
