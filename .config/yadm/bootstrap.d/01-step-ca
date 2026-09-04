@@ -16,7 +16,7 @@ export STEPPATH=/etc/step
 export CURRENT_HOME=$HOME
 
 if [ ! -f /tmp/bash-logger.bash ]; then
-    wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/f2769cb50b36fe6a1b667f79a92a5a803e2d223e/yadm/functions/bash-logger.bash
+    wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/refs/heads/master/yadm/functions/bash-logger.bash
 fi
 
 source /tmp/bash-logger.bash
@@ -59,7 +59,7 @@ logger INFO "Bootstrapping the CA..."
 
 sudo mkdir -p $STEPPATH
 
-sudo step ca bootstrap --ca-url https://step.int.mishracloud.com --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
+sudo step ca bootstrap --ca-url https://step.lab.mishracloud.com --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
 
 last_command_status=$?
 
@@ -68,10 +68,12 @@ if [ $last_command_status -ne 0 ]; then
 	exit $last_command_status
 fi
 
+logger INFO "Copying systemd files for step-ca service and timer..."
 
-
-
+# Copy the systemd files for x509 and SSH certificate renewals
 sudo cp -r -v $CURRENT_HOME/yadm/etc/systemd/system/ /etc/systemd/system/
+
+logger DEBUG "/etc/systemd/system: $(ls -l /etc/systemd/system/ | grep cert)"
 
 sudo systemctl daemon-reload
 

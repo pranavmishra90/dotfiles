@@ -24,7 +24,7 @@ set -e
 
 
 if [ ! -f /tmp/bash-logger.bash ]; then
-    wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/f2769cb50b36fe6a1b667f79a92a5a803e2d223e/yadm/functions/bash-logger.bash
+    wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/refs/heads/master/yadm/functions/bash-logger.bash
 fi
 
 . "$HOME/yadm/functions/bash-logger.bash" || . /tmp/bash-logger.bash
