@@ -5,7 +5,9 @@
 
 #----------------------------------------------------------------------------------
 
-set -euo pipefail
+# Report errors and exit if detected
+trap 'logger ERROR "line $LINENO: $BASH_COMMAND"; exit 1' ERR
+set -e
 
 export STEPPATH=/etc/step
 export CURRENT_HOME=$HOME
@@ -152,7 +154,7 @@ HostCertificate $STEP_KEY_TO_SIGN-cert.pub
 EOF
 
 sudo chmod 644 /etc/ssh/sshd_config
-sudo chmod 644 /etc/ssh/known_hosts
+sudo chmod 644 /etc/ssh/ssh_known_hosts
 sudo chmod 444 /etc/ssh/MishraLab_step_ssh_user_key.pub
 sudo chmod 644 /etc/ssh/sshd_config.d/01-Step-CA.conf
 
