@@ -47,7 +47,7 @@ Components: main
 Signed-By: /etc/apt/keyrings/smallstep.asc
 EOF
 
-	sudo apt-get update && sudo apt-get -y install step-cli
+  sudo apt-get update && sudo apt-get -y install step-cli rsync
 
 else
   logger INFO "step-cli is already installed."
