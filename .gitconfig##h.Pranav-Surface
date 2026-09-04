@@ -18,6 +18,7 @@
 
 [merge]
 	verifySignatures = false
+  log = true
 
 # Remote operations
 [checkout]
@@ -32,6 +33,7 @@
 [push]
 	autoSetupRemote = true
 	default = current
+  followTags = true
 
 # Signed Git Operations
 [gpg]
@@ -57,11 +59,17 @@
 	debug = true
 	guiPrompt = true
 
+[http]
+	helper = cache
+
 # Git Aliases
 [alias]
 	last = log -1 HEAD
 	undo-commit = reset HEAD~
 	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
+	new-branch = "!~/git/new-branch.sh"
+	update-from = "merge --ff-only"
+	push-release = push --ff-only origin main:release
 
 
 # Git LFS, Git Annex, and Datalad
@@ -79,9 +87,6 @@
 	autocommit = false
 	fscknudge = false
 
-[annex "security"]
-	allowed-ip-addresses = 192.168.0.14 192.168.0.20
-
 [datalad "ui"]
 	suppress-similar-results = off
   progressbar = tqdm
@@ -94,18 +99,18 @@
 [help]
 	autocorrect = 20
 
-[safe]
-	directory = *
-
 
 # Computer Specific
 #----------------------------------------------------
 # This section is for pasting in computer specific 
 # configurations which will be switched out by yadm
 #----------------------------------------------------
-
-[credential "https://gitea.mishracloud.com"]
-	provider = generic
+[remote "origin"]
+	fetch = +refs/notes/*:refs/notes/*
+[annex "security"]
+	allowed-ip-addresses = 192.168.0.14 192.168.0.20
 
 [credential]
 	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager-core.exe
+
+

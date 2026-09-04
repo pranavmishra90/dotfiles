@@ -51,7 +51,7 @@
 	gpgsign = true
 
 [log]
-	showSignature = false
+	showSignature = true
 
 # Credentials and Certificates
 [credential]
@@ -86,6 +86,7 @@
 [annex]
 	autocommit = false
 	fscknudge = false
+
 [datalad "ui"]
 	suppress-similar-results = off
   progressbar = tqdm
@@ -98,14 +99,6 @@
 [help]
 	autocorrect = 20
 
-[safe]
-	directory = *
-	directory = /datalad/BFGI-RIA/alias/spatial
-	directory = /datalad/BFGI-RIA/alias/spatial
-	directory = /
-	directory = /datalad/BFGI-RIA/fd9/aaa81-1ae2-4fc7-bc79-ea7afc08ef70
-	directory = *
-
 
 # Computer Specific
 #----------------------------------------------------
@@ -115,4 +108,4 @@
 [remote "origin"]
 	fetch = +refs/notes/*:refs/notes/*
 [annex "security"]
-	allowed-ip-addresses = 192.168.0.20
+	allowed-ip-addresses = 192.168.0.14 192.168.0.20
