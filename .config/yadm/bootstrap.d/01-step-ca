@@ -7,11 +7,6 @@
 
 set -euo pipefail
 
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root"
-  exit
-fi
-
 export STEPPATH=/etc/step
 export CURRENT_HOME=$HOME
 
