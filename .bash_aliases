@@ -30,8 +30,3 @@ source ~/.common_profile
 
 GPG_TTY=$(tty)
 export GPG_TTY
-
-# Zoxide
-#---------
-
-eval "$(zoxide init bash)"
