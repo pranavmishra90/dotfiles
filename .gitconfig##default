@@ -3,7 +3,6 @@
 [user]
 	name = Pranav Kumar Mishra
 	email = 62562712+pranavmishra90@users.noreply.github.com
-	signingkey = ~/.ssh/id_ed25519.pub
 
 [core]
 	editor = nano
@@ -41,7 +40,8 @@
 	format = ssh
 
 [gpg "ssh"]
-	allowedSignersFile = /home/pranav/.ssh/allowed_signers
+	allowedSignersFile = ~/.ssh/allowed_signers
+  defaultKeyCommand = ~/git/git-signing-key.sh
 
 [tag]
 	gpgsign = true
