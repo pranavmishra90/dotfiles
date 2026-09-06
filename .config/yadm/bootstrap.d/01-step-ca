@@ -127,27 +127,46 @@ fi
 logger DEBUG "$(ssh-keygen -L -f $STEP_KEY_TO_SIGN-cert.pub)"
 
 
-logger INFO "Configuring SSHD to accept the root host certificate"
+logger INFO "Configuring ssh users (clients) on this machine to trust the Step SSH CA signed hosts"
 
-sudo tee /etc/ssh/MishraLab_step_ssh_user_key.pub > /dev/null <<EOF
-ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGUUsdglmVexK5m2Gg+HamswJH6vwApat5W01CtXJ/m4nLQYgkg0a9OWLBjO7Vb6He75rSub6WuvE1b/ck0I+pc=
-EOF
+logger INFO "Configuring the system known_hosts at /etc/ssh/MishraLab_ssh_known_hosts to trust the SSH CA"
 
-logger INFO "Configuring the system known_hosts at /etc/ssh/known_hosts to trust the SSH CA"
-
-sudo tee /etc/ssh/ssh_known_hosts > /dev/null <<EOF
+sudo tee /etc/ssh/MishraLab_ssh_known_hosts > /dev/null <<EOF
 @cert-authority * ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAoIOkszxD5t3WJf77YIklW+8TzRQ4or4fB/ylDxLBDhMpdf+GXqQ6pzTkBgbz6760DMISZa8ls6aRlDzhge6OQ=
 EOF
 
 
+
+sudo tee /etc/ssh/ssh_config.d/01-Step-CA.conf > /dev/null <<EOF
+# Step SSH CA Configuration
+#----------------------------
+# Trust the MishraLab SSH host CA for *.mishracloud.com
+
+Host *.mishracloud.com
+    GlobalKnownHostsFile /etc/ssh/MishraLab_ssh_known_hosts
+
+# Preserve the normal system-wide host trust for other destinations
+Host *
+    GlobalKnownHostsFile /etc/ssh/ssh_known_hosts
+EOF
+
+
+logger INFO "Configuring SSHD (the host SSH server) to trust incoming Step SSH CA signed user certificates"
+
+sudo tee /etc/ssh/MishraLab_step_ssh_user_key.pub > /dev/null <<EOF
+ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGUUsdglmVexK5m2Gg+HamswJH6vwApat5W01CtXJ/m4nLQYgkg0a9OWLBjO7Vb6He75rSub6WuvE1b/ck0I+pc=
+EOF
 
 # Configure `sshd`
 logger INFO "Configuring SSHD to use the signed host certificate and trust the SSH CA"
 
 sudo tee /etc/ssh/sshd_config.d/01-Step-CA.conf > /dev/null <<EOF
 # Step SSH CA Configuration
-# The path to the CA public key for authenticatin user certificates
+#----------------------------
+
+# The path to the CA public key for authenticating user certificates
 TrustedUserCAKeys /etc/ssh/MishraLab_step_ssh_user_key.pub
+
 # Path to the private key and certificate
 HostKey $STEP_KEY_TO_SIGN
 HostCertificate $STEP_KEY_TO_SIGN-cert.pub
