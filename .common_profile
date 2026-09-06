@@ -202,7 +202,7 @@ else
     ssh-add -l | cut -d ' ' -f3-
 fi
 
-alias step-login='step ssh certificate --sign   --principal person/pranav --principal pranavmishra90 --private-key ~/.ssh/id_ed25519   pranav ~/.ssh/id_ed25519.pub'
+alias step-login='step ssh certificate --sign --principal=pranav --principal=person/pranav --principal=pranavmishra90 --provisioner=pranavmishra@protonmail.com --private-key ~/.ssh/id_ed25519 pranav ~/.ssh/id_ed25519.pub'
 
 # ~/.common_profile or sourced from both .bashrc and .bash_profile
 
