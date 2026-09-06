@@ -73,7 +73,7 @@ fi
 #-------------------------------
 logger INFO "Starting yadm bootstrap scripts"
 
-bash "$HOME/yadm/bootstrap/setup-tmux.bash"
+bash "$HOME/yadm/bootstrap/setup-tmux.sh"
 
 
 # Done
