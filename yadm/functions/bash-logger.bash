@@ -21,11 +21,46 @@
 # Functions
 ############################################################################################################
 
+set -euo pipefail
+
+# Compute the fallback path lazily — only called if LOG_FILE isn't already set
+_default_log_file() {
+    local user script candidate
+
+    user="${USER:-${LOGNAME:-}}"
+    if [ -z "$user" ]; then
+        user="$(id -un 2>/dev/null)" || user=""
+    fi
+
+    script="$(basename "${0%.*}" 2>/dev/null)" || script=""
+
+    if [ -z "$user" ] || [ -z "$script" ]; then
+        echo "/dev/null"
+        return
+    fi
+
+    candidate="/tmp/bash-logger-${user}-${script}.log"
+
+    if ( : > "$candidate" ) 2>/dev/null; then
+        echo "$candidate"
+    else
+        echo "/dev/null"
+    fi
+}
+
+: "${LOG_FILE:=$(_default_log_file)}"
+
+
 create_log_file() {
-    local file="${1:-$LOG_FILE}"
+    local file="${1:-${LOG_FILE:-$(_default_log_file)}}"
+
     if [ -z "$file" ]; then
         echo "create_log_file: no log file specified" >&2
         return 1
+    fi
+
+    if [ "$file" = "/dev/null" ]; then
+        return 0
     fi
 
     if [ ! -f "$file" ]; then
@@ -37,7 +72,6 @@ create_log_file() {
         echo "Log file exists: $file"
     fi
 }
-
 
 # Function to get the current date and time in ISO 8601 format
 current_datetime() {
@@ -85,7 +119,7 @@ logger() {
     shift
     local TIMESTAMP=$(current_datetime)
     local MESSAGE="$@"
-    local LOG_FILE="${LOG_FILE:-/tmp/bash-logger-$(date +"%Y-%m-%d").log}"
+		local LOG_FILE="${LOG_FILE:-$(_default_log_file)}"
     
     # Define color codes
     local COLOR_RESET="\033[0m"
