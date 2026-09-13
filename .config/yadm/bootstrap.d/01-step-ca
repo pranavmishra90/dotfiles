@@ -92,8 +92,8 @@ STEP_KEY_TO_SIGN=/etc/ssh/ssh_host_ed25519_key
 
 logger INFO "Checking and provisioning SSH host certificates"
 
-if [ ! -f "$STEP_KEY_TO_SIGN.pub" ]; then
-	logger INFO "Signing a host certificate for $STEP_HOSTNAME with host ID $STEP_HOSTID (/etc/machine-id) using the public key at $STEP_KEY_TO_SIGN"
+if [ ! -f "$STEP_KEY_TO_SIGN-cert.pub" ]; then
+  logger INFO "Signing a host certificate for $STEP_HOSTNAME with host ID $STEP_HOSTID (/etc/machine-id) using the public key at $STEP_KEY_TO_SIGN"
   printf "\n\n"
   logger WARNING "Authentication may be required for the next step: generating host certificates"
   echo ""
@@ -107,7 +107,8 @@ if [ ! -f "$STEP_KEY_TO_SIGN.pub" ]; then
 
   sleep 2
 else
-  logger INFO "Host certificate already exists at $STEP_KEY_TO_SIGN-cert.pub"
+  logger WARNING "Host certificate already exists at $STEP_KEY_TO_SIGN-cert.pub"
+  logger DEBUG "$(ssh-keygen -L -f $STEP_KEY_TO_SIGN-cert.pub)"
   logger DEBUG "Checking validity and expiration"
 
   if (step ssh needs-renewal $STEP_KEY_TO_SIGN-cert.pub); then
@@ -119,7 +120,7 @@ else
   else
     
     logger INFO "The host certificate is valid and does not require renewal."
-		
+    step ssh inspect /etc/ssh/ssh_host_ed25519_key-cert.pub
   fi
 fi
 
@@ -172,8 +173,9 @@ HostKey $STEP_KEY_TO_SIGN
 HostCertificate $STEP_KEY_TO_SIGN-cert.pub
 EOF
 
+logger INFO "Setting permissions for the SSHD configuration files"
 sudo chmod 644 /etc/ssh/sshd_config
-sudo chmod 644 /etc/ssh/ssh_known_hosts
+sudo chmod 644 /etc/ssh/MishraLab_ssh_known_hosts
 sudo chmod 444 /etc/ssh/MishraLab_step_ssh_user_key.pub
 sudo chmod 644 /etc/ssh/sshd_config.d/01-Step-CA.conf
 
@@ -188,10 +190,15 @@ sudo sshd -t
 
 logger INFO "Restarting SSHD to apply the new configuration"
 sudo systemctl restart sshd
+logger INFO "Restarting SSH service to apply the new configuration"
+sudo systemctl restart ssh
 
 printf "\n\n"
 logger INFO "Checking SSHD status"
 sudo systemctl status sshd --no-pager
+
+logger INFO "Checking SSH service status"
+sudo systemctl status ssh --no-pager
 
 logger INFO "Completed SSH host provisioning and configuration."
 
