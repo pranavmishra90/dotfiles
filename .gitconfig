@@ -1,1 +1,111 @@
-.gitconfig##default
+# This is the Git Config at .gitconfig##default
+
+[user]
+	name = Pranav Kumar Mishra
+	email = 62562712+pranavmishra90@users.noreply.github.com
+
+[core]
+	editor = nano
+	pager = less
+
+# Local operations
+[init]
+	defaultBranch = main
+
+[branch]
+	autoSetupMerge = always
+
+[merge]
+	verifySignatures = false
+	log = true
+
+# Remote operations
+[checkout]
+	defaultRemote=origin
+
+[pull]
+	rebase = false
+
+[fetch]
+	prune = true
+
+[push]
+	autoSetupRemote = true
+	default = current
+	followTags = true
+
+# Signed Git Operations
+[gpg]
+	program = /bin/gpg
+	format = ssh
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/allowed_signers
+  defaultKeyCommand = git-signing-key
+
+[tag]
+	gpgsign = true
+
+[commit]
+	template = ~/git/git-commit-template.txt
+	gpgsign = true
+
+[log]
+	showSignature = true
+
+# Credentials and Certificates
+[credential]
+	credentialStore = gpg
+	debug = true
+	guiPrompt = true
+
+[http]
+	helper = cache
+
+# Git Aliases
+[alias]
+	last = log -1 HEAD
+	undo-commit = reset HEAD~
+	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
+	new-branch = "!~/git/new-branch.sh"
+	update-from = "merge --ff-only"
+	push-release = push --ff-only origin main:release
+
+
+# Git LFS, Git Annex, and Datalad
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[filter "annex"]
+	process = git-annex filter-process
+
+[annex]
+	autocommit = false
+	fscknudge = false
+
+[datalad "ui"]
+	suppress-similar-results = off
+  progressbar = tqdm
+
+[gcrypt]
+	rsync-put-flags = chrvP
+	participants = 35FE9A236AC80F3FF8299A15509C9F1324C7FCA8
+
+# Miscellaneous
+[help]
+	autocorrect = 20
+
+
+# Computer Specific
+#----------------------------------------------------
+# This section is for pasting in computer specific 
+# configurations which will be switched out by yadm
+#----------------------------------------------------
+[remote "origin"]
+	fetch = +refs/notes/*:refs/notes/*
+[annex "security"]
+	allowed-ip-addresses = 192.168.0.14 192.168.0.20
