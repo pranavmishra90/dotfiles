@@ -1,0 +1,52 @@
+#!/bin/env bash
+
+nearest_user_home() {
+    if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+        cat <<'EOF'
+Usage: nearest_user_home [PATH]
+
+Determine the nearest parent directory of PATH that is registered as a
+user's home directory in /etc/passwd (via getent passwd).
+
+If PATH is omitted, the path of the calling script is used.
+
+Arguments:
+  PATH        Path to a script or file to search upward from.
+  -h, --help  Show this help message.
+
+Examples:
+  # From within a script:
+  SCRIPT_USER_HOME="$(nearest_user_home "${BASH_SOURCE[0]}")"
+
+  # Explicit path:
+  nearest_user_home /home/pranav/.config/yadm/01-test.sh
+
+The function is independent of the executing user, so running a script as
+root will still identify /home/pranav as the home directory if that is the
+nearest registered user home in the script's path.
+EOF
+        return 0
+    fi
+
+    local path="${1:-${BASH_SOURCE[1]}}"
+    local dir
+
+    dir="$(cd -- "$(dirname -- "$(realpath -- "$path")")" 2>/dev/null && pwd -P)" || {
+        echo "nearest_user_home: unable to resolve path: $path" >&2
+        return 1
+    }
+
+    while [[ "$dir" != "/" ]]; do
+        if getent passwd | awk -F: -v home="$dir" \
+            '$6 == home { found=1; exit } END { exit !found }'
+        then
+            printf '%s\n' "$dir"
+            return 0
+        fi
+
+        dir="$(dirname -- "$dir")"
+    done
+
+    echo "nearest_user_home: no user home directory found for: $path" >&2
+    return 1
+}

@@ -1,0 +1,39 @@
+#!/bin/bash
+set -euo pipefail
+
+if [ ! -f /tmp/bash-logger.bash ]; then
+  wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/refs/heads/master/yadm/functions/bash-logger.bash
+fi
+
+source /tmp/bash-logger.bash
+
+
+create_log_file $LOG_FILE
+
+if [ -n "${SUDO_USER:-}" ]; then
+    ORIGINAL_USER="$SUDO_USER"
+    IS_ROOT=false
+    IS_SUDO=true
+elif [ "$(id -u)" -eq 0 ]; then
+    ORIGINAL_USER="root"
+    IS_ROOT=true
+    IS_SUDO=false
+else
+    ORIGINAL_USER="$(whoami)"
+    IS_ROOT=false
+    IS_SUDO=false
+fi
+
+echo "Current user: $(whoami). id: $(id -u). Original user: $ORIGINAL_USER"
+
+if [ "$IS_ROOT" = true ]; then
+    logger INFO "Running as root directly, no sudo needed."
+elif [ "$IS_SUDO" = true ]; then
+    if [ "$(id -u)" -eq 0 ]; then
+        logger INFO "Elevated to root via sudo (originally $ORIGINAL_USER)."
+    else
+        logger INFO "Running via sudo as non-root target user $(whoami) (originally $ORIGINAL_USER)."
+    fi
+else
+    logger INFO "Running as non-root user, no elevation."
+fi
