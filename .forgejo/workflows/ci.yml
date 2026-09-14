@@ -1,0 +1,209 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+      - 'ci/*'
+  workflow_dispatch:
+
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+
+  continuous-integration:
+    name: Continuous Integration
+    runs-on: ubuntu-latest
+    
+    if: > 
+      github.server_url == 'https://git.mishracloud.com' &&
+      github.repository_owner == 'pranavmishra90' &&
+      github.event.repository.name == 'dotfiles'
+    
+    steps:
+      # Note: we need to checkout the repository at the workflow sha in case during the workflow
+      # the branch was updated. To keep PSR working with the configured release branches,
+      # we force a checkout of the desired release branch but at the workflow sha HEAD.
+      - name: Setup | Checkout Repository at workflow sha
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+          
+      - name: Setup | Force correct release branch on workflow SHA
+        run: |
+          git checkout -B ${{ github.ref_name }}
+
+      - name: Set platform variables
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${FORGEJO_ACTIONS:-false}" = "true" ]; then
+            echo "FORGEJO_ACTIONS: ${FORGEJO_ACTIONS:-false}"
+            echo "Running in Forgejo Actions environment"
+
+            echo "ACTION_TOKEN=$FORGEJO_TOKEN" >> "$GITHUB_ENV"
+            echo "API_BASE_URL=https://git.mishracloud.com/api/v1" >> "$GITHUB_ENV"
+          else
+            echo "FORGEJO_ACTIONS: ${FORGEJO_ACTIONS:-false}"
+            echo "ACTION_TOKEN=$GITHUB_TOKEN" >> "$GITHUB_ENV"
+            echo "API_BASE_URL=$GITHUB_API_URL" >> "$GITHUB_ENV"
+          fi
+
+      - name: Setup | Add SSH Key
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.FACSIMILAB_BOT_SSHKEY }}
+
+      - name: Setup SSH Configuration
+        run: |
+          echo "Setting up SSH configuration..."
+          mkdir -p ~/.ssh
+          touch ~/.ssh/config
+          echo "Host git-ssh.mishracloud.com" >> ~/.ssh/config
+          echo "  HostName $SERVER_IP_FORGEJO" >> ~/.ssh/config
+          echo "  Port 22" >> ~/.ssh/config
+          echo "  User git" >> ~/.ssh/config
+          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+
+          echo "SSH Agent Info:"
+          ssh-add -l || echo "No identities added to the SSH agent."
+
+          ssh -T git@git-ssh.mishracloud.com
+        env:
+          SERVER_IP_FORGEJO: ${{ secrets.SERVER_IP_FORGEJO }}
+
+
+      - name: Git Configuration
+        run: |
+          set -x
+          echo "Configuring Git user and signing settings..."
+          echo $(whoami)
+          echo "Git config:"
+          cat  .git/config
+
+          echo "Configuring Git user and signing settings..."
+
+          git config user.email "195262995+facsimilab-bot@users.noreply.github.com"
+          git config user.name "FacsimiLab [Bot]"
+          git config user.signingkey "$FACSIMILAB_BOT_SSH_PUBKEY"
+          git config commit.gpgsign true
+          git config gpg.program /bin/gpg
+          git config gpg.format ssh
+          git config tag.gpgsign true
+          git config merge.verifySignatures false
+        env:
+          FACSIMILAB_BOT_SSH_PUBKEY: ${{ secrets.FACSIMILAB_BOT_SSH_PUBKEY }}
+
+     
+      - name: List and delete pre-release tags
+        if: github.ref == 'refs/heads/main'
+        id: list_tags
+        # This must occur in one step. If it is broken into list, then delete, there will be a failure
+        run: |
+              echo "Searching for tags containing 'rc', 'main', 'beta', or 'alpha'..."
+              TAGS=$(git tag -l "*-rc*" "*-main*" "*-beta*" "*-alpha*")
+              echo "Found tags:"  >> $GITHUB_STEP_SUMMARY
+              echo "$TAGS"  >> $GITHUB_STEP_SUMMARY
+              echo $TAGS
+
+              if [ -z "$TAGS" ]; then
+                echo "No pre-release tags found."
+                echo "tags_to_delete=" > tags.log
+              else
+                echo "tags_to_delete=$TAGS" > tags.log
+
+                echo "Deleting local tags..."
+                echo $TAGS | xargs -n 1 git tag -d
+
+                echo "Deleting remote tags..."
+                for TAG in $TAGS; do
+                  git push origin --delete $TAG || echo "Failed to delete $TAG from remote."
+                done
+              fi
+
+              echo "Completed deleting all pre-release tags." >> $GITHUB_STEP_SUMMARY
+
+      - name: Install uv
+        run: |
+              curl -LsSf https://astral.sh/uv/install.sh | sh
+              source $HOME/.local/bin/env
+         
+      - name: Install Python-Semantic-Release
+        run: |
+              echo "Installing python-semantic-release..."
+              uv tool install python-semantic-release
+
+      - name: Python Semantic Release - Main Branch
+        id: semver-main
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITEA_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          FORGEJO_TOKEN: ${{ secrets.ACTION_TOKEN }}
+        run: |
+              set -e
+
+              next_version=$(python-semantic-release version --print)
+              echo "Next version to be released: $next_version"
+
+              python-semantic-release version  \
+                --skip-build \
+                --changelog \
+                --commit \
+                --tag \
+                --push \
+                --vcs-release
+              echo "Successfully ran python-semantic-release"
+              exit 0
+
+      - name: Python Semantic Release - Non-Release Branch
+        id: semver-non-main
+        if: github.ref != 'refs/heads/main'
+        env:
+          GITEA_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          FORGEJO_TOKEN: ${{ secrets.ACTION_TOKEN }}
+        run: |
+              set -e
+
+              next_version=$(python-semantic-release version --print)
+              echo "Next version to be released: $next_version"
+
+              python-semantic-release version  \
+                --skip-build \
+                --changelog \
+                --commit \
+                --tag \
+                --no-push \
+                --no-vcs-release
+              echo "Successfully ran python-semantic-release"
+              exit 0
+
+      - name: Workflow Status
+        if: github.ref == 'refs/heads/main'
+        env:
+          SUMMARY_FILE: "logs/release_summary.md"
+        run: |
+          mkdir -p logs
+          echo 
+          touch $SUMMARY_FILE
+          chmod 777 $SUMMARY_FILE
+
+          ls -lahg logs
+
+          echo "## Python Semantic Release - GitHub Action" >> $SUMMARY_FILE
+          echo ""  >> $SUMMARY_FILE
+          echo "Version: ${{ steps.semver.outputs.version }}" >> $SUMMARY_FILE
+          echo ""  >> $SUMMARY_FILE
+          printf "Tags: \n$(git tag -l)" >> $SUMMARY_FILE
+          echo ""  >> $SUMMARY_FILE
+          echo "Released: ${{ steps.semver.outputs.released }}" >> $SUMMARY_FILE
+          echo ""  >> $SUMMARY_FILE
+          echo ""  >> $SUMMARY_FILE
+          cat CHANGELOG.md >> $SUMMARY_FILE
+
+          ls -lahg logs
+
+          python-semantic-release publish
