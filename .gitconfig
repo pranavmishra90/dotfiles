@@ -53,6 +53,11 @@
 [log]
 	showSignature = true
 
+
+# Notes
+[remote "origin"]
+	fetch = +refs/notes/*:refs/notes/*
+
 # Credentials and Certificates
 [credential]
 	credentialStore = gpg
@@ -87,6 +92,9 @@
 	autocommit = false
 	fscknudge = false
 
+[annex "security"]
+	allowed-ip-addresses = 192.168.0.14 192.168.0.20
+
 [datalad "ui"]
 	suppress-similar-results = off
   progressbar = tqdm
@@ -99,13 +107,11 @@
 [help]
 	autocorrect = 20
 
-
 # Computer Specific
 #----------------------------------------------------
 # This section is for pasting in computer specific 
 # configurations which will be switched out by yadm
 #----------------------------------------------------
-[remote "origin"]
-	fetch = +refs/notes/*:refs/notes/*
-[annex "security"]
-	allowed-ip-addresses = 192.168.0.14 192.168.0.20
+
+[include]
+    path = git/.gitconfig
