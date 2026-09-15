@@ -18,6 +18,9 @@ jobs:
     name: Continuous Integration
     runs-on: ubuntu-latest
     container: ghcr.io/pranavmishra90/dotfiles-devcontainer:latest
+    credentials:
+     username: pranavmishra90
+     password: ${{ secrets.GHCR_PAT }}
     
     if: forgejo.repository == 'pranavmishra90/dotfiles'
     
