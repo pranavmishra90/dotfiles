@@ -108,7 +108,9 @@ if [ -d /workspace ]; then
 	logger INFO "Running in Actions Workflow. Skipping Step CA bootstrap."
 	export CA_URL="https://10.1.10.16:443"
 	echo $MACHINE_BOOTSTRAP > /tmp/machine-bootstrap.txt
-	export PROVISIONER_STRING="--provisioner machine-bootstrap --provisioner-password-file=/tmp/machine-bootstrap.txt"
+	STEP_TOKEN=$(step ca token machine-bootstrap --provisioner=machine-bootstrap --provisioner-password-file=/tmp/machine-bootstrap.txt --not-after=10m)
+	export PROVISIONER_STRING="--provisioner machine-bootstrap --token $STEP_TOKEN"
+
 else
 	logger INFO "Running outside of Actions Workflow"
 	export CA_URL="https://step.lab.mishracloud.com"
