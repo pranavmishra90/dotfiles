@@ -60,20 +60,20 @@ keep_trailing_newline = false
 extensions = []
 autoescape = true
 
-[tool.semantic_release.remote]
-name = "upstream"
-type = "github"
-ignore_token_for_push = true
-insecure = false
-token = { env = "GH_TOKEN" }
-
 # [tool.semantic_release.remote]
-# name = "origin"
-# type = "gitea"
-# domain = "git.mishracloud.com"
-# token = { env = "FORGEJO_TOKEN" }
+# name = "upstream"
+# type = "github"
 # ignore_token_for_push = true
 # insecure = false
+# token = { env = "GH_TOKEN" }
+
+[tool.semantic_release.remote]
+name = "origin"
+type = "gitea"
+domain = "git.mishracloud.com"
+token = { env = "FORGEJO_TOKEN" }
+ignore_token_for_push = true
+insecure = false
 
 [tool.semantic_release.publish]
 upload_to_vcs_release = true
