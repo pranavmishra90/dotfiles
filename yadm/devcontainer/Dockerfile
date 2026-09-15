@@ -11,6 +11,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     gnupg \
     yadm \
     openssh-client \
+    openssh-server \
     sudo \
     wget \
     python3 \
