@@ -61,7 +61,6 @@ jobs:
           mkdir -p ~/.ssh
           touch ~/.ssh/config
           echo "Host git-ssh.mishracloud.com" >> ~/.ssh/config
-          echo "  HostName $SERVER_IP_FORGEJO" >> ~/.ssh/config
           echo "  Port 22" >> ~/.ssh/config
           echo "  User git" >> ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
@@ -70,8 +69,6 @@ jobs:
           ssh-add -l || echo "No identities added to the SSH agent."
 
           ssh -T git@git-ssh.mishracloud.com
-        env:
-          SERVER_IP_FORGEJO: ${{ secrets.SERVER_IP_FORGEJO }}
 
 
       - name: Git Configuration
