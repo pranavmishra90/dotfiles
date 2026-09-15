@@ -108,7 +108,6 @@ if [ -d /workspace ]; then
 	logger INFO "Running in Actions Workflow. Skipping Step CA bootstrap."
 	export CA_URL="https://10.1.10.16:443"
 	echo $MACHINE_BOOTSTRAP > /tmp/machine-bootstrap.txt
-	STEP_TOKEN=$(step ca token machine-bootstrap --provisioner=machine-bootstrap --provisioner-password-file=/tmp/machine-bootstrap.txt --not-after=10m --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt)
 	export PROVISIONER_STRING="--provisioner machine-bootstrap --token $STEP_TOKEN"
 
 else
@@ -157,7 +156,9 @@ export STEP_HOSTID=$(cat /etc/machine-id)
 export STEP_HOSTNAME=$(hostname -f)
 export STEP_KEY_TO_SIGN=/etc/ssh/ssh_host_ed25519_key
 
-
+if [ -d /workspace ]; then
+	STEP_TOKEN=$(step ca token machine-bootstrap --provisioner=machine-bootstrap --provisioner-password-file=/tmp/machine-bootstrap.txt --not-after=10m --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt)
+fi
 
 logger INFO "Checking and provisioning SSH host certificates"
 
