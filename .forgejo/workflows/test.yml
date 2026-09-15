@@ -97,4 +97,11 @@ jobs:
         env:
           FACSIMILAB_BOT_SSH_PUBKEY: ${{ secrets.FACSIMILAB_BOT_SSH_PUBKEY }}
 
+      - name: Yadm clone
+        run: |
+          set -x
+          echo "Running as $(whoami)"
+          echo "Cloning yadm repository..."
+          yadm clone https://github.com/pranavmishra90/dotfiles
+
 
