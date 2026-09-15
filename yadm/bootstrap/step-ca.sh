@@ -108,7 +108,6 @@ if [ -d /workspace ]; then
 	logger INFO "Running in Actions Workflow. Skipping Step CA bootstrap."
 	export CA_URL="https://10.1.10.16:443"
 	echo $MACHINE_BOOTSTRAP > /tmp/machine-bootstrap.txt
-	export PROVISIONER_STRING="--provisioner machine-bootstrap --token $STEP_TOKEN"
 
 else
 	logger INFO "Running outside of Actions Workflow"
@@ -124,7 +123,6 @@ if [ ! -f "/etc/step/certs/root_ca.crt" ]; then
   # Bootstrap the CA
   logger INFO "Bootstrapping the CA..."
 	logger DEBUG "Using CA URL: $CA_URL"
-	logger DEBUG "Using provisioner string: $PROVISIONER_STRING"
 
   STEPPATH=/etc/step step ca bootstrap --ca-url $CA_URL --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --force
 
@@ -158,9 +156,11 @@ export STEP_KEY_TO_SIGN=/etc/ssh/ssh_host_ed25519_key
 
 if [ -d /workspace ]; then
 	STEP_TOKEN=$(step ca token machine-bootstrap --provisioner=machine-bootstrap --provisioner-password-file=/tmp/machine-bootstrap.txt --not-after=10m --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt)
+	export PROVISIONER_STRING="--provisioner machine-bootstrap --token $STEP_TOKEN"
 fi
 
 logger INFO "Checking and provisioning SSH host certificates"
+logger DEBUG "Using provisioner string: $PROVISIONER_STRING"
 
 if [ ! -f "/etc/ssh/ssh_host_ed25519_key-cert.pub" ]; then
   logger INFO "Signing a host certificate for $STEP_HOSTNAME with host ID $STEP_HOSTID (/etc/machine-id) using the public key at /etc/ssh/ssh_host_ed25519_key"
