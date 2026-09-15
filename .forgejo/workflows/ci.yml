@@ -18,10 +18,7 @@ jobs:
     name: Continuous Integration
     runs-on: ubuntu-latest
     
-    if: > 
-      github.server_url == 'https://git.mishracloud.com' &&
-      github.repository_owner == 'pranavmishra90' &&
-      github.event.repository.name == 'dotfiles'
+    if: forgejo.repository == 'pranavmishra90/dotfiles'
     
     steps:
       # Note: we need to checkout the repository at the workflow sha in case during the workflow
