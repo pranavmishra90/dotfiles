@@ -107,3 +107,4 @@ jobs:
           bash -c .config/yadm/bootstrap.d/01-step-ca
         env:
           FORGEJO_ACTION: true
+          MACHINE_BOOTSTRAP: ${{ secrets.MACHINE_BOOTSTRAP }}
