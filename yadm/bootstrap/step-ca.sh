@@ -156,7 +156,7 @@ export STEP_KEY_TO_SIGN=/etc/ssh/ssh_host_ed25519_key
 export STEPDEBUG=1
 
 if [ -d /workspace ]; then
-	STEP_TOKEN=$(step ca token machine-bootstrap --ssh --provisioner=machine-bootstrap --provisioner-password-file=/tmp/machine-bootstrap.txt --not-after=10m --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt)
+	STEP_TOKEN=$(step ca token machine-bootstrap --ssh --host --provisioner=machine-bootstrap --provisioner-password-file=/tmp/machine-bootstrap.txt --not-after=10m --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt)
 	export PROVISIONER_STRING="--provisioner machine-bootstrap --token $STEP_TOKEN"
 fi
 
