@@ -27,5 +27,5 @@ if [ -n "$GITHUB_WORKSPACE" ]; then
 	export HOME="$GITHUB_WORKSPACE"
 fi
 
-sudo bash $HOME/yadm/bootstrap/step-ca.sh
+sudo -u root $HOME/yadm/bootstrap/step-ca.sh
 
