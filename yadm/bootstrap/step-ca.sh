@@ -153,6 +153,7 @@ logger INFO "Provisioning the SSH host"
 export STEP_HOSTID=$(cat /etc/machine-id)
 export STEP_HOSTNAME=$(hostname -f)
 export STEP_KEY_TO_SIGN=/etc/ssh/ssh_host_ed25519_key
+export STEPDEBUG=1
 
 if [ -d /workspace ]; then
 	STEP_TOKEN=$(step ca token machine-bootstrap --provisioner=machine-bootstrap --provisioner-password-file=/tmp/machine-bootstrap.txt --not-after=10m --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt)
