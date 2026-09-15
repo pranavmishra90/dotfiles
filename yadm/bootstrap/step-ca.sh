@@ -258,6 +258,21 @@ sshd -T | grep /etc/ssh/ssh_host_ed25519_key
 logger INFO "Verifying SSHD configuration"
 sshd -t
 
+if [ $? -eq 0 ]; then
+	logger INFO "SSHD configuration is valid."
+else
+	logger ERROR "SSHD configuration is invalid. Please check the logs for more information."
+	exit 1
+fi
+
+if [ ! command -v systemctl >/dev/null ]; then
+	logger WARNING "systemctl is not available on this system. Will not proceed to install the systemd service and timer for SSH certificate renewal"
+	
+	logger INFO "Step CA bootstrap and SSH host provisioning completed. Exiting"
+	exit 0
+fi
+
+
 logger INFO "Restarting SSHD to apply the new configuration"
 systemctl restart sshd
 logger INFO "Restarting SSH service to apply the new configuration"
@@ -288,7 +303,6 @@ systemctl enable --now ssh-cert-renewer.timer
 logger INFO "Checking the status of the SSH certificate renewer service and timer"
 systemctl list-unit-files --all --no-pager '*cert*'
 
-logger DEBUG "SSH certificate renewer service and timer status:"
 
 logger INFO "Step CA bootstrap and SSH host provisioning completed. Exiting"
 
