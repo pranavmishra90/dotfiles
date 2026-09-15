@@ -265,7 +265,10 @@ else
 	exit 1
 fi
 
-if [ ! command -v systemctl >/dev/null ]; then
+if [ systemctl >/dev/null ]; then
+	logger INFO "systemctl is available on this system. Proceeding to install the systemd service and timer for SSH certificate renewal"
+
+else 
 	logger WARNING "systemctl is not available on this system. Will not proceed to install the systemd service and timer for SSH certificate renewal"
 	
 	logger INFO "Step CA bootstrap and SSH host provisioning completed. Exiting"
