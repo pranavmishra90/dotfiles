@@ -172,8 +172,20 @@ jobs:
                 --tag \
                 --no-push \
                 --no-vcs-release
-              echo "Successfully ran python-semantic-release"
-              exit 0
+
+              if [ $? -eq 0 ]; then
+                echo "Successfully ran python-semantic-release version"
+                exit 0
+              fi
+
+              python-semantic-release changelog
+              git worktree add --orphan -b log yadm/worktree/log
+
+              cp CHANGELOG.md yadm/worktree/log/CHANGELOG.md
+              cd yadm/worktree/log
+              git add CHANGELOG.md
+              git commit -m "docs: unreleased changelog update for ${{ github.sha }} ${{ github.ref }}"
+              git push -u origin log --force
 
       - name: Workflow Status
         if: github.ref == 'refs/heads/main'
