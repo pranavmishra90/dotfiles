@@ -19,5 +19,5 @@ echo "Running step-ca bootstrap script from: $SCRIPT_FULL_PATH"
 echo "Current working directory: $(pwd)"
 echo "User: $(whoami). id: $(id)"
 
-sudo bash ~/yadm/bootstrap/step-ca.sh
+sudo bash $HOME/yadm/bootstrap/step-ca.sh
 
