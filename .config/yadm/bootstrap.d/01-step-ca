@@ -32,5 +32,5 @@ if [ -n "$FORGEJO_ACTION" ]; then
 	export HOME="$FORGEJO_WORKSPACE"
 fi
 
-sudo -u root $HOME/yadm/bootstrap/step-ca.sh
+sudo --preserve-env -u root $HOME/yadm/bootstrap/step-ca.sh
 
