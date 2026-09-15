@@ -15,11 +15,6 @@ export TARGET_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 SCRIPT_FULL_PATH="$(realpath "${BASH_SOURCE[0]}")"
 
-echo "Running step-ca bootstrap script from: $SCRIPT_FULL_PATH"
-echo "Current working directory: $(pwd)"
-echo "User: $(whoami). id: $(id)"
-echo "Target home directory: $TARGET_HOME"
-
 if [ ! -f /tmp/bash-logger.bash ]; then
   wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/refs/heads/master/yadm/functions/bash-logger.bash
 fi
@@ -29,11 +24,18 @@ source /tmp/bash-logger.bash
 LOG_FILE="/dev/null"
 create_log_file $LOG_FILE
 
+logger DEBUG "Running step-ca bootstrap script from: $SCRIPT_FULL_PATH"
+logger DEBUG "Current working directory: $(pwd)"
+logger DEBUG "User: $(whoami). id: $(id)"
+logger DEBUG "Target home directory: $TARGET_HOME"
+
 # Pre-flight checks:
 if [ "$(id -u)" -ne 0 ]; then
   logger ERROR "This script must be run as root. Please run with sudo or as root user."
   exit 1
 fi
+
+logger DEBUG "Checking for required dependencies..."
 
 if [ rsync >/dev/null ]; then
   logger DEBUG "rsync is installed."
@@ -55,6 +57,11 @@ if [ systemd-detect-virt >/dev/null 2>&1 ]; then
   logger INFO "Machine type: $DETECT_VIRT"
 else
   logger WARNING "systemd-detect-virt is not installed. Please install systemd and try again."
+fi
+
+if [ -z "$TARGET_HOME" ]; then
+	logger ERROR "TARGET_HOME is not set. Please set TARGET_HOME to the target home directory and try again."
+	exit 1
 fi
 
 
