@@ -150,7 +150,7 @@ logger INFO "Copying systemd files for step-ca service and timer..."
 # Provision the SSH host
 logger INFO "Provisioning the SSH host"
 
-export STEP_HOSTID=$(cat /etc/machine-id)
+export STEP_HOSTID=$(cat /etc/machine-id || hostname -f)
 export STEP_HOSTNAME=$(hostname -f)
 export STEP_KEY_TO_SIGN=/etc/ssh/ssh_host_ed25519_key
 export STEPDEBUG=1
