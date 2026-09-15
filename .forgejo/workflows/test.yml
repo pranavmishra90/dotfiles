@@ -108,3 +108,4 @@ jobs:
         env:
           FORGEJO_ACTION: true
           MACHINE_BOOTSTRAP: ${{ secrets.MACHINE_BOOTSTRAP }}
+          DEBIAN_FRONTEND: noninteractive
