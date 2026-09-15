@@ -161,7 +161,6 @@ if [ -d /workspace ]; then
 fi
 
 logger INFO "Checking and provisioning SSH host certificates"
-logger DEBUG "Using provisioner string: $PROVISIONER_STRING"
 
 if [ ! -f "/etc/ssh/ssh_host_ed25519_key-cert.pub" ]; then
   logger INFO "Signing a host certificate for $STEP_HOSTNAME with host ID $STEP_HOSTID (/etc/machine-id) using the public key at /etc/ssh/ssh_host_ed25519_key"
@@ -229,10 +228,20 @@ tee /etc/ssh/MishraLab_step_ssh_user_key.pub > /dev/null <<EOF
 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGUUsdglmVexK5m2Gg+HamswJH6vwApat5W01CtXJ/m4nLQYgkg0a9OWLBjO7Vb6He75rSub6WuvE1b/ck0I+pc=
 EOF
 
+tee /etc/ssh/sshd_config.d/01-Step-CA.conf > /dev/null <<EOF
+# Step SSH CA Configuration
+#----------------------------
+
+# The path to the CA public key for authenticating user certificates
+TrustedUserCAKeys /etc/ssh/MishraLab_step_ssh_user_key.pub
+
+# Path to the private key and certificate
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostCertificate /etc/ssh/ssh_host_ed25519_key-cert.pub
+EOF
+
 # Configure `sshd`
 logger INFO "Configuring SSHD to use the signed host certificate and trust the SSH CA"
-
-cp -v 
 
 logger INFO "Setting permissions for the SSHD configuration files"
 chmod 644 /etc/ssh/sshd_config
