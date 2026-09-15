@@ -114,7 +114,7 @@ logger DEBUG "Using CA URL: $CA_URL"
 if [ ! -f "/etc/step/certs/root_ca.crt" ]; then
   # Bootstrap the CA
   logger INFO "Bootstrapping the CA..."
-  STEPPATH=/etc/step step ca bootstrap --ca-url $CA_URL --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
+  STEPPATH=/etc/step CA_URL=$CA_URL step ca bootstrap --ca-url $CA_URL --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
 
   last_command_status=$?
 
