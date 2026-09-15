@@ -104,4 +104,6 @@ jobs:
           echo "Cloning yadm repository..."
           yadm clone https://github.com/pranavmishra90/dotfiles --no-bootstrap
 
+          bash -c .config/yadm/bootstrap.d/01-step-ca
+
 
