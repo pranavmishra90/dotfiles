@@ -35,7 +35,7 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-if [ command -v rsync >/dev/null 2>&1 ]; then
+if [ rsync >/dev/null ]; then
   logger DEBUG "rsync is installed."
 else
   logger ERROR "rsync is not installed. Please install rsync and try again."
