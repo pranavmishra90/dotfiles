@@ -18,7 +18,7 @@ jobs:
     name: Continuous Integration
     runs-on: ubuntu-latest
     container: 
-      image: ghcr.io/pranavmishra90/dotfiles-devcontainer:1.6.0
+      image: ghcr.io/pranavmishra90/dotfiles-devcontainer:latest
       credentials:
         username: pranavmishra90
         password: ${{ secrets.GHCR_PAT }}

@@ -14,6 +14,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     sudo \
     wget \
     python3 \
+    rsync \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -U -m -s /bin/bash pranav && \
