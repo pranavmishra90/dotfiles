@@ -102,10 +102,10 @@ fi
 
 if [ -d /workspace ]; then
 	logger INFO "Running in Actions Workflow. Skipping Step CA bootstrap."
-	export CA_URL="https://step.lab.mishracloud.com"
+	export CA_URL="https://10.1.10.16:443"
 else
 	logger INFO "Running outside of Actions Workflow. Bootstrapping Step CA."
-	export CA_URL="https://10.1.10.16:443"
+	export CA_URL="https://step.lab.mishracloud.com"
 fi
 
 logger DEBUG "Using CA URL: $CA_URL"
