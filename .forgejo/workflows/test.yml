@@ -102,6 +102,6 @@ jobs:
           set -x
           echo "Running as $(whoami)"
           echo "Cloning yadm repository..."
-          yadm clone https://github.com/pranavmishra90/dotfiles
+          yadm clone https://github.com/pranavmishra90/dotfiles --bootstrap
 
 
