@@ -93,10 +93,20 @@ fi
 
 # This command does not work well with sudo, so we will copy the configuration output after outputting to the local user
 
+if [ $GITHUB_ACTIONS ]; then
+	logger INFO "Running in GitHub Actions. Skipping Step CA bootstrap."
+	export CA_URL="https://step.lab.mishracloud.com"
+else
+	logger INFO "Running outside of GitHub Actions. Bootstrapping Step CA."
+	export CA_URL="https://10.1.10.16:443"
+
+fi
+
+
 if [ ! -f "/etc/step/certs/root_ca.crt" ]; then
   # Bootstrap the CA
   logger INFO "Bootstrapping the CA..."
-  STEPPATH=/etc/step step ca bootstrap --ca-url https://step.lab.mishracloud.com --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
+  STEPPATH=/etc/step step ca bootstrap --ca-url $CA_URL --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --install --force
 
   last_command_status=$?
 
@@ -139,7 +149,7 @@ if [ ! -f "/etc/ssh/ssh_host_ed25519_key-cert.pub" ]; then
   STEPPATH=/etc/step step ssh certificate $STEP_HOSTNAME /etc/ssh/ssh_host_ed25519_key.pub \
   --host --host-id $STEP_HOSTID \
   --sign --provisioner pranavmishra@protonmail.com --force \
-  --ca-config $STEPPATH/config/ca.json --ca-url https://step.lab.mishracloud.com --root $STEPPATH/certs/root_ca.crt 
+  --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt 
 
   printf "\n\n"  
 
@@ -154,7 +164,7 @@ else
     STEPPATH=/etc/step step ssh certificate $STEP_HOSTNAME /etc/ssh/ssh_host_ed25519_key.pub \
           --host --host-id $STEP_HOSTID \
           --sign --provisioner pranavmishra@protonmail.com --force \
-          --ca-config $STEPPATH/config/ca.json --ca-url https://step.lab.mishracloud.com --root $STEPPATH/certs/root_ca.crt
+          --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt
   else
     
     logger INFO "The host certificate is valid and does not require renewal."
