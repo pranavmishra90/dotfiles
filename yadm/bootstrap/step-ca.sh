@@ -100,22 +100,30 @@ fi
 
 # This command does not work well with sudo, so we will copy the configuration output after outputting to the local user
 
+
+
+
+
 if [ -d /workspace ]; then
 	logger INFO "Running in Actions Workflow. Skipping Step CA bootstrap."
 	export CA_URL="https://10.1.10.16:443"
+	export PROVISIONER_STRING="--provisioner machine-bootstrap --provisioner-password-file=/run/secrets/machine-bootstrap"
 else
-	logger INFO "Running outside of Actions Workflow. Bootstrapping Step CA."
+	logger INFO "Running outside of Actions Workflow"
 	export CA_URL="https://step.lab.mishracloud.com"
+	export PROVISIONER_STRING=""
 fi
 
 logger DEBUG "Using CA URL: $CA_URL"
+
 
 
 if [ ! -f "/etc/step/certs/root_ca.crt" ]; then
   # Bootstrap the CA
   logger INFO "Bootstrapping the CA..."
 	logger DEBUG "Using CA URL: $CA_URL"
-	
+	logger DEBUG "Using provisioner string: $PROVISIONER_STRING"
+
   STEPPATH=/etc/step step ca bootstrap --ca-url $CA_URL --fingerprint f3a0693edf6f523b84ca1dbbfb56cda14fb4294905358b031b76cb4af319957b --force
 
   last_command_status=$?
@@ -158,7 +166,7 @@ if [ ! -f "/etc/ssh/ssh_host_ed25519_key-cert.pub" ]; then
 
   STEPPATH=/etc/step step ssh certificate $STEP_HOSTNAME /etc/ssh/ssh_host_ed25519_key.pub \
   --host --host-id $STEP_HOSTID \
-  --sign --provisioner pranavmishra@protonmail.com --force \
+  --sign $PROVISIONER_STRING --force \
   --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt 
 
   printf "\n\n"  
@@ -173,7 +181,7 @@ else
     logger WARNING "The host certificate is expired. Renewing ..."
     STEPPATH=/etc/step step ssh certificate $STEP_HOSTNAME /etc/ssh/ssh_host_ed25519_key.pub \
           --host --host-id $STEP_HOSTID \
-          --sign --provisioner pranavmishra@protonmail.com --force \
+          --sign $PROVISIONER_STRING --force \
           --ca-config $STEPPATH/config/ca.json --ca-url $CA_URL --root $STEPPATH/certs/root_ca.crt
   else
     
