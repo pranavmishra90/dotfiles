@@ -80,7 +80,7 @@ jobs:
         run: |
           set -x
           echo "Configuring Git user and signing settings..."
-          echo $(whoami)
+          echo "User: $(whoami). id: $(id)"
           echo "Git config:"
           cat  .git/config
 
@@ -100,8 +100,8 @@ jobs:
       - name: Yadm clone
         run: |
           set -x
-          echo "Running as $(whoami)"
+          echo "User: $(whoami). id: $(id)"
           echo "Cloning yadm repository..."
-          yadm clone https://github.com/pranavmishra90/dotfiles --bootstrap
+          yadm clone https://github.com/pranavmishra90/dotfiles --no-bootstrap
 
 

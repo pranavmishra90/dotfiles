@@ -11,8 +11,13 @@ set -e
 
 
 export STEPPATH=/etc/step
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-export CURRENT_HOME="$SCRIPT_DIR"
+export CURRENT_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
+SCRIPT_FULL_PATH="$(realpath "${BASH_SOURCE[0]}")"
+
+echo "Running step-ca bootstrap script from: $SCRIPT_FULL_PATH"
+echo "Current working directory: $(pwd)"
+echo "User: $(whoami). id: $(id)"
 
 if [ ! -f /tmp/bash-logger.bash ]; then
   wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/refs/heads/master/yadm/functions/bash-logger.bash
