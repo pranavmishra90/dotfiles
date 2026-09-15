@@ -1,4 +1,6 @@
-FROM ghcr.io/astral-sh/uv:python3.14-trixie@sha256:6643a433b1c6ad1121cda332d56be075105d4291c6fd712da5b91b1bb0698fef AS base
+FROM node:trixie AS base
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
@@ -11,6 +13,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     openssh-client \
     sudo \
     wget \
+    python3 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -U -m -s /bin/bash pranav && \
@@ -21,3 +24,7 @@ RUN useradd -U -m -s /bin/bash coder
 USER pranav
 
 WORKDIR /home/pranav
+
+ENV NPM_CONFIG_PREFIX=/home/pranav/.npm-global
+
+ENV PATH=$PATH:/home/pranav/.npm-global/bin

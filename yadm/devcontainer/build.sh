@@ -1,5 +1,11 @@
-#!/bin/bash
+#!/bin/env bash
 
-docker build -t ghcr.io/pranavmishra90/dotfiles-devcontainer:latest -f ./Dockerfile .
+cd $(git rev-parse --show-toplevel)
 
-docker push ghcr.io/pranavmishra90/dotfiles-devcontainer:latest
+IMG_VERSION=$(python-semantic-release version --print)
+
+docker build -t ghcr.io/pranavmishra90/dotfiles-devcontainer:$IMG_VERSION -f ./yadm/devcontainer/Dockerfile yadm/devcontainer
+
+docker tag ghcr.io/pranavmishra90/dotfiles-devcontainer:$IMG_VERSION ghcr.io/pranavmishra90/dotfiles-devcontainer:latest
+
+docker push ghcr.io/pranavmishra90/dotfiles-devcontainer:$IMG_VERSION
