@@ -27,5 +27,10 @@ if [ -n "$GITHUB_WORKSPACE" ]; then
 	export HOME="$GITHUB_WORKSPACE"
 fi
 
+if [ -n "$FORGEJO_ACTION" ]; then
+	echo "01-step-ca Running in Forgejo Actions environment. Setting HOME to FORGEJO_WORKSPACE."
+	export HOME="$FORGEJO_WORKSPACE"
+fi
+
 sudo -u root $HOME/yadm/bootstrap/step-ca.sh
 
