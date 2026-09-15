@@ -265,16 +265,12 @@ else
 	exit 1
 fi
 
-systemctl restart sshd >/dev/null
-
-if [ $? -eq 0 ]; then
-	logger INFO "systemctl is available on this system. Proceeding to install the systemd service and timer for SSH certificate renewal"
-
-else 
-	logger WARNING "systemctl is not available on this system. Will not proceed to install the systemd service and timer for SSH certificate renewal"
-	
-	logger INFO "Step CA bootstrap and SSH host provisioning completed. Exiting"
-	exit 0
+if [ "$(ps -p 1 -o comm=)" = "systemd" ]; then
+    logger INFO "systemd is running as PID 1. Proceeding to install the systemd service and timer for SSH certificate renewal"
+else
+    logger WARNING "systemd is not running as PID 1. Will not install the systemd service and timer for SSH certificate renewal"
+    logger INFO "Step CA bootstrap and SSH host provisioning completed. Exiting"
+    exit 0
 fi
 
 
