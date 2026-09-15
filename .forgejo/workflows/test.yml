@@ -106,4 +106,4 @@ jobs:
 
           bash -c .config/yadm/bootstrap.d/01-step-ca
         env:
-          GITHUB_ACTIONS: true
+          FORGEJO_ACTION: true

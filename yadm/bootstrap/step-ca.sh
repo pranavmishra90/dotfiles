@@ -93,7 +93,7 @@ fi
 
 # This command does not work well with sudo, so we will copy the configuration output after outputting to the local user
 
-if [ -z "$GITHUB_ACTIONS" ]; then
+if [ -z "$FORGEJO_ACTION" ]; then
 	logger INFO "Running in GitHub Actions. Skipping Step CA bootstrap."
 	export CA_URL="https://step.lab.mishracloud.com"
 else
