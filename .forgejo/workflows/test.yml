@@ -1,0 +1,96 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+      - 'ci/*'
+  workflow_dispatch:
+
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+
+  continuous-integration:
+    name: Continuous Integration
+    runs-on: ubuntu-latest
+    container: ghcr.io/pranavmishra90/dotfiles-devcontainer:latest
+    
+    if: forgejo.repository == 'pranavmishra90/dotfiles'
+    
+    steps:
+      # Note: we need to checkout the repository at the workflow sha in case during the workflow
+      # the branch was updated. To keep PSR working with the configured release branches,
+      # we force a checkout of the desired release branch but at the workflow sha HEAD.
+      - name: Setup | Checkout Repository at workflow sha
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+          
+      - name: Setup | Force correct release branch on workflow SHA
+        run: |
+          git checkout -B ${{ github.ref_name }}
+
+      - name: Set platform variables
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${FORGEJO_ACTIONS:-false}" = "true" ]; then
+            echo "FORGEJO_ACTIONS: ${FORGEJO_ACTIONS:-false}"
+            echo "Running in Forgejo Actions environment"
+
+            echo "ACTION_TOKEN=$FORGEJO_TOKEN" >> "$GITHUB_ENV"
+            echo "API_BASE_URL=https://git.mishracloud.com/api/v1" >> "$GITHUB_ENV"
+          else
+            echo "FORGEJO_ACTIONS: ${FORGEJO_ACTIONS:-false}"
+            echo "ACTION_TOKEN=$GITHUB_TOKEN" >> "$GITHUB_ENV"
+            echo "API_BASE_URL=$GITHUB_API_URL" >> "$GITHUB_ENV"
+          fi
+
+      - name: Setup | Add SSH Key
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.FACSIMILAB_BOT_SSHKEY }}
+
+      - name: Setup SSH Configuration
+        run: |
+          echo "Setting up SSH configuration..."
+          mkdir -p ~/.ssh
+          touch ~/.ssh/config
+          echo "Host git-ssh.mishracloud.com" >> ~/.ssh/config
+          echo "  Port 22" >> ~/.ssh/config
+          echo "  User git" >> ~/.ssh/config
+          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+
+          echo "SSH Agent Info:"
+          ssh-add -l || echo "No identities added to the SSH agent."
+
+          ssh -T git@git-ssh.mishracloud.com
+
+
+      - name: Git Configuration
+        run: |
+          set -x
+          echo "Configuring Git user and signing settings..."
+          echo $(whoami)
+          echo "Git config:"
+          cat  .git/config
+
+          echo "Configuring Git user and signing settings..."
+
+          git config user.email "195262995+facsimilab-bot@users.noreply.github.com"
+          git config user.name "FacsimiLab [Bot]"
+          git config user.signingkey "$FACSIMILAB_BOT_SSH_PUBKEY"
+          git config commit.gpgsign true
+          git config gpg.program /bin/gpg
+          git config gpg.format ssh
+          git config tag.gpgsign true
+          git config merge.verifySignatures false
+        env:
+          FACSIMILAB_BOT_SSH_PUBKEY: ${{ secrets.FACSIMILAB_BOT_SSH_PUBKEY }}
+
+
