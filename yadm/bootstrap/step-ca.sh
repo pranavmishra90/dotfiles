@@ -265,7 +265,7 @@ else
 	exit 1
 fi
 
-if [ systemctl >/dev/null ]; then
+if [ systemctl restart sshd >/dev/null ]; then
 	logger INFO "systemctl is available on this system. Proceeding to install the systemd service and timer for SSH certificate renewal"
 
 else 
