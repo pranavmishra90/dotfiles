@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # This is the default bashrc file at .bashrc##default
 
 # It is formatted for Debian based systems
@@ -88,8 +90,16 @@ if [ -x /usr/bin/dircolors ]; then
     #alias egrep='egrep --color=auto'
 fi
 
-# Alias definitions
+# Colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# Bash Aliases
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
 if [ -f ~/.bash_aliases ]; then
+	# Note, ~/.bash_aliases additionally sources ~/.common_profile
     . ~/.bash_aliases
 fi
 
