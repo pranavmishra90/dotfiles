@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Script to call the yadm logger
+
+if [ ! -f /tmp/bash-logger.bash ]; then
+    wget -qO /tmp/bash-logger.bash https://raw.githubusercontent.com/pranavmishra90/dotfiles/master/yadm/functions/bash-logger.bash
+fi
+
+source /tmp/bash-logger.bash
+
+# Create with a specific prefix and suffix
+LOG_FILE=$(mktemp /tmp/yadm_logger_test.XXXXXX.txt)
+trap 'rm -f "$LOG_FILE"' EXIT
+
+LOG_LEVEL="${1:-INFO}"
+LOG_MESSAGE="${2:-< empty log message >}"
+
+print_logger () {
+	logger $LOG_LEVEL $LOG_MESSAGE
+}
+
+print_logger ${1} "${@:2}"
