@@ -35,8 +35,14 @@ echo -ne "\033]0;$server_name\a"
 if [ -d "$HOME/.local/bin" ]; then
   export PATH=$HOME/.local/bin:$PATH
 fi
+
 if [ -d "/usr/local/go/bin" ]; then
   export PATH=$PATH:/usr/local/go/bin
+	export PATH="$PATH:$(go env GOPATH)/bin"
+fi
+
+if [ -d "$HOME/.TinyTeX/bin/x86_64-linux" ]; then
+	export PATH=$PATH:$HOME/.TinyTeX/bin/x86_64-linux
 fi
 
 # Environment Variables
@@ -274,6 +280,20 @@ elif [ -n "$ZSH_VERSION" ]; then
   fi
 else
     echo "Unable to initialize zoxide: Unknown shell"
+fi
+
+# fzv
+
+if [ -n "$BASH_VERSION" ]; then
+	if command -v fzv >/dev/null 2>&1; then
+		eval "$(fzv init bash)"
+	fi
+elif [ -n "$ZSH_VERSION" ]; then
+	if command -v fzv >/dev/null 2>&1; then
+		eval "$(fzv init zsh)"
+	fi
+else
+		echo "Unable to initialize fzv: Unknown shell"
 fi
 
 # System setup
