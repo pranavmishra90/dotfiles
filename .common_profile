@@ -202,7 +202,33 @@ else
     ssh-add -l | cut -d ' ' -f3-
 fi
 
-alias step-login='step ssh certificate --sign --force --principal=pranav --principal=person/pranav --principal=pranavmishra90 --provisioner=pranavmishra@protonmail.com --private-key ~/.ssh/id_ed25519 pranav ~/.ssh/id_ed25519.pub'
+# alias step-login='step ssh certificate --sign --principal=pranav --principal=person/pranav --principal=pranavmishra90 --provisioner=pranavmishra@protonmail.com --private-key ~/.ssh/id_ed25519 pranav ~/.ssh/id_ed25519.pub'
+
+step-login() {
+
+    username="${1:-$USER}"
+
+    if [ "$username" = "pranav" ]; then
+        principles="--principal=pranav --principal=person/pranav --principal=pranavmishra90"
+    else
+      principles="--principal=$username"
+    fi
+
+    if [ -f "/etc/step-ca/secrets/machine-bootstrap-password-none" ]; then
+        provisioner="--provisioner=machine-bootstrap --provisioner-password-file=/etc/step-ca/secrets/machine-bootstrap-password"
+    else
+      provisioner="--provisioner=pranavmishra@protonmail.com"
+    fi
+
+    echo "Signing SSH certificate for user: $username with principles: $principles and provisioner: $provisioner"
+    
+    step ssh certificate --sign --force $principles "$provisioner" --private-key ~/.ssh/id_ed25519 "$username" ~/.ssh/id_ed25519.pub
+
+		if [ -d /mnt/c/Users/pmish/.ssh ]; then
+			echo "Copying SSH certificate to Windows path"
+			cp ~/.ssh/id_ed25519-cert.pub /mnt/c/Users/pmish/.ssh/id_ed25519-cert.pub
+		fi
+}
 
 # ~/.common_profile or sourced from both .bashrc and .bash_profile
 
@@ -240,12 +266,12 @@ alias gpg-start='echo "Starting GPG" | gpg --clearsign'
 # Zoxide
 if [ -n "$BASH_VERSION" ]; then
   if command -v zoxide >/dev/null 2>&1; then
-		eval "$(zoxide init bash)"
-	fi
+    eval "$(zoxide init bash)"
+  fi
 elif [ -n "$ZSH_VERSION" ]; then
   if command -v zoxide >/dev/null 2>&1; then
-		eval "$(zoxide init bash)"
-	fi
+    eval "$(zoxide init bash)"
+  fi
 else
     echo "Unable to initialize zoxide: Unknown shell"
 fi
