@@ -4,15 +4,22 @@
 
 # It is formatted for Debian based systems
 
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# ~/.bashrc: executed by bash for non-login shells.
 
 # If not running interactively, exit immediately (stop loading .bashrc)
 case $- in
     *i*) ;;
       *) return;;
 esac
+
+# Source system-wide bashrc if it exists
+if [ -f /etc/bash.bashrc ]; then
+		# Debian based systems
+    . /etc/bash.bashrc
+elif [ -f /etc/bashrc ]; then
+		# RHEL based systems
+    . /etc/bashrc
+fi
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
