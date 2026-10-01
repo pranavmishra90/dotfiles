@@ -100,7 +100,7 @@ jobs:
 
      
       - name: List and delete pre-release tags
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         id: list_tags
         # This must occur in one step. If it is broken into list, then delete, there will be a failure
         run: |
@@ -139,7 +139,7 @@ jobs:
 
       - name: Python Semantic Release - Main Branch
         id: semver-main
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         env:
           GITEA_TOKEN: ${{ secrets.ACTION_TOKEN }}
           FORGEJO_TOKEN: ${{ secrets.ACTION_TOKEN }}
@@ -161,7 +161,7 @@ jobs:
 
       - name: Python Semantic Release - Non-Release Branch
         id: semver-non-main
-        if: github.ref != 'refs/heads/main'
+        if: github.ref != 'refs/heads/master'
         env:
           GITEA_TOKEN: ${{ secrets.ACTION_TOKEN }}
           FORGEJO_TOKEN: ${{ secrets.ACTION_TOKEN }}
@@ -181,8 +181,27 @@ jobs:
               echo "Successfully ran python-semantic-release"
               exit 0
 
+      - name: Update develop branch in a git worktree
+        id: update-develop-branch
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        env:
+          GITEA_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          FORGEJO_TOKEN: ${{ secrets.ACTION_TOKEN }}
+        run: |
+          set -e
+          echo "Updating develop branch in a git worktree..."
+          mkdir -p ./.worktree
+          git worktree add -B develop ./.worktree/develop origin/develop || echo "Failed to add worktree for develop branch. It may already exist."
+          cd ./.worktree/develop
+          git pull origin develop || echo "Failed to pull latest changes for develop branch."
+          git rebase master || echo "Failed to rebase develop branch onto master. There may be conflicts."
+          git push origin develop || echo "Failed to push updated develop branch to remote."
+          cd ..
+          exit 0
+
+
       - name: Workflow Status
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         env:
           SUMMARY_FILE: "logs/release_summary.md"
         run: |
