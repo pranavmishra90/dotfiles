@@ -1,0 +1,22 @@
+fail_mode: open        # or "closed" for strict environments
+paranoia: 1            # 1-4: higher = more sensitive
+strict_warn: false     # require explicit acknowledgement for warnings
+
+allowlist:
+  - "get.docker.com"
+  - "sh.rustup.rs"
+
+blocklist:
+  - "evil.example.com"
+
+severity_overrides:
+  docker_untrusted_registry: CRITICAL
+
+scan:
+  ignore_patterns:
+    - "node_modules"
+    - "target"
+  profiles:
+    ci:
+      include: ["*.md", "*.json", "*.yaml", "*.yml", ".claude/*", ".github/*", ".vscode/*", ".hermes*/*", ".agents/*"]
+      fail_on: high

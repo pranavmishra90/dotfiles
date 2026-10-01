@@ -1,0 +1,18 @@
+{
+  "servers": {
+    "tirith-gateway": {
+      "args": [
+        "gateway",
+        "run",
+        "--upstream-bin",
+        "/usr/bin/tirith",
+        "--upstream-arg",
+        "mcp-server",
+        "--config",
+        "/home/pranav/.config/tirith/gateway.yaml"
+      ],
+      "command": "/usr/bin/tirith",
+      "type": "stdio"
+    }
+  }
+}
