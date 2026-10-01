@@ -1,4 +1,15 @@
 {
   "editor.tabSize": 2,
   "editor.detectIndentation": false
+,
+  // BEGIN tirith-hooks
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "hooks/tirith-hook.sh"
+      }
+    ]
+  },
+  // END tirith-hooks
 }
