@@ -1,6 +1,4 @@
-FROM node:trixie AS base
-
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+FROM ghcr.io/astral-sh/uv:python3.14-trixie@sha256:432482a50fec129734478877083c781215886f99bcc61aff9431462473f4e1f0 AS base
 
 
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
