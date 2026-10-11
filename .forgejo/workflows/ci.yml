@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
       - master
       - 'ci/*'
   workflow_dispatch:
@@ -18,9 +21,9 @@ jobs:
   continuous-integration:
     name: Continuous Integration
     runs-on: ubuntu-latest
-    
+
     if: forgejo.repository == 'pranavmishra90/dotfiles'
-    
+
     steps:
       # Note: we need to checkout the repository at the workflow sha in case during the workflow
       # the branch was updated. To keep PSR working with the configured release branches,
@@ -30,7 +33,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.sha }}
-          
+
       - name: Setup | Force correct release branch on workflow SHA
         run: |
           git checkout -B ${{ github.ref_name }}
@@ -93,7 +96,7 @@ jobs:
         env:
           FACSIMILAB_BOT_SSH_PUBKEY: ${{ secrets.FACSIMILAB_BOT_SSH_PUBKEY }}
 
-     
+
       - name: List and delete pre-release tags
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         id: list_tags
@@ -126,7 +129,7 @@ jobs:
         run: |
               curl -LsSf https://astral.sh/uv/install.sh | sh
               source $HOME/.local/bin/env
-         
+
       - name: Install Python-Semantic-Release
         run: |
               echo "Installing python-semantic-release..."
@@ -213,7 +216,7 @@ jobs:
           SUMMARY_FILE: "logs/release_summary.md"
         run: |
           mkdir -p logs
-          echo 
+          echo
           touch $SUMMARY_FILE
           chmod 777 $SUMMARY_FILE
 
