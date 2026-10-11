@@ -2,6 +2,363 @@
 
 <!-- version list -->
 
+## v1.6.0 (2026-10-11)
+
+### Bug Fixes
+
+- /etc/ssh/ssh_known_hosts not /etc/ssh/known_hosts
+  ([`9a16384`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/9a1638470bc375e750dad3beda106e56d2975549))
+
+- Add "--force" command so that it automatically overwrites the old ssh certificate
+  ([`63d5cf7`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/63d5cf7eda5b5dc4c40e48f3892b46d85d0ea225))
+
+- Add missing sudo
+  ([`55db465`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/55db465a2261ee4a0f8ab0802aa705ad365a30f8))
+
+- Alias
+  ([`2590634`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/2590634eb56348e922bbf74d383d370c6ed9d239))
+
+- Bash_logout
+  ([`ad084a7`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/ad084a774e53ea6de7bd3d23ec41a8cea94e1b5c))
+
+- Call bootstrap_ssh_agent
+  ([`2b71f98`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/2b71f98d4a95b6f71464bf048329da16184edfc4))
+
+- Call bootstrap_ssh_agent
+  ([`808bc3a`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/808bc3a447673d7ea9f7b2b425878d81735f1811))
+
+- Container yaml
+  ([`22574c9`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/22574c963d275e259850942b2385bc705a1311e8))
+
+- Copy destination nesting
+  ([`ba59970`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/ba59970dd95bfff35c1db47ded463d3bb33d42ad))
+
+- Create a keyrings directory if it doesn't exist already
+  ([`4496c59`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/4496c595d816cbc714383b4017f635af28353c75))
+
+- Dynamic CA_URL if running in github actions
+  ([`02cb481`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/02cb48177a9e5eef06f139de1ce09cbc4f10321e))
+
+- Dynamically set CURRENT_HOME using the script's directory, not the user HOME
+  ([`137ab33`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/137ab3387c3cce82fc936982cf4391c38680e03e))
+
+- For checkout on the develop branch if all others fail
+  ([`6b72c50`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/6b72c50a5ceb85f74e6ec0e9b5f356d77cf14213))
+
+- FORGEJO_ACTION
+  ([`5e39156`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/5e391565d7ecd2edd9c61b97de1789a2d87a22ff))
+
+- Hostid
+  ([`2443b7c`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/2443b7ca6fa93c8c01bf3ffae57a58cd41ad5fd2))
+
+- Image tag
+  ([`cbdfc74`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/cbdfc7407fc3698a33aa05d0912609c6d45fa9bc))
+
+- Logger should emit its text to stderr rather than stdout. otherwise its output is captured
+  ([`6149d2f`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/6149d2f3eda2da4506f0dee1912409289ac76b75))
+
+- Logic of checking if forgejo can be reached. otherwise stick with github
+  ([`0469282`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/046928222f50b02584dffa18429e48a598a609dd))
+
+- Only source zoxide if it is installed already
+  ([`61d70ba`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/61d70ba001dbc333dec9074efefb0b97993253fa))
+
+- Order of variables
+  ([`be4b3be`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/be4b3be2020e112f3d7815c0c004965034ec840c))
+
+- Place the script git-signing-key in ~/.local/bin so that it can be picked up on PATH and does run
+  into the ~ expansion issue in ~/.gitconfig
+  ([`ab043f1`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/ab043f13fabbdafeebd9f3a6f225be9dfbb10845))
+
+- Provide GHCR_PAT as a secret
+  ([`4e99fad`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/4e99fada5d2a5b635478da02e7547cb0f4f82d47))
+
+- Remove additional zoxide references
+  ([`68e904b`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/68e904b429f24aa5e8f2fdd0e9e0561e8f504eed))
+
+- Remove Automated_ed25519. fix order of Step CA cert authority line
+  ([`a02bcc3`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/a02bcc3f8e089498f60064416418e427e07ba5c2))
+
+- Remove root user requirement, uses sudo
+  ([`edb4f0e`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/edb4f0e68c462fa01292aea7ad18268a6edbf04b))
+
+- Renamed file
+  ([`1a883a2`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/1a883a2ab8de7ecb9f737c4b09c25e07962b4c14))
+
+- Set origin and upstream url in separate lines without a rename
+  ([`4edc41b`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/4edc41b29064ae4c00ecb7f242b9cc41a286b503))
+
+- Source the system bash settings
+  ([`68c7ff5`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/68c7ff550acc6741c38fa15e0696a7a717e8990e))
+
+- Sudo cat
+  ([`6514da4`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/6514da494fa400d7d24e4afecd16e5129caa7238))
+
+- Testing additional outputs of user and id
+  ([`f271b72`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/f271b725c736abea07fcfa5b6f712d8bf11deda9))
+
+- Use full path for sshd_config
+  ([`3527ed5`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/3527ed51dd2c984c93cf15fd25eb7b93c385c0ed))
+
+- Use intermediate copy directory
+  ([`f0d1a00`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/f0d1a00d9cb95b350d8177d6a01501a70fae9431))
+
+- Was missing a check for the SSH host cert, not the public key (which will almost always be
+  present)
+  ([`e08c67f`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/e08c67f7eb286cdcfe1e28ddc7cf23f1c11024ab))
+
+### Build System
+
+- Add pre-commit
+  ([`3cc9030`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/3cc903036d8490fa8b8b5a598ac623d2d898f125))
+
+### Chores
+
+- Add vscode settings to the repo
+  ([`8b05ceb`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/8b05ceb6fbcf1f215b09e9274bf4ce1ab24e37d9))
+
+- Add vscode settings to the repo
+  ([`3f05399`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/3f05399a81cd6d69e49ea1e043a45128543f9846))
+
+- Chmod +x
+  ([`4abaf72`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/4abaf7253e831fe991f98c915d9f589efc651840))
+
+- Create worktree dir for use by github / forgejo actions
+  ([`4694eed`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/4694eed9a0816fcbacea85dba46a9d46e9ed90ff))
+
+- Ignore
+  ([`54c9cfb`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/54c9cfb0f4d3e228577ffa131885172f703de60c))
+
+- Move the primary bootstrap lower in the order
+  ([`9703019`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/9703019759b805a81a19c3ac7c813e92d4172c5e))
+
+- Remove deprecated ssh-function.bash file
+  ([`e6d2035`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/e6d2035c0ec5fb41e4b4c3f74a7954dadd355f6f))
+
+- Rename file to 'dynamic-git-remotes' as it better fits what's being done
+  ([`da8bd7d`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/da8bd7dcb1e4299988302dc479648e436ce043a7))
+
+- Temp remove the logic for setting the git remotes
+  ([`5bd75f7`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/5bd75f7fafaa36e48b60f62531f4c909737a53ee))
+
+- Unify changes to .gitconfig
+  ([`f494749`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/f49474918d010e22a1601161e11854e16ff76517))
+
+- **deps**: Add .renovaterc.json
+  ([`3d7f2f0`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/3d7f2f0284cd74bc12ce4588e348c875f998c99e))
+
+- **deps**: Update ghcr.io/astral-sh/uv:python3.14-trixie docker digest to 432482a
+  ([#55](https://git.mishracloud.com/pranavmishra90/dotfiles/pulls/55),
+  [`910de74`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/910de749afb4a04528fb52d72eed911d62205341))
+
+- **deps**: Update ghcr.io/astral-sh/uv:python3.14-trixie docker digest to 432482a
+  ([#55](https://git.mishracloud.com/pranavmishra90/dotfiles/pulls/55),
+  [`2f853c9`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/2f853c96c3b88639db19e5d66dbce6b56de4aa47))
+
+### Code Style
+
+- Formatting
+  ([`f1608e2`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/f1608e2e6ad8a1c61ea8cb3d3eb42070114b7d62))
+
+### Continuous Integration
+
+- Add pre-commit
+  ([`e317acb`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/e317acba3b1c8f4d29e7d9103f5d8e3dd98ee636))
+
+- Add workflow file back, with restriction on forgejo only
+  ([`84388d4`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/84388d40ca654b66b2997243c98b8551323f5573))
+
+- Case for main or master
+  ([`ffb03a0`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/ffb03a0d667b66f41c1688c2f35a6ac667c5053f))
+
+- Case for main or master
+  ([`f18cc90`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/f18cc9021756ddecfe0814ed4cbe32db038098f4))
+
+- Case for main or master
+  ([`eed499a`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/eed499a9c0724eba9100cafd2644c22f87a68412))
+
+- Case for main or master
+  ([`407265e`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/407265ec2e7dcb6c28de75bd95bc1a013441e2c5))
+
+- Create seperate log branch and use worktree
+  ([`992064c`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/992064cf892871e457b1d392762fabf06c45c01c))
+
+- Install rsync outside the image
+  ([`2137933`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/213793364d94c45406c118271434703ef8d38b97))
+
+- Test using the devcontainer in forgejo
+  ([`69182a8`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/69182a8df0ec03051e7750f87de9080c624680de))
+
+- Update develop branch when a commit to main/master is done
+  ([`f96f19f`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/f96f19f9ff8c02f368db8087083fc6cbfa77e2cc))
+
+- Update develop branch when a commit to main/master is done
+  ([`0a3d674`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/0a3d674aba36b07e12a59dca1271121e3974c2d4))
+
+- Update develop branch when a commit to main/master is done
+  ([`4bdcb44`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/4bdcb447c22250e883e8454fd8d6acdeec3ee3d1))
+
+### Features
+
+- Add a logger executable in ~/.local/bin so that it takes priority on interactive shells
+  ([`4272bfb`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/4272bfbaeeae4fd66fe9deb264cb19173324fdac))
+
+- Add additional mappings for wakatime
+  ([`19ba80b`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/19ba80ba5de8f88487ac779d56482fa131b21834))
+
+- Add additional PATH variables, from drpm config
+  ([`5ec4f55`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/5ec4f556946b9e1ea70a7024b3164487918d8276))
+
+- Add alias for a step ssh login with manual principles
+  ([`9cf1fac`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/9cf1fac0b9f4019645fd08eaaae20a5a4e25a0ea))
+
+- Add back sshd config file
+  ([`2c6c2e5`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/2c6c2e5996c0165cf66b8c0f3361d7c63de2a4f8))
+
+- Add bash functions to check if ssh certificates are present
+  ([`c4c6186`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/c4c6186c8252f7479b9b0dede59522858634feef))
+
+- Add checks if the host needs a new key, a renewal, or nothing
+  ([`86c34bb`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/86c34bb6ee17d90f6a79e866c75e0acc339599ac))
+
+- Add docs and script for selective git merge based on PRs on forgejo
+  ([`fcdc4c5`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/fcdc4c5335bba362a53980ffaa1e807d39b76d53))
+
+- Add file from https://files.smallstep.com/ssh-host.sh
+  ([`02b055d`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/02b055db3992f4508b6238c3be570666e33dff1b))
+
+- Add file from https://files.smallstep.com/ssh-host.sh
+  ([`2de55b0`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/2de55b093042652fa1831d7acb497d8c929c7a5c))
+
+- Add script for default git ssh signing operation. no more hardcodes!
+  ([`fcff325`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/fcff3252339111f88b321afa1e72e44590ae6357))
+
+- Add ssh config files to yadm
+  ([`3c8fab5`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/3c8fab555a70ec510c1ef984425b4331536e2bc6))
+
+- Add Step CA systemd files
+  ([`880b4de`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/880b4dec6a03c55de513925aba25cf95bdc32b50))
+
+- Add tirith security checks
+  ([`ca657fb`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/ca657fb85e4904106d340e7807d663ed0e92d059))
+
+- Add tirith security checks
+  ([`e385df7`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/e385df78b2417d49157a74680ab7015d69473d57))
+
+- Bring over changes from drpm, add some notes; delete the unique bashrc for drpm
+  ([`122cca0`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/122cca06d0581a1a3ea93d33df1a42e523554578))
+
+- Ca-url
+  ([`6ad1de0`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/6ad1de05cbd3586c185ead179c1b76166ec3acb4))
+
+- Check github_actions
+  ([`e38ce9e`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/e38ce9eee1a709c3d62aced9355e52b548dfe82b))
+
+- Copy in the SSH host provisioning from step-bootstrap
+  ([`041defc`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/041defc834f3147ca736430fdf9008f7b0139ca8))
+
+- Create a function for step-login, rather than an alias. keeping in .common-profile for now to test
+  ([`49cc4f4`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/49cc4f4bb713184486964f1e277835fb91e2b551))
+
+- Create a function for step-login, rather than an alias. keeping in .common-profile for now to test
+  ([`cac673b`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/cac673b1e8ecd9782ef744b492904d0cb1737e7e))
+
+- Create a script that dynamically sets a repos remotes between forgejo and github on SSH and HTTPS
+  ([`92036fd`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/92036fddde490e4852481e1fa56579358f135c00))
+
+- Create a separate script for the step-cli initialization
+  ([`ffef43e`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/ffef43eb657eadd1a09e6f435dfb762c98d719fd))
+
+- Create a ssh.d/ config file
+  ([`5b76828`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/5b76828b21cfe172680eeaca6fab97279761ad4b))
+
+- Create logic for non-systemd environments
+  ([`dbbc493`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/dbbc4934915512f6a8ee424a79e20f7f1872ede8))
+
+- Detect and correct/update if STEPPATH went to the local user rather than the system
+  ([`17e265c`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/17e265c71edc630b85d37c44472984474846bd64))
+
+- Devcontainer Dockerfile for testing (ghcr.io/pranavmishra90/dotfiles-devcontainer:latest)
+  ([`299cc9d`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/299cc9daf181e01bb3ae0564d63a59ba9b56a711))
+
+- Ensure existing bootstrap script runs first
+  ([`74bb0a9`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/74bb0a9ef9c4d296d3071116510a5e4d6ab75927))
+
+- Further dynamic setup of log files when changing users and writing to the same file
+  ([`4911fbf`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/4911fbf5fbcfcb9af650ccbb887010dac0a9cf57))
+
+- Ignore git worktrees
+  ([`fd8ce74`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/fd8ce746182376d003f593e95cec4c73714c2171))
+
+- Ignore git worktrees
+  ([`c330599`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/c330599c7545af82fd9d9a53b89a3718af757917))
+
+- Install rsync as part of the pipeline
+  ([`0d253e3`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/0d253e34df892218cba099f857c51b95f42a4a2e))
+
+- Make non-interactive
+  ([`5e38db8`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/5e38db822a9ffb9f5c4d88b0d3c15e11c70b2b6c))
+
+- Output the certficate details when showing a single commit. add certificate to json "ssh_key"
+  ([`47d8492`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/47d8492560fbaa3fd701c50fe40dc072767cd88f))
+
+- Pass in env
+  ([`b58846e`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/b58846e083729d1523e56918162f5614fd091b15))
+
+- Perform the yadm branch change at the end of the bootstrap process
+  ([`f852e47`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/f852e477738e2cddcdc46f0af7adb1b789f157e4))
+
+- Print out more info about current keys
+  ([`ae013ca`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/ae013ca718e67e585dd617505292f6d991036cc8))
+
+- Remove the autoamted signature. clean separation between human and bots
+  ([`7e8d30d`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/7e8d30dc427ff50e2a9e9dbe2be9275355ebea31))
+
+- Rsync
+  ([`d30258c`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/d30258c967e2466d9371fb364d7c0a7ac906de29))
+
+- Script to validate git signed commits with or without ssh certs
+  ([`37fb5ec`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/37fb5ec58397ea9a76f7053cf39d9bbfa46efdc0))
+
+- Scripts to get the user env and nearest user home
+  ([`a10fcf6`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/a10fcf6df2c49b1337633686bb6ccff2f5220e87))
+
+- Ssh token
+  ([`8629ab5`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/8629ab51bee9fb3faedd9e986d6d321400f4ea4f))
+
+- Step debug
+  ([`48fa197`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/48fa197cbeb6c96006f7b91f89ecd2f36e4927d0))
+
+- Update logger to constant url
+  ([`e2f4a01`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/e2f4a0149e5e3e79454aab3905e6f7c93d3f6784))
+
+- Use a case matrix to test the various endpoints where Forgejo > GitHub, SSH > HTTPS, and set the
+  upstream if origin is not github
+  ([`b856963`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/b8569638adb6ebbf2efc0d5b0f810eaae1c0b7f6))
+
+- Use token
+  ([`e4453c2`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/e4453c246a57668322b299b9086004f62346afa4))
+
+- WIP logging for git remote test
+  ([`71f0c8f`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/71f0c8f472fea3dcc10bc6fdcbb623f33a876cb9))
+
+### Refactoring
+
+- Gitconfig yadm switchout now occurs with included files in ~/git. keeps home directory cleaner
+  ([`2738e89`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/2738e89942fc27766465d13b5918f9734afb8d1e))
+
+### Testing
+
+- Add rsync to devcontainer image
+  ([`eddaa13`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/eddaa13065f2c6262783aaf6080bf89090d817c4))
+
+- Bootstrap
+  ([`869ff38`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/869ff380ed81f33fe5b3d3a931401ad802feda61))
+
+- Try to clone yadm inside docker container
+  ([`b18fad9`](https://git.mishracloud.com/pranavmishra90/dotfiles/commit/b18fad91968466845d8ec14bc54161667898911c))
+
+
 ## v1.5.1 (2026-08-26)
 
 ### Bug Fixes
