@@ -10,6 +10,7 @@
 
 # PSR environment variables
 export PSR_RUNNER_TYPE='gitea'
+export GIT_COMMIT_AUTHOR="Pranav Kumar Mishra <62562712+pranavmishra90@users.noreply.github.com>"
 
 # Set Java version
 export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-21.0.8.0.9-1.el9.x86_64"

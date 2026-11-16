@@ -4,7 +4,6 @@ export LOG_FILE=/dev/null
 
 check_agent_user_cert() {
   CURRENT_SSH_PUBKEYS=$(ssh-add -L 2>/dev/null)
-
   echo "$CURRENT_SSH_PUBKEYS" | grep -q "ssh-ed25519-cert-v01@openssh.com"
 
   if [ $? -eq 0 ]; then
@@ -25,7 +24,7 @@ save_user_ssh_cert() {
 
   if [ $? -eq 0 ]; then
     FIRST_SSH_USER_CERT=$(echo "$CURRENT_SSH_PUBKEYS" | grep "ssh-ed25519-cert-v01@openssh.com" | head -n 1)
-    
+
     # Save the user certificate to a temp file with the user's name, if it is different from an existing file
     if [ -f "$TEMP_CERT_FILE" ]; then
       EXISTING_CERT=$(cat "$TEMP_CERT_FILE")
@@ -42,5 +41,7 @@ save_user_ssh_cert() {
       echo "$FIRST_SSH_USER_CERT" > "$TEMP_CERT_FILE"
     fi
   fi
+  echo -e "\n\n"
+  step ssh inspect "$TEMP_CERT_FILE"
 }
 

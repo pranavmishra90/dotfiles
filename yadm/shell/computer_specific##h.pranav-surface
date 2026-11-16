@@ -9,3 +9,5 @@
 #----------------------------------------------------------------------
 
 export BROWSER=wslview
+
+export GIT_COMMIT_AUTHOR="Pranav Kumar Mishra <62562712+pranavmishra90@users.noreply.github.com>"
