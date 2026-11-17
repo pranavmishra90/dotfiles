@@ -1,0 +1,20 @@
+# .mira.yaml
+filter:
+  confidence_threshold: 0.85
+  min_severity: "nitpick"
+  max_comments: 25
+  max_files: 100
+  exclude_deleted: false
+
+  blocked_authors: ["facsimilab-bot"]
+
+
+llm:
+  model: "gemma4:e2b"
+  fallback_model: "nvidia/nemotron-3.5-lightning-30b-a3b"
+  indexing_model: "nvidia/nemotron-3.5-lightning-30b-a3b"
+  review_model: "nvidia/nemotron-3.5-lightning-30b-a3b"
+  security_model: "nvidia/nemotron-3.5-lightning-30b-a3b"
+
+  max_tokens: 20000
+  max_context_tokens: 80000
