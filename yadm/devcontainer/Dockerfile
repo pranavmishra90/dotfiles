@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:python3.14-trixie@sha256:00c6beb41f4ceb136a7e28a48f9d7ded75f85f4e99bce30a6c89dffbd5d10d7c AS base
+FROM ghcr.io/astral-sh/uv:python3.14-trixie@sha256:65557d27bba9d043ce89a7f1ef82bfdaffb1ce45f5e81fce1efd085050673154 AS base
 
 
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
